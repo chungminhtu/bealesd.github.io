@@ -4,17 +4,34 @@
 		<title>David Beales Blog</title>
 	</head>
 	<body>
-		<div><a id="davidBeales">David Beales</a></div>
+		<div id='pageWrapper'>
+			
+			
+			<div id="postsLinkDiv" hidden><a id="postsLink">David Beales Posts</a></div>
+			
+			<div id="postsOneDiv" hidden><a id="postsOne">My first post</a></div>
+		</div>
 		
 	</body>
 	
 	<script>
-		document.getElementById('davidBeales').addEventListener("click", function(event){
+		postsLinkDiv.hidden = false;
+		document.getElementById('postsLink').addEventListener("click", function(event){
 			if (event.srcElement.id === 'davidBeales'){
-				alert('hey');
+				clearPage();
+				loadPosts();
 			}
-		});
+		}.bind(this));
 		
+		function clearPage(){
+			document.getElementById('pageWrapper div').forEach(function(div){
+				div.hidden = true;
+			});
+		}
+		
+		function loadPosts(){
+			document.getElementById('postsOneDiv').hidden = false;
+		}
 		
 	</script>
 </html>
