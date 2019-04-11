@@ -24,7 +24,7 @@
 		}.bind(this));
 		
 		function clearPage(){
-			document.getElementById('pageWrapper div').forEach(function(div){
+			document.querySelectorAll('#pageWrapper div').forEach(function(div){
 				div.hidden = true;
 			});
 		}
