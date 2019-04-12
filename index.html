@@ -1,51 +1,254 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<title>David Beales Blog</title>
-		
-		<style>
-        body {
-            margin: 0px;
-            padding: 0px;
-            border: 0px;
-        }
-	
-			#pageWrapper{
-			padding: 0px 20% 0px 20%;
-			}
-			
-			
-		</style>
-	</head>
-	<body>
-		<div id='pageWrapper'>
-			
-			
-			<div id="postsLinkDiv" hidden><a id="postsLink">David Beales Posts</a></div>
-			
-			<div id="postsOneDiv" hidden><a id="postsOne">My first post</a></div>
+
+<head>
+	<title>David Beales Blog</title>
+
+	<style>
+		body {
+			margin: 0px;
+			padding: 0px;
+			border: 0px;
+			/* background-color: black; */
+		}
+
+		#pageWrapper {
+			position: absolute;
+			z-index: 2;
+			width: 100%;
+			height: 100%;
+			padding: 0px 0% 0px 0%;
+		}
+
+		#postsLinkDiv {
+			position: absolute;
+			top: 50%;
+			left: 30%;
+			right: 30%;
+			width: 40%;
+			min-width: 40%;
+			height: 100px;
+			-ms-transform: translateY(-50%);
+			transform: translateY(-50%);
+			background-color: #00FF41;
+			border-radius: 50px 0px 50px 0px;
+		}
+
+		#postsLink {
+			position: absolute;
+			top: 50%;
+			-ms-transform: translateY(-50%);
+			transform: translateY(-50%);
+			height: 20px;
+			border-top: 3px solid rgba(255, 255, 255, 0);
+
+			left: 10%;
+			width: 80%;
+			min-width: 80%;
+			background-color: black;
+
+			border-radius: 50px 0px 50px 0px;
+
+			color: white;
+			text-align: center;
+			font-family: "Avenir-Book", "Helvetica Neue", Helvetica, Arial, sans-serif;
+		}
+
+
+		#postsLink:hover {
+			background-color: white;
+			color: black;
+		}
+
+		#canvas {
+			z-index: 1;
+			position: absolute;
+			background-color: black;
+		}
+
+		#postsOne {
+			color: white;
+		}
+	</style>
+</head>
+
+<body>
+	<canvas id='canvas'></canvas>
+
+	<div id='pageWrapper'>
+
+
+		<div id="postsLinkDiv" hidden>
+			<a id="postsLink">David Beales Blog</a>
 		</div>
-		
-	</body>
-	
-	<script>
-		postsLinkDiv.hidden = false;
-		document.getElementById('postsLink').addEventListener("click", function(event){
-			if (event.srcElement.id === 'postsLink'){
+
+		<div id="postsOneDiv" hidden>
+			<a id="postsOne">My first post</a>
+		</div>
+	</div>
+
+</body>
+
+<script>
+	let starColors = null;
+	let ctx = null
+	let canvas = null
+	let starInterval = null;
+
+	window.addEventListener('load', function () {
+		document.getElementById('postsLinkDiv').hidden = false;
+
+		document.getElementById('postsLink').addEventListener("click", function (event) {
+			if (event.srcElement.id === 'postsLink') {
 				clearPage();
 				loadPosts();
+				stopStars();
 			}
 		}.bind(this));
-		
-		function clearPage(){
-			document.querySelectorAll('#pageWrapper div').forEach(function(div){
-				div.hidden = true;
-			});
+
+		drawStarMap();
+		resize();
+	}.bind(this));
+
+	function clearPage() {
+		document.querySelectorAll('#pageWrapper div').forEach(function (div) {
+			div.hidden = true
+				;
+		});
+		clearCanvas();
+		// hideCanvas();
+	}
+
+	function loadPosts() {
+		document.getElementById('postsOneDiv').hidden = false;
+	}
+
+	function drawStarMap() {
+		this.canvas = document.getElementById('canvas');
+		this.canvas.width = window.innerWidth;
+		this.canvas.height = window.innerHeight;
+		this.ctx = this.canvas.getContext('2d');
+
+		this.starColors = {
+			red: {
+				fillColor: 'red',
+				lineColor: '#8E2121'
+			},
+			green: {
+				fillColor: 'green',
+				lineColor: '#003300'
+			},
+			yellow: {
+				fillColor: 'yellow',
+				lineColor: '#AEBF14'
+			},
+			brightBlue: {
+				fillColor: '#00C4FF',
+				lineColor: '#14627A'
+			},
+			darkBlue: {
+				fillColor: '#0D168D',
+				lineColor: 'rgb(6, 9, 49)'
+			},
+			turqoise: {
+				fillColor: '#00FFA2',
+				lineColor: '#226E52'
+			},
+			orange: {
+				fillColor: '#FF7700',
+				lineColor: '#C46008'
+			},
+			white: {
+				fillColor: '#FCE1FC',
+				lineColor: '#EBB9EB'
+			}
 		}
-		
-		function loadPosts(){
-			document.getElementById('postsOneDiv').hidden = false;
+		this.stars = [];
+		let currentIteration = 0;
+		let iterations = 100;
+		this.starInterval = setInterval(setIntervalForMaxIterations, 500);
+		function setIntervalForMaxIterations() {
+			renderStars();
+			currentIteration++;
+			if (currentIteration >= iterations)
+				clearInterval(this.starInterval);
 		}
-		
-	</script>
+	}
+
+	function resize() {
+		window.addEventListener('resize', function () {
+			let resizeTimeout;
+			if (!resizeTimeout) {
+				resizeTimeout = setTimeout(function () {
+					resizeTimeout = null;
+					this.canvas.width = window.innerWidth;
+					this.canvas.height = window.innerHeight;
+				}, 66);
+			}
+		}.bind(this));
+	}
+
+	function stopStars() {
+		clearInterval(this.starInterval);
+	}
+
+	function clearCanvas() {
+		this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+	}
+
+	function hideCanvas() {
+		document.querySelector('#canvas').hidden = true;
+	}
+
+	function renderStars() {
+		clearCanvas();
+		let star = randomCircle(this.canvas.width, this.canvas.height);
+		this.stars.push(star);
+		 //remove random star
+		 removeStars();
+		 //grow or shrink random stars
+
+		stars.forEach(function (s) {
+			drawCircle(s);
+		});
+	}
+
+	function removeStars(circle) {
+		const radius = 3;
+		this.ctx.beginPath();
+		this.ctx.arc(circle.x, circle.y, radius, 0, 2 * Math.PI, false);
+		this.ctx.fillStyle = circle.fillColor;
+		this.ctx.fill();
+		this.ctx.lineWidth = circle.lineWidth;
+		this.ctx.strokeStyle = circle.lineColor;
+		this.ctx.stroke();
+	}
+
+	function drawCircle(circle) {
+		const radius = 3;
+		this.ctx.beginPath();
+		this.ctx.arc(circle.x, circle.y, radius, 0, 2 * Math.PI, false);
+		this.ctx.fillStyle = circle.fillColor;
+		this.ctx.fill();
+		this.ctx.lineWidth = circle.lineWidth;
+		this.ctx.strokeStyle = circle.lineColor;
+		this.ctx.stroke();
+	}
+
+	function randomCircle(maxX, maxY) {
+		let size = Math.floor(Math.random() * Math.floor(2));
+		var starColorsIndex = Math.floor(Math.random() * Math.floor(Object.keys(this.starColors).length));
+		let starColor = this.starColors[Object.keys(this.starColors)[starColorsIndex]];
+		return {
+			x: Math.floor(Math.random() * Math.floor(maxX)),
+			y: Math.floor(Math.random() * Math.floor(maxY)),
+			radius: size,
+			lineWidth: size,
+			fillColor: starColor.fillColor,
+			lineColor: starColor.lineColor
+		};
+	}
+
+</script>
+
 </html>
