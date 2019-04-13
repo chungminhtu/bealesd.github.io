@@ -107,20 +107,31 @@
 		}.bind(this));
 
 		drawStarMap();
-		resize();
+		onResizePage();
 	}.bind(this));
 
 	function clearPage() {
 		document.querySelectorAll('#pageWrapper div').forEach(function (div) {
-			div.hidden = true
-				;
+			div.hidden = true;
 		});
 		clearCanvas();
-		// hideCanvas();
 	}
 
 	function loadPosts() {
 		document.getElementById('postsOneDiv').hidden = false;
+	}
+
+	function clearCanvas() {
+		this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+	}
+
+	function updateCanvasSize() {
+		this.canvas.width = window.innerWidth;
+		this.canvas.height = window.innerHeight;
+	}
+
+	function hideCanvas() {
+		document.querySelector('#canvas').hidden = true;
 	}
 
 	function drawStarMap() {
@@ -165,8 +176,8 @@
 		}
 		this.stars = [];
 		let currentIteration = 0;
-		let iterations = 100;
-		this.starInterval = setInterval(setIntervalForMaxIterations, 500);
+		let iterations = 10000;
+		this.starInterval = setInterval(setIntervalForMaxIterations, 50);
 		function setIntervalForMaxIterations() {
 			renderStars();
 			currentIteration++;
@@ -175,14 +186,13 @@
 		}
 	}
 
-	function resize() {
+	function onResizePage() {
 		window.addEventListener('resize', function () {
 			let resizeTimeout;
 			if (!resizeTimeout) {
 				resizeTimeout = setTimeout(function () {
 					resizeTimeout = null;
-					this.canvas.width = window.innerWidth;
-					this.canvas.height = window.innerHeight;
+					updateCanvasSize();
 				}, 66);
 			}
 		}.bind(this));
@@ -192,61 +202,73 @@
 		clearInterval(this.starInterval);
 	}
 
-	function clearCanvas() {
-		this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-	}
-
-	function hideCanvas() {
-		document.querySelector('#canvas').hidden = true;
-	}
-
 	function renderStars() {
 		clearCanvas();
-		let star = randomCircle(this.canvas.width, this.canvas.height);
+		let star = randomStar(this.canvas.width, this.canvas.height);
 		this.stars.push(star);
-		 //remove random star
-		 removeStars();
-		 //grow or shrink random stars
 
 		stars.forEach(function (s) {
-			drawCircle(s);
+			drawStar(s);
+			resizeStar(s);
 		});
 	}
 
-	function removeStars(circle) {
-		const radius = 3;
+	function resizeStar(star) {
+		let starCount = this.stars.length;
+		let change = randomRange(0.1, 0.2);
+		let maxStarSze = 3;
+		if (star.grow && star.size > maxStarSze)
+			star.grow = false;
+		if (star.grow)
+			star.size += change;
+		else
+			star.size -= change;
+		if (star.size < 0.5) {
+			let removeIndex = this.stars.indexOf(star);
+			this.stars = removeItemFromArray(this.stars, removeIndex);
+		}
+	}
+
+	function drawStar(star) {
 		this.ctx.beginPath();
-		this.ctx.arc(circle.x, circle.y, radius, 0, 2 * Math.PI, false);
-		this.ctx.fillStyle = circle.fillColor;
+		this.ctx.arc(star.x, star.y, star.size, 0, 2 * Math.PI, false);
+		this.ctx.fillStyle = star.fillColor;
 		this.ctx.fill();
-		this.ctx.lineWidth = circle.lineWidth;
-		this.ctx.strokeStyle = circle.lineColor;
+		this.ctx.lineWidth = star.size;
+		this.ctx.strokeStyle = star.lineColor;
 		this.ctx.stroke();
 	}
 
-	function drawCircle(circle) {
-		const radius = 3;
-		this.ctx.beginPath();
-		this.ctx.arc(circle.x, circle.y, radius, 0, 2 * Math.PI, false);
-		this.ctx.fillStyle = circle.fillColor;
-		this.ctx.fill();
-		this.ctx.lineWidth = circle.lineWidth;
-		this.ctx.strokeStyle = circle.lineColor;
-		this.ctx.stroke();
-	}
-
-	function randomCircle(maxX, maxY) {
-		let size = Math.floor(Math.random() * Math.floor(2));
+	function getRandomStarColor() {
 		var starColorsIndex = Math.floor(Math.random() * Math.floor(Object.keys(this.starColors).length));
-		let starColor = this.starColors[Object.keys(this.starColors)[starColorsIndex]];
+		return this.starColors[Object.keys(this.starColors)[starColorsIndex]];
+	}
+
+	function randomStar(maxX, maxY) {
+		let startStarSize = randomRange(0.5, 1);
+		let starColor = getRandomStarColor();
 		return {
-			x: Math.floor(Math.random() * Math.floor(maxX)),
-			y: Math.floor(Math.random() * Math.floor(maxY)),
-			radius: size,
-			lineWidth: size,
+			x: randomRange(0, maxX),
+			y: randomRange(0, maxY),
+			size: startStarSize,
 			fillColor: starColor.fillColor,
-			lineColor: starColor.lineColor
+			lineColor: starColor.lineColor,
+			grow: true
 		};
+	}
+
+	function randomRange(min, max) {
+		return Math.random() * (min - max) + max;
+	}
+
+	function removeItemFromArray(oldArray, indexToRemove) {
+		let newArray = [];
+		for (let i = 0; i < oldArray.length; i++) {
+			if (i !== indexToRemove) {
+				newArray.push(oldArray[i]);
+			}
+		}
+		return newArray;
 	}
 
 </script>
