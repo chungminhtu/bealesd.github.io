@@ -9,6 +9,7 @@
 			margin: 0px;
 			padding: 0px;
 			border: 0px;
+			background-color: black;
 		}
 
 		#pageWrapper {
@@ -224,7 +225,7 @@
 		document.querySelectorAll('.postLinkDiv').forEach(function (div) {
 			div.hidden = false;
 		});
-		this.pageAddress = 'David Beales Blog Posts'
+		pageAddress = 'David Beales Blog Posts'
 	}
 
 	function clearCanvas() {
@@ -299,7 +300,7 @@
 				resizeTimeout = setTimeout(function () {
 					resizeTimeout = null;
 					updateCanvasSize();
-					if (this.pageAddress === 'David Beales Blog') {
+					if (pageAddress === 'David Beales Blog') {
 						setPostsLinkDivPosition();
 					}
 				}, 66);
