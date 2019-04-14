@@ -2,6 +2,9 @@
 <html>
 
 <head>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.5.0/themes/prism.min.css" />
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.5.0/prism.min.js"></script>
+
 	<title>David Beales Blog</title>
 
 	<style>
@@ -126,10 +129,21 @@
 			background-color: black;
 
 			color: lightgray;
-			text-align: center;
+			text-align: left;
 			font-size: 20px;
 			font-family: "Avenir-Book", "Helvetica Neue", Helvetica, Arial, sans-serif;
 		}
+
+		/* pre {
+			display: block;
+			overflow: auto;
+			padding: 20px;
+			background-color: #eee;
+			border: 1px solid #999;
+
+			color: gray;
+			font-size: 12px;
+		} */
 	</style>
 </head>
 
@@ -146,22 +160,93 @@
 		<div class="postLinkDiv" hidden>
 			<p class="timestamp">13 April 2018</p>
 			<a class="postLink" id="postOne">JavaScript Variables Part One</a>
-			<p class="tags"><em>#JavaScript</em></p>
+			<p class="tags">
+				<em>#JavaScript</em>
+			</p>
 		</div>
 
 		<div class="postLinkDiv" hidden>
 			<p class="timestamp">13 May 2018</p>
 			<a class="postLink" id="postTwo">JavaScript Variables Part Two</a>
-			<p class="tags"><em>#JavaScript</em></p>
+			<p class="tags">
+				<em>#JavaScript</em>
+			</p>
 		</div>
+
 
 		<div id="postOneDiv" class="postContentDiv" hidden>
 			<div class="postContent">
-				<h1 class="postHeading">JavaScript Variables Part Two</h1>
-				<p id="postOneContent">This page is under construction, although the content is written!</p>
+				<h1 class="postHeading">JavaScript Variables Part One</h1>
+
+				<h2>
+					Variables and Scope
+				</h2>
+
+				<p>
+					Like any language JavaScript has scopes and variables.
+				</p>
+
+				<p>
+					Variables are pretty self explanatory, they store information. However what syntax you use to declare variables will make
+					a massive difference to how your code behaves. Lets look at
+					<em>'VAR'</em>.
+				</p>
+
+				<h3>
+					Var
+				</h3>
+
+				<p>
+					Var is commonly is used to delcare a variables (commonly in older code bases, but sometimes in new ones). The function below
+					declares a variable foo and assigns bar to it.</p>
+
+				<p>
+
+				<pre><code class="language-css">function fooBar(){
+    var foo = "bar"; 
+	console.log(foo); 
+}
+fooBar(); print bar</code></pre>
+
+				</p>
+				<p>
+					This behaviour seems completely reasonable, the variable foo is declared in the function fooBar. It exists only in the function
+					scope of fooBar and cannot be accessed outside of that scope. So what is the issue with var?
+				</p>
+
+				<pre><code class="language-css">for (var index = 0; index &#60;; 99 index++){
+	doSomeWork(index);
+}
+console.log(index); // print 98</code></pre>
+
+				<p>
+					Thats odd, you would expect an error when calling index outside of the for loop. Well not with var,
+					<em>it has no block scope</em>. The same would apply with a while, switch, if, etc.
+				</p>
+				<h4>
+					Hoisting
+				</h4>
+				<p>
+					So var has no block scope, but does it do anything else exciting. Well, yes! It support hosting.
+				</p>
+
+				<pre><code class="language-css">function fooBar(){
+	foo = "bar";
+	console.log(foo);
+	var foo;
+}
+fooBar(); //prints bar</code></pre>
+
+				<p>
+					I forgot to declare foo using var before I assigned a value to it. Guess what var doesn't care, as long as foo is decalred
+					somewhere in the function, you can assign to it. If your wondering, thats called hoisting. So declarations are hostied,
+					but what about declaration and assignment in one. Lets try it out.
+				</p>
+
 			</div>
 
 		</div>
+
 
 	</div>
 
