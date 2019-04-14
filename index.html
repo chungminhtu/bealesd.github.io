@@ -2,8 +2,11 @@
 <html>
 
 <head>
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.5.0/themes/prism.min.css" />
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.5.0/prism.min.js"></script>
+	<link rel="stylesheet" href="prismLight.css" />
+	<script src="prismLight.js"></script>
+
+	<!-- <link rel="stylesheet" href="prismDark.css" />
+	<script src="prismDark.js"></script> -->
 
 	<title>David Beales Blog</title>
 
@@ -48,10 +51,10 @@
 			font-size: 20px;
 		}
 
-
 		#postsLink:hover {
 			background-color: white;
 			color: black;
+			transition: all 1.5s ease-out;
 		}
 
 		#canvas {
@@ -86,6 +89,7 @@
 		.postLink:hover {
 			color: black;
 			background-color: lightgray;
+			transition: all 1.5s ease-out;
 		}
 
 		.timestamp {
@@ -113,37 +117,25 @@
 
 		.postContentDiv {
 			background-color: white;
-			margin: 100px 10% 100px 10%;
+			/* margin: 100px 10% 100px 10%; */
 			padding: 50px 0px 50px 0px;
-			border-radius: 10px 10px 10px 10px;
+			/* border-radius: 10px 10px 10px 10px; */
 		}
 
 		.postContent {
 			display: block;
 			margin-left: auto;
 			margin-right: auto;
-			width: 80%;
-
+			/* width: 500px; */
 			border-radius: 10px 10px 10px 10px;
 			padding: 10px 10px 10px 10px;
 			background-color: black;
 
 			color: lightgray;
 			text-align: left;
-			font-size: 20px;
+			font-size: 16px;
 			font-family: "Avenir-Book", "Helvetica Neue", Helvetica, Arial, sans-serif;
 		}
-
-		/* pre {
-			display: block;
-			overflow: auto;
-			padding: 20px;
-			background-color: #eee;
-			border: 1px solid #999;
-
-			color: gray;
-			font-size: 12px;
-		} */
 	</style>
 </head>
 
@@ -202,7 +194,7 @@
 
 				<p>
 
-				<pre><code class="language-css">function fooBar(){
+					<pre class="line-numbers"><code class="language-javascript">function fooBar(){
     var foo = "bar"; 
 	console.log(foo); 
 }
@@ -214,7 +206,7 @@ fooBar(); print bar</code></pre>
 					scope of fooBar and cannot be accessed outside of that scope. So what is the issue with var?
 				</p>
 
-				<pre><code class="language-css">for (var index = 0; index &#60;; 99 index++){
+				<pre class="line-numbers"><code class="language-javascript">for (var index = 0; index &#60;; 99 index++){
 	doSomeWork(index);
 }
 console.log(index); // print 98</code></pre>
@@ -227,10 +219,10 @@ console.log(index); // print 98</code></pre>
 					Hoisting
 				</h4>
 				<p>
-					So var has no block scope, but does it do anything else exciting. Well, yes! It support hosting.
+					So var has no block scope, but does it do anything else exciting. Well, yes! It supports hosting.
 				</p>
 
-				<pre><code class="language-css">function fooBar(){
+				<pre class="line-numbers"><code class="language-javascript">function fooBar(){
 	foo = "bar";
 	console.log(foo);
 	var foo;
@@ -239,7 +231,7 @@ fooBar(); //prints bar</code></pre>
 
 				<p>
 					I forgot to declare foo using var before I assigned a value to it. Guess what var doesn't care, as long as foo is decalred
-					somewhere in the function, you can assign to it. If your wondering, thats called hoisting. So declarations are hostied,
+					somewhere in the function, you can assign to it. If your wondering, this is called hoisting. So declarations are hostied,
 					but what about declaration and assignment in one. Lets try it out.
 				</p>
 
@@ -265,22 +257,54 @@ fooBar(); //prints bar</code></pre>
 
 		document.getElementById('postsLink').addEventListener("click", function (event) {
 			if (event.srcElement.id === 'postsLink') {
-				clearPage();
-				loadPosts();
-				stopStars();
+				this.interval = setInterval(setIntervalWrapper, 50);
+				this.scale = 0.99;
+				function setIntervalWrapper() {
+					shrinkLink();
+					if (scale < 0.01) {
+						clearInterval(this.interval);
+						clearPage();
+						loadPosts();
+						stopStars();
+					}
+				}
 			}
 		}.bind(this));
 
 		document.getElementById('postOne').addEventListener("click", function (event) {
 			if (event.srcElement.id === 'postOne') {
+				pageAddress = "Post One";
 				clearPage();
 				document.querySelector('#postOneDiv').hidden = false;
+				resizePost();
 			}
 		}.bind(this));
 
 		drawStarMap();
 		onResizePage();
 	}.bind(this));
+
+	function shrinkLink() {
+		let div = document.getElementById('postsLinkDiv');
+		let link = document.getElementById('postsLink');
+
+		this.scale -= 0.01;
+
+		link.style.transform = `scale(${this.scale})`;
+		div.style.transform =  `scale(${this.scale})`;
+	}
+
+	function resizePost() {
+		let windowWidth = window.innerWidth;
+		if (windowWidth > 750) {
+			document.querySelector('.postContent').style.width = '650px';
+		}
+		else {
+			document.querySelector('.postContent').style.width = '80%';
+		}
+		document.querySelector('.postContent');
+
+	}
 
 	function setPostsLinkDivPosition() {
 		let viewWidth = window.innerWidth;
@@ -387,6 +411,9 @@ fooBar(); //prints bar</code></pre>
 					updateCanvasSize();
 					if (pageAddress === 'David Beales Blog') {
 						setPostsLinkDivPosition();
+					}
+					else if (pageAddress === 'Post One') {
+						resizePost();
 					}
 				}, 66);
 			}
