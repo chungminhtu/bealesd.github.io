@@ -342,6 +342,7 @@ If you want block scope for the variables your declare and assign to, which you 
 			if (event.srcElement.id === 'postsLink') {
 				this.interval = setInterval(setIntervalWrapper, 50);
 				this.scale = 0.99;
+				this.scaleChange = 0.01;
 				function setIntervalWrapper() {
 					shrinkLink();
 					if (scale < 0.01) {
@@ -371,7 +372,8 @@ If you want block scope for the variables your declare and assign to, which you 
 		let div = document.getElementById('postsLinkDiv');
 		let link = document.getElementById('postsLink');
 
-		this.scale -= 0.01;
+		this.scale -= this.scaleChange;
+		this.scaleChange += 0.01;
 
 		link.style.transform = `scale(${this.scale})`;
 		div.style.transform =  `scale(${this.scale})`;
