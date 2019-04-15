@@ -245,14 +245,20 @@ fooBar(); //prints undefined</code></pre>
 				
 				<p>So what happenned. The varaible foo was hoisted (it was decalared), but the assignment happened
 					after the foo was printed, at which point foo was undefined, i.e. it had no data.</p>
-			
-			<p hidden class="need to add">
-			example of annoying hosting, your trying to improve runtime efficients, the less js objects the better!
-var stopMyCode = true;
+				<p>
+				Hositing can be quite annoying. You might wany improve runtime efficiency in your application by not
+				creating objects that aren't required.
+				</p>
+			<pre class="line-numbers"><code class="language-javascript">var stopMyCode = true;
 if (stopMyCode) {
     return;
 }
 var myObjectThatShouldExist = 'iExist';
+			</code></pre>
+			<p>As you know myObjectThatShouldExist does exist due to hoisting,
+				even though the return statement is called in the if block!</p>
+			
+			<p hidden class="need to add">
 
 As you know myObjectThatShouldExist does exist due to hoisting, even though the return statement is called in the if block.
 
