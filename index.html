@@ -68,7 +68,7 @@
 			margin: 100px auto 100px auto;
 			padding: 50px 0px 50px 0px;
 			border-radius: 10px 10px 10px 10px;
-			max-width: 500px;
+			max-width: 650px;
 			
 		}
 
@@ -374,7 +374,7 @@ If you want block scope for the variables your declare and assign to, which you 
 		let link = document.getElementById('postsLink');
 
 		this.scale -= this.scaleChange;
-		this.scaleChange += 0.01;
+		this.scaleChange += 0.001;
 
 		link.style.transform = `scale(${this.scale})`;
 		div.style.transform =  `scale(${this.scale})`;
