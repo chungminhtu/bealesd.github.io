@@ -68,6 +68,7 @@
 			margin: 100px 10% 100px 10%;
 			padding: 50px 0px 50px 0px;
 			border-radius: 10px 10px 10px 10px;
+			max-width: 500px;
 		}
 
 		.postLink {
@@ -234,6 +235,88 @@ fooBar(); //prints bar</code></pre>
 					somewhere in the function, you can assign to it. If your wondering, this is called hoisting. So declarations are hostied,
 					but what about declaration and assignment in one. Lets try it out.
 				</p>
+			
+				<pre class="line-numbers"><code class="language-javascript">function fooBar(){	
+	console.log(foo);
+	var foo = "bar";
+}
+fooBar(); //prints undefined</code></pre>
+				
+				<p>So what happenned. The varaible foo was hoisted (it was decalared), but the assignment happened
+					after the foo was printed, at which point foo was undefined, i.e. it had no data.</p>
+			
+			<p hidden class="need to add">
+			example of annoying hosting, your trying to improve runtime efficients, the less js objects the better!
+var stopMyCode = true;
+if (stopMyCode) {
+    return;
+}
+var myObjectThatShouldExist = 'iExist';
+
+As you know myObjectThatShouldExist does exist due to hoisting, even though the return statement is called in the if block.
+
+Global var
+One more thing with vairables, they can be declared globally so they're available anywhere.
+
+var globalFoo = "bar";
+console.log(globalFoo);//print bar
+console.log(window.globalFoo);//print bar
+window.console.log(window.globalFoo);//print bar
+console.log(this.globalFoo);//print bar
+
+Oh, and when using var it gets added to the global object (window when in a browser), which is also this! As a side note, window is also where most browser functionality sits, hence the annoying window.console.log!
+
+Example of asynchronous var gone wrong:
+let arr = [];
+for (let i=0; i < 3; i++) {
+    arr.push(() => i);
+}
+console.log(arr.map(x => x())); // [0,1,2]
+
+what happenned: i is bound to the same value outside of the annoymous function.
+with let
+
+solution:
+let arr = [];
+for (var i=0; i < 3; i++) {
+    arr.push(() => i);
+}
+console.log(arr.map(x => x())); // [3,3,3]
+
+Let and const - ecma6?
+
+In 2015 ecma6 was released (JavaScript 6). It introduced let and const, amongst other things. You may have guessed but let and const are the alternative to var.
+As we know var has no block scope. Get ready for this, 'let' allows you to declare a variable with block scope, take a bow. Const also work within block scope, but allow you to decalre a constant variable.
+
+example
+1.
+var x = 99; // Here x is 99
+{ 
+  let x = 9;  // Here x is 9
+}
+console.log(x); //x is still 99
+
+2.
+var x = 99; // Here x is 99
+{ 
+  const x = 9;  // Here x is 9
+}
+console.log(x); //x is still 99
+
+3.
+var x = 99; // Here x is 99
+{ 
+  const x = 9;  // Here x is 9
+  x += 1; // TypeError: Assignment to constant variable.
+}
+
+example 1 shows x being declared in it own scope and not affecting the outer scope.
+example 2 is much the same but using const, this make no difference, unless...
+example 3, shows x being declared as a const in the inner scope and then incrementing the varriable x. As a const is a constant value changing it throws an error.
+
+Conclusion,
+If you want block scope for the variables your declare and assign to, which you probably would, use let or const. If you work with Javascript, you will come accross var, so make sure you understand it.
+			</p>
 
 			</div>
 
