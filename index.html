@@ -406,7 +406,7 @@ console.log(x); //x is still 99
 		    onPageOneLoad();
 		}
 		else if (pageAddresses[newAdressKey] === pageAddresses.welcome){
-			var a = 1;
+			onWelcomeLoad();
 		}
     	});
 
@@ -428,6 +428,12 @@ console.log(x); //x is still 99
 		onResizePage();
 		
 	}.bind(this));
+	
+	function onWelcomeLoad(){
+		clearPage()
+		setPostsLinkDivPosition();
+		drawStarMap();
+	}
 	
 	function onPageOneLoad(){
 		stopStars();
