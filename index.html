@@ -359,8 +359,15 @@ If you want block scope for the variables your declare and assign to, which you 
         	history.pushState(null, '', location.href);
 		let relativePath = window.location.pathname;
 		let invertedPageAddresses = swapJsonKeyValues(pageAddresses);
-		let address = relativePath.match(/[A-Za-z]+\.html/)[0].slice(0, -5);
-		let addressKey = invertedPageAddresses[address];
+		let address = null;
+		let addressKey = null;
+		if (relativePath.match(/[A-Za-z]+\.html/) != null){
+			address = relativePath.match(/[A-Za-z]+\.html/)[0].slice(0, -5);
+		}
+		if (invertedPageAddresses.hasOwnProperty(address)){
+		    addressKey = invertedPageAddresses[address];
+		}
+		
 		let addressKeys = Object.keys(pageAddresses);
 		let addressIndex = (Object.keys(pageAddresses).indexOf(addressKey)) < 0 ? 0: 
 			(Object.keys(pageAddresses).indexOf(addressKey) - 1);
