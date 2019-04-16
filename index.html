@@ -225,7 +225,7 @@ console.log(index); // print 98</code></pre>
 fooBar(); //prints bar</code></pre>
 
 				<p>
-					I forgot to declare foo using var before I assigned a value to it. Guess what var doesn't care, as long as foo is decalred
+					I forgot to declare foo using <em>var</em> before I assigned a value to it. Guess what <em>var</em> doesn't care, as long as foo is decalred
 					somewhere in the function, you can assign to it. If your wondering, this is called hoisting. So declarations are hostied,
 					but what about declaration and assignment in one. Lets try it out.
 				</p>
@@ -262,8 +262,8 @@ window.console.log(window.globalFoo);//print bar
 console.log(this.globalFoo);//print bar
 </code></pre>
 			<p>
-			When using var it gets added to the global object (<em>window</em> in browser), which is also the same as <em>this</em>! 
-			As a side note, <em>window</em> is also where most browser functionality sits, hence the confusing <em>window.console</em>.log!	
+			When using <em>var</em> it gets added to the global object (<em>window</em> in browser), which is also the same as <em>this</em>! 
+			As a side note, <em>window</em> is also where most browser functionality sits, hence the confusing <em>window.console.log</em>!	
 			</p>
 			
 			<h4>Var Idiosyncrasies</h4>
@@ -299,7 +299,7 @@ console.log(arr.map(x => x())); // [1,2,3]
 			
 			<p>
 			In 2015 ECMA6 was released (JavaScript 6). 
-			It introduced let and const, amongst other things.
+			It introduced <em>let</em> and <em>const</em>, amongst other things.
 			You may have guessed but <em>let</em> and <em>varconst</em> are the alternative to <em>var</em>.
 			As we know var has no block scope. 
 			Get ready for this, <em>let</em> allows you to declare a variable with block scope. 
