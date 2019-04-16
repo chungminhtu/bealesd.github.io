@@ -333,12 +333,21 @@ If you want block scope for the variables your declare and assign to, which you 
 	let ctx = null
 	let canvas = null
 	let starInterval = null;
-	let pageAddress = 'David Beales Blog';
-	// add an object of addresses 
+let pageAddresses = {
+  welcome: 'David Beales Blog',
+  posts: 'David Beales Blog Posts',
+  postOne: 'Post One'
+}
+let pageAddress = pageAddresses.welcome;
+
+function updatePageState(){
+    history.pushState({}, '', `${pageAddress}.html`);
+}
 
 	window.addEventListener('load', function () {
+    
+    
 		setPostsLinkDivPosition();
-
 		document.getElementById('postsLink').addEventListener("click", function (event) {
 			if (event.srcElement.id === 'postsLink') {
 				this.interval = setInterval(setIntervalWrapper, 50);
@@ -355,18 +364,17 @@ If you want block scope for the variables your declare and assign to, which you 
 				}
 			}
 		}.bind(this));
-
 		document.getElementById('postOne').addEventListener("click", function (event) {
 			if (event.srcElement.id === 'postOne') {
 				stopStars();
 				
-				pageAddress = "Post One";
+				pageAddress = pageAddresses.postOne;
+        updatePageState();
 				clearPage();
 				document.querySelector('#postOneDiv').hidden = false;
 				resizePost();
 			}
 		}.bind(this));
-
 		drawStarMap();
 		onResizePage();
 	}.bind(this));
@@ -374,10 +382,8 @@ If you want block scope for the variables your declare and assign to, which you 
 	function shrinkLink() {
 		let div = document.getElementById('postsLinkDiv');
 		let link = document.getElementById('postsLink');
-
 		this.scale -= this.scaleChange;
 		this.scaleChange += 0.001;
-
 		link.style.transform = `scale(${this.scale})`;
 		div.style.transform =  `scale(${this.scale})`;
 	}
@@ -391,14 +397,12 @@ If you want block scope for the variables your declare and assign to, which you 
 			document.querySelector('.postContent').style.width = '80%';
 		}
 		document.querySelector('.postContent');
-
 	}
 
 	function setPostsLinkDivPosition() {
 		let viewWidth = window.innerWidth;
 		let viewHeight = window.innerHeight;
 		let postsLinkDiv = document.getElementById('postsLinkDiv');
-
 		let postsLink = document.getElementById('postsLink');
 		postsLinkDiv.hidden = false;
 		postsLinkDiv.style.marginTop = `${(viewHeight - postsLinkDiv.offsetHeight) / 2}px`;
@@ -406,7 +410,6 @@ If you want block scope for the variables your declare and assign to, which you 
 		postsLink.style.paddingRight = `${30}px`;
 		let postsLinkGutter = (postsLinkDiv.offsetWidth - postsLink.offsetWidth) / 2;
 		postsLink.style.marginLeft = `${postsLinkGutter}px`;
-
 		let postsLinkDivGutter = (viewWidth - postsLinkDiv.offsetWidth) / 2;
 		postsLinkDiv.style.marginLeft = `${postsLinkDivGutter}px`;
 	}
@@ -422,7 +425,8 @@ If you want block scope for the variables your declare and assign to, which you 
 		document.querySelectorAll('.postLinkDiv').forEach(function (div) {
 			div.hidden = false;
 		});
-		pageAddress = 'David Beales Blog Posts'
+		pageAddress = pageAddresses.posts;
+    updatePageState();
 	}
 
 	function clearCanvas() {
@@ -443,7 +447,6 @@ If you want block scope for the variables your declare and assign to, which you 
 		this.canvas.width = window.innerWidth;
 		this.canvas.height = window.innerHeight;
 		this.ctx = this.canvas.getContext('2d');
-
 		this.starColors = {
 			red: {
 				fillColor: 'red',
@@ -482,6 +485,7 @@ If you want block scope for the variables your declare and assign to, which you 
 		let currentIteration = 0;
 		let iterations = 10000;
 		this.starInterval = setInterval(setIntervalForMaxIterations, 50);
+    
 		function setIntervalForMaxIterations() {
 			renderStars();
 			currentIteration++;
@@ -489,7 +493,6 @@ If you want block scope for the variables your declare and assign to, which you 
 				clearInterval(this.starInterval);
 		}
 	}
-
 	function onResizePage() {
 		window.addEventListener('resize', function () {
 			let resizeTimeout;
@@ -497,10 +500,12 @@ If you want block scope for the variables your declare and assign to, which you 
 				resizeTimeout = setTimeout(function () {
 					resizeTimeout = null;
 					updateCanvasSize();
-					if (pageAddress === 'David Beales Blog') {
+					if (pageAddress === pageAddresses.welcome) {
+            updatePageState();
 						setPostsLinkDivPosition();
 					}
-					else if (pageAddress === 'Post One') {
+					else if (pageAddress === pageAddresses.postOne) {
+            updatePageState();
 						resizePost();
 					}
 				}, 66);
@@ -516,7 +521,6 @@ If you want block scope for the variables your declare and assign to, which you 
 		clearCanvas();
 		let star = randomStar(this.canvas.width, this.canvas.height);
 		this.stars.push(star);
-
 		stars.forEach(function (s) {
 			drawStar(s);
 			resizeStar(s);
@@ -580,7 +584,6 @@ If you want block scope for the variables your declare and assign to, which you 
 		}
 		return newArray;
 	};
-
 </script>
 
 </html>
