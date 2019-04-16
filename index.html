@@ -25,13 +25,6 @@
 			height: 100%;
 			padding: 0px 0% 0px 0%;
 		}
-		#postsLinkDiv {
-			/*background-color: rgba(0,255,65, 0.0);
-			border-radius: 50px 0px 50px 0px;
-			width: 400px;
-			min-width: 400px;
-			padding: 50px 0px 50px 0px;*/
-		}
 
 		#postsLink {
 			display: inline-block;
@@ -355,7 +348,7 @@ If you want block scope for the variables your declare and assign to, which you 
 						clearInterval(this.interval);
 						clearPage();
 						loadPosts();
-						stopStars();
+						//stopStars();
 					}
 				}
 			}
@@ -363,6 +356,8 @@ If you want block scope for the variables your declare and assign to, which you 
 
 		document.getElementById('postOne').addEventListener("click", function (event) {
 			if (event.srcElement.id === 'postOne') {
+				stopStars();
+				
 				pageAddress = "Post One";
 				clearPage();
 				document.querySelector('#postOneDiv').hidden = false;
