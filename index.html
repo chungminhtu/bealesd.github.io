@@ -491,6 +491,8 @@ console.log(x); //x is still 99
 		postsLink.style.marginLeft = `${postsLinkGutter}px`;
 		let postsLinkDivGutter = (viewWidth - postsLinkDiv.offsetWidth) / 2;
 		postsLinkDiv.style.marginLeft = `${postsLinkDivGutter}px`;
+		postsLink.style.transform = `scale(${1})`;
+		postsLinkDiv.style.transform =  `scale(${1})`;
 	}
 
 	function clearPage() {
