@@ -362,7 +362,7 @@ If you want block scope for the variables your declare and assign to, which you 
 		let address = relativePath.match(/[A-Za-z]+\.html/)[0].slice(0, -5);
 		let addressKey = invertedPageAddresses[address];
 		let addressKeys = Object.keys(pageAddresses);
-		let addressIndex = (Object.keys(pageAddresses).indexOf(addressKey) - 1) < 0 ? 0: 
+		let addressIndex = (Object.keys(pageAddresses).indexOf(addressKey)) < 0 ? 0: 
 			(Object.keys(pageAddresses).indexOf(addressKey) - 1);
 		
 		let newAdressKey = Object.keys(pageAddresses)[addressIndex];
