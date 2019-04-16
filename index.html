@@ -358,13 +358,23 @@ If you want block scope for the variables your declare and assign to, which you 
 	window.addEventListener('popstate', function (event) {
         	history.pushState(null, '', location.href);
 		let relativePath = window.location.pathname;
-		//let invertedPageAddresses = swapJsonKeyValues(pageAddress);
-		//let addressKey = invertedPageAddresses[relativePath];
-		if (relativePath === pageAddresses.posts){
+		let invertedPageAddresses = swapJsonKeyValues(pageAddress);
+		let address = relativePath.match(/[A-Za-z]+\.html/)[0].slice(0, -5);
+		let addressKey = invertedPageAddresses[address];
+		let addressKeys = Object.keys(pageAddresses);
+		let addressIndex = (Object.keys(pageAddresses).indexOf(addressKey) - 1) < 0 ? 0: 
+			(Object.keys(pageAddresses).indexOf(addressKey) - 1);
+		
+		let newAdressKey = Object.keys(pageAddresses)[addressIndex];
+		
+		if (pageAddresses[newAdressKey] === pageAddresses.posts){
 		    onPostsLoad();
 		}
-		else if (relativePath === pageAddresses.postOne){
+		else if (pageAddresses[newAdressKey] === pageAddresses.postOne){
 		    onPageOneLoad();
+		}
+		else if (pageAddresses[newAdressKey] === pageAddresses.welcome){
+			var a = 1;
 		}
     	});
 
