@@ -334,9 +334,9 @@ If you want block scope for the variables your declare and assign to, which you 
 	let canvas = null
 	let starInterval = null;
 let pageAddresses = {
-  welcome: 'David Beales Blog',
-  posts: 'David Beales Blog Posts',
-  postOne: 'Post One'
+  welcome: 'DavidBealesBlog',
+  posts: 'DavidBealesBlogPosts',
+  postOne: 'PostOne'
 }
 let pageAddress = pageAddresses.welcome;
 
@@ -345,8 +345,7 @@ function updatePageState(){
 }
 
 	window.addEventListener('load', function () {
-    
-    
+  
 		setPostsLinkDivPosition();
 		document.getElementById('postsLink').addEventListener("click", function (event) {
 			if (event.srcElement.id === 'postsLink') {
