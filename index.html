@@ -212,7 +212,7 @@ console.log(index); // print 98</code></pre>
 					<em>it has no block scope</em>. The same would apply with a while, switch, if, etc.
 				</p>
 				<h4>
-					Hoisting
+					Hoisting Var
 				</h4>
 				<p>
 					So var has no block scope, but does it do anything else exciting. Well, yes! It supports hosting.
@@ -252,71 +252,96 @@ var myObjectThatShouldExist = 'iExist';
 			<p>As you know myObjectThatShouldExist does exist due to hoisting,
 				even though the return statement is called in the if block!</p>
 			
-			<p hidden class="need to add">
-
-
-
-Global var
-One more thing with vairables, they can be declared globally so they're available anywhere.
-
-var globalFoo = "bar";
+			<h4>Global Var</h4>
+			
+			<p>Variables can be declared globally so they're available anywhere.</p>
+			
+			<pre class="line-numbers"><code class="language-javascript">var globalFoo = "bar";
 console.log(globalFoo);//print bar
 console.log(window.globalFoo);//print bar
 window.console.log(window.globalFoo);//print bar
 console.log(this.globalFoo);//print bar
-
-Oh, and when using var it gets added to the global object (window when in a browser), which is also this! As a side note, window is also where most browser functionality sits, hence the annoying window.console.log!
-
-Example of asynchronous var gone wrong:
-let arr = [];
-for (let i=0; i < 3; i++) {
-    arr.push(() => i);
-}
-console.log(arr.map(x => x())); // [0,1,2]
-
-what happenned: i is bound to the same value outside of the annoymous function.
-with let
-
-solution:
-let arr = [];
+</code></pre>
+			<p>
+			When using var it gets added to the global object (<em>window</em> in browser), which is also the same as <em>this</em>! 
+			As a side note, window is also where most browser functionality sits, hence the confusing window.console.log!	
+			</p>
+			
+			<h4>Var Idiosyncrasies</h4>
+			
+			<p>
+				There are plenty of examples of unexpected <em>var</em> behaviour, commonly encountered in for loops.
+			</p>
+			
+			<pre class="line-numbers"><code class="language-javascript">var arr = [];
 for (var i=0; i < 3; i++) {
     arr.push(() => i);
 }
-console.log(arr.map(x => x())); // [3,3,3]
-
-Let and const - ecma6?
-
-In 2015 ecma6 was released (JavaScript 6). It introduced let and const, amongst other things. You may have guessed but let and const are the alternative to var.
-As we know var has no block scope. Get ready for this, 'let' allows you to declare a variable with block scope, take a bow. Const also work within block scope, but allow you to decalre a constant variable.
-
-example
-1.
-var x = 99; // Here x is 99
-{ 
-  let x = 9;  // Here x is 9
+console.log(arr.map(x => x())); // prints [3,3,3]
+			</code></pre>
+			
+			<p>What happenned, why wasn't i incremented! 
+			This is because i is bound to the same value outside of the annoymous function,
+			therefore it only takes the last value that i was assigned to.
+			So what is the solution?
+			</p>
+			
+			<pre class="line-numbers"><code class="language-javascript">let arr = [];
+for (let i=0; i < 3; i++) {
+    arr.push(() => i);
 }
-console.log(x); //x is still 99
-
-2.
-var x = 99; // Here x is 99
+console.log(arr.map(x => x())); // [1,2,3]
+			</code></pre>
+			<p>That seemed easy, let look at <em>let</em></p>
+			
+			<h3>
+				Let and const
+			</h3>
+			
+			<p>
+			In 2015 ecma6 was released (JavaScript 6). 
+			It introduced let and const, amongst other things.
+			You may have guessed but let and const are the alternative to var.
+			As we know var has no block scope. 
+			Get ready for this, 'let' allows you to declare a variable with block scope, take a bow. 
+			Const also work with block scope, but allows you to declare a constant variable.
+			</p>
+			
+			<pre class="line-numbers"><code class="language-javascript">var x = 99; // x is 99
+{ 
+  let x = 9;  // x is 9
+}
+console.log(x); //x is 99
+			</code></pre>
+			<p>Let is used to decalre and assign x in its own scope (defined by curly braces).
+			It does not affect the outer scope.</p>
+			
+						<pre class="line-numbers"><code class="language-javascript">var x = 99; // Here x is 99
 { 
   const x = 9;  // Here x is 9
 }
 console.log(x); //x is still 99
-
-3.
-var x = 99; // Here x is 99
+			</code></pre>
+			<p>Just like above but this time we're using const, this make no difference, unless...</p>.
+			
+						<pre class="line-numbers"><code class="language-javascript">var x = 99; // Here x is 99
 { 
   const x = 9;  // Here x is 9
   x += 1; // TypeError: Assignment to constant variable.
 }
-
-example 1 shows x being declared in it own scope and not affecting the outer scope.
-example 2 is much the same but using const, this make no difference, unless...
-example 3, shows x being declared as a const in the inner scope and then incrementing the varriable x. As a const is a constant value changing it throws an error.
-
-Conclusion,
-If you want block scope for the variables your declare and assign to, which you probably would, use let or const. If you work with Javascript, you will come accross var, so make sure you understand it.
+			</code></pre>
+			<p>
+			Const x being is declared and assigned in the inner scope. It is then incremented by 1, but this fails.
+			As a const is a constant value changing it throws an error.
+			</p>
+			
+			<h3>
+				Conclusion
+			</h3>
+			
+			<p>
+			If you want block scope for the variables your declare and assign to, which you probably would, use let or const.
+			If you work with Javascript, you will come accross var, so make sure you understand it.
 			</p>
 
 			</div>
