@@ -333,50 +333,82 @@ If you want block scope for the variables your declare and assign to, which you 
 	let ctx = null
 	let canvas = null
 	let starInterval = null;
-let pageAddresses = {
-  welcome: 'DavidBealesBlog',
-  posts: 'DavidBealesBlogPosts',
-  postOne: 'PostOne'
-}
-let pageAddress = pageAddresses.welcome;
+	let pageAddresses = {
+	  welcome: 'DavidBealesBlog',
+	  posts: 'DavidBealesBlogPosts',
+	  postOne: 'PostOne'
+	}
+	let pageAddress = pageAddresses.welcome;
 
-function updatePageState(){
-    history.pushState({}, '', `${pageAddress}.html`);
-}
+	function swapJsonKeyValues(json) {
+	    var key, invertedJson = {};
+	    for (key in json) {
+		if (json.hasOwnProperty(key)) {
+		    invertedJson[json[key]] = key;
+		}
+	    }
+	    return invertedJson;
+	}
+	
+	function updatePageState(){
+	    history.pushState(null, '', `${pageAddress}.html`);
+	}
+	
+	//back button presses
+	window.addEventListener('popstate', function (event) {
+        	history.pushState(null, '', location.href);
+		let relativePath = window.location.pathname;
+		//let invertedPageAddresses = swapJsonKeyValues(pageAddress);
+		//let addressKey = invertedPageAddresses[relativePath];
+		if (relativePath === pageAddresses.posts){
+		    onPostsLoad();
+		}
+		else if (relativePath === pageAddresses.postOne){
+		    onPageOneLoad();
+		}
+    	});
 
 	window.addEventListener('load', function () {
   
 		setPostsLinkDivPosition();
 		document.getElementById('postsLink').addEventListener("click", function (event) {
 			if (event.srcElement.id === 'postsLink') {
-				this.interval = setInterval(setIntervalWrapper, 50);
-				this.scale = 0.99;
-				this.scaleChange = 0.01;
-				function setIntervalWrapper() {
-					shrinkLink();
-					if (scale < 0.01) {
-						clearInterval(this.interval);
-						clearPage();
-						loadPosts();
-						//stopStars();
-					}
-				}
+				onPostsLoad();
 			}
 		}.bind(this));
 		document.getElementById('postOne').addEventListener("click", function (event) {
 			if (event.srcElement.id === 'postOne') {
-				stopStars();
-				
-				pageAddress = pageAddresses.postOne;
-        updatePageState();
-				clearPage();
-				document.querySelector('#postOneDiv').hidden = false;
-				resizePost();
+				onPageOneLoad();
 			}
 		}.bind(this));
+		
 		drawStarMap();
 		onResizePage();
+		
 	}.bind(this));
+	
+	function onPageOneLoad(){
+		stopStars();
+		pageAddress = pageAddresses.postOne;
+		updatePageState();
+		clearPage();
+		document.querySelector('#postOneDiv').hidden = false;
+		resizePost();
+	}
+	
+	function onPostsLoad(){
+		this.interval = setInterval(setIntervalWrapper, 50);
+		this.scale = 0.99;
+		this.scaleChange = 0.01;
+		function setIntervalWrapper() {
+			shrinkLink();
+			if (scale < 0.01) {
+				clearInterval(this.interval);
+				clearPage();
+				loadPosts();
+			}
+		}	
+	}
 
 	function shrinkLink() {
 		let div = document.getElementById('postsLinkDiv');
