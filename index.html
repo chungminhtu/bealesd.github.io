@@ -370,7 +370,7 @@ If you want block scope for the variables your declare and assign to, which you 
 		
 		let addressKeys = Object.keys(pageAddresses);
 		let addressIndex = (Object.keys(pageAddresses).indexOf(addressKey)) < 0 ? 0: 
-			(Object.keys(pageAddresses).indexOf(addressKey) - 1);
+			(Object.keys(pageAddresses).indexOf(addressKey));
 		
 		let newAdressKey = Object.keys(pageAddresses)[addressIndex];
 		
