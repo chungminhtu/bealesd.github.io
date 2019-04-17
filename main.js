@@ -142,6 +142,7 @@ function getCurrentPageName(){
 			div.hidden = false;
 		});
 		pageAddress = pageAddresses.posts;
+		resizePost();
 	}
   
 	function clearCanvas() {
