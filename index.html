@@ -239,7 +239,7 @@ console.log(x); //x is still 99
 	let canvas = null
 	let starInterval = null;
 	let pageAddresses = {
-	  welcome: 'DavidBealesBlog',
+	  index: 'DavidBealesBlog',
 	  posts: 'DavidBealesBlogPosts',
 	  postOne: 'PostOne'
 	}
@@ -255,40 +255,36 @@ console.log(x); //x is still 99
 	    return invertedJson;
 	}
 	
-	function updatePageState(){
-	    history.pushState(null, '', `${pageAddress}.html`);
-	}
-	
 	//back button presses
-	window.addEventListener('popstate', function (event) {
-        	history.pushState(null, '', location.href);
-		let relativePath = window.location.pathname;
-		let invertedPageAddresses = swapJsonKeyValues(pageAddresses);
-		let address = null;
-		let addressKey = null;
-		if (relativePath.match(/[A-Za-z]+\.html/) != null){
-			address = relativePath.match(/[A-Za-z]+\.html/)[0].slice(0, -5);
-		}
-		if (invertedPageAddresses.hasOwnProperty(address)){
-		    addressKey = invertedPageAddresses[address];
-		}
-		
-		let addressKeys = Object.keys(pageAddresses);
-		let addressIndex = (Object.keys(pageAddresses).indexOf(addressKey)) < 0 ? 0: 
-			(Object.keys(pageAddresses).indexOf(addressKey));
-		
-		let newAdressKey = Object.keys(pageAddresses)[addressIndex];
-		
-		if (pageAddresses[newAdressKey] === pageAddresses.posts){
-		    onPostsLoad();
-		}
-		else if (pageAddresses[newAdressKey] === pageAddresses.postOne){
-		    onPageOneLoad();
-		}
-		else if (pageAddresses[newAdressKey] === pageAddresses.welcome){
-			onWelcomeLoad();
-		}
-    	});
+//window.addEventListener('popstate', function (event) {
+//	history.pushState(null, '', location.href);
+//	let relativePath = window.location.pathname;
+//	let invertedPageAddresses = swapJsonKeyValues(pageAddresses);
+//	let address = null;
+//	let addressKey = null;
+//	if (relativePath.match(/[A-Za-z]+\.html/) != null){
+//		address = relativePath.match(/[A-Za-z]+\.html/)[0].slice(0, -5);
+//	}
+//	if (invertedPageAddresses.hasOwnProperty(address)){
+//	    addressKey = invertedPageAddresses[address];
+//	}
+//	
+//	let addressKeys = Object.keys(pageAddresses);
+//	let addressIndex = (Object.keys(pageAddresses).indexOf(addressKey)) < 0 ? 0: 
+//		(Object.keys(pageAddresses).indexOf(addressKey));
+//	
+//	let newAdressKey = Object.keys(pageAddresses)[addressIndex];
+//	
+//	if (pageAddresses[newAdressKey] === pageAddresses.posts){
+//	    onPostsLoad();
+//	}
+//	else if (pageAddresses[newAdressKey] === pageAddresses.postOne){
+//	    onPageOneLoad();
+//	}
+//	else if (pageAddresses[newAdressKey] === pageAddresses.welcome){
+//		onWelcomeLoad();
+//	}
+//});
 
 	window.addEventListener('load', function () {
   
