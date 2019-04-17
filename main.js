@@ -72,7 +72,7 @@ function getCurrentPageName(){
 	function onPageOneLoad(){
 		//stopStars();
 		//pageAddress = pageAddresses.postOne;
-		////updatePageState();
+		//updatePageState();
 		//clearPage();
 		//document.querySelector('#postOneDiv').hidden = false;
 		resizePost();
@@ -141,7 +141,6 @@ function getCurrentPageName(){
 			div.hidden = false;
 		});
 		pageAddress = pageAddresses.posts;
-    updatePageState();
 	}
   
 	function clearCanvas() {
