@@ -265,7 +265,7 @@ let starColors = null;
 		}
 	}
   
-	functio  n drawStar(star) {
+	function drawStar(star) {
 		this.ctx.beginPath();
 		this.ctx.arc(star.x, star.y, star.size, 0, 2 * Math.PI, false);
 		this.ctx.fillStyle = star.fillColor;
