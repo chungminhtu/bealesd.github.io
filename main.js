@@ -5,7 +5,7 @@ let starColors = null;
 	let pageAddresses = {
 	  index: 'DavidBealesBlog',
 	  posts: 'DavidBealesBlogPosts',
-	  postOne: 'PostOne'
+	  postOne: 'postOne'
 	}
 	let pageAddress = pageAddresses.welcome;
   
@@ -19,53 +19,57 @@ let starColors = null;
 	    return invertedJson;
 	}
 	
-	//back button presses
-//window.addEventListener('popstate', function (event) {
-//	history.pushState(null, '', location.href);
-//	let relativePath = window.location.pathname;
-//	let invertedPageAddresses = swapJsonKeyValues(pageAddresses);
-//	let address = null;
-//	let addressKey = null;
-//	if (relativePath.match(/[A-Za-z]+\.html/) != null){
-//		address = relativePath.match(/[A-Za-z]+\.html/)[0].slice(0, -5);
-//	}
-//	if (invertedPageAddresses.hasOwnProperty(address)){
-//	    addressKey = invertedPageAddresses[address];
-//	}
-//	
-//	let addressKeys = Object.keys(pageAddresses);
-//	let addressIndex = (Object.keys(pageAddresses).indexOf(addressKey)) < 0 ? 0: 
-//		(Object.keys(pageAddresses).indexOf(addressKey));
-//	
-//	let newAdressKey = Object.keys(pageAddresses)[addressIndex];
-//	
-//	if (pageAddresses[newAdressKey] === pageAddresses.posts){
-//	    onPostsLoad();
-//	}
-//	else if (pageAddresses[newAdressKey] === pageAddresses.postOne){
-//	    onPageOneLoad();
-//	}
-//	else if (pageAddresses[newAdressKey] === pageAddresses.welcome){
-//		onWelcomeLoad();
-//	}
-//});
+function getCurrentPageName(){
+	let addressSuffixFull = window.location.pathname;
+	let addressSuffixFullWithRegex = addressSuffixFull.match(/[A-Za-z]+\.html/);
+	let addressSuffix = addressSuffixFullWithRegex !== null ? addressSuffixFullWithRegex[0].slice(0, -5) : null;
+	let invertedPageAddresses = swapJsonKeyValues(pageAddresses);
+	let addressKey = invertedPageAddresses.hasOwnProperty(addressSuffix) ? invertedPageAddresses[addressSuffix]: null;
+	if (addressKey === null){
+		loadHomePage();
+	}
+	
+	let addressKeys = Object.keys(pageAddresses);
+	let addressIndex = Object.keys(pageAddresses).indexOf(addressKey);
+	let pageName = Object.keys(pageAddresses)[addressIndex];
+	
+	return newAddressKey;
+	
+	if (pageAddresses[pageName] === pageAddresses.posts){
+	    onPostsLoad();
+	}
+	else if (pageAddresses[pageName] === pageAddresses.postOne){
+	    onPageOneLoad();
+	}
+	else if (pageAddresses[pageName] === pageAddresses.welcome){
+		onWelcomeLoad();
+	}
+}
+	
 
 	window.addEventListener('load', function () {
-  
-		setPostsLinkDivPosition();
-		document.getElementById('postsLink').addEventListener("click", function (event) {
-			if (event.srcElement.id === 'postsLink') {
-				onPostsLoad();
-			}
-		}.bind(this));
-		document.getElementById('postOne').addEventListener("click", function (event) {
-			if (event.srcElement.id === 'postOne') {
-				onPageOneLoad();
-			}
-		}.bind(this));
+		let pageName = getCurrentPageName();
+  		if (pageAddresses[pageName] === pageAddresses.postOne){
+			loadPosts();  
+		}
+		else {
+				setPostsLinkDivPosition();
+			document.getElementById('postsLink').addEventListener("click", function (event) {
+				if (event.srcElement.id === 'postsLink') {
+					onPostsLoad();
+				}
+			}.bind(this));
+			document.getElementById('postOne').addEventListener("click", function (event) {
+				if (event.srcElement.id === 'postOne') {
+					onPageOneLoad();
+				}
+			}.bind(this));
+
+			drawStarMap();
+			onResizePage();
+		}
 		
-		drawStarMap();
-		onResizePage();
+
 		
 	}.bind(this));
 	
@@ -76,13 +80,12 @@ let starColors = null;
 	}
 	
 	function onPageOneLoad(){
-		window.location.href = 'https://bealesd.github.io/postOne.html';
 		//stopStars();
 		//pageAddress = pageAddresses.postOne;
 		////updatePageState();
 		//clearPage();
 		//document.querySelector('#postOneDiv').hidden = false;
-		//resizePost();
+		resizePost();
 	}
 	
 	function onPostsLoad(){
