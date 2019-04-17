@@ -157,7 +157,7 @@ console.log(this.globalFoo);//print bar
 for (var i=0; i < 3; i++) {
     arr.push(() => i);
 }
-console.log(arr.map(x => x())); // prints [3,3,3]
+console.log(arr.map(x => x())); // prints [2,2,2]
 			</code></pre>
 			
 			<p>What happenned, why wasn't i incremented! 
@@ -170,7 +170,7 @@ console.log(arr.map(x => x())); // prints [3,3,3]
 for (let i=0; i < 3; i++) {
     arr.push(() => i);
 }
-console.log(arr.map(x => x())); // [1,2,3]
+console.log(arr.map(x => x())); // [0,1,2]
 			</code></pre>
 			<p>That seemed easy, lets have a quick peek at<em>let</em>.</p>
 			
