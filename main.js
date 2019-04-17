@@ -75,7 +75,8 @@ function getCurrentPageName(){
 		//updatePageState();
 		//clearPage();
 		//document.querySelector('#postOneDiv').hidden = false;
-		resizePost();
+		//resizePost();
+		window.location.href = window.location.href + "postOne.html";
 	}
 	
 	function onPostsLoad(){
