@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<link rel="stylesheet" href="prismLight.css" />
+	<script src="prismLight.js"></script>
+
+	<!-- <link rel="stylesheet" href="prismDark.css" />
+	<script src="prismDark.js"></script> -->
+
+	<link rel="stylesheet" href="style.css" />
+	
+	<title>David Beales Blog</title>
+
+	
+</head>
+<body>
+
+<div id="postOneDiv" class="postContentDiv" hidden>
+			<div class="postContent">
+				<h1 class="postHeading">JavaScript Variables Part One</h1>
+
+				<h2>
+					Variables and Scope
+				</h2>
+
+				<p>
+					Like any language JavaScript has scopes and variables.
+				</p>
+
+				<p>
+					Variables are pretty self explanatory, they store information. However what syntax you use to declare variables will make
+					a massive difference to how your code behaves. Lets look at <em>var</em>.
+				</p>
+
+				<h3>
+					Var
+				</h3>
+
+				<p>
+					<em>Var</em> is commonly is used to delcare a variables (commonly in older code bases, but sometimes in new ones). The function below
+					declares a variable foo and assigns bar to it.</p>
+
+				<p>
+
+					<pre class="line-numbers"><code class="language-javascript">function fooBar(){
+    var foo = "bar"; 
+	console.log(foo); 
+}
+fooBar(); print bar</code></pre>
+
+				</p>
+				<p>
+					This behaviour seems completely reasonable, the variable foo is declared in the function fooBar. It exists only in the function
+					scope of fooBar and cannot be accessed outside of that scope. So what is the issue with <em>var</em>?
+				</p>
+
+				<pre class="line-numbers"><code class="language-javascript">for (var index = 0; index &#60;; 99 index++){
+	doSomeWork(index);
+}
+console.log(index); // print 98</code></pre>
+
+				<p>
+					Thats odd, you would expect an error when calling index outside of the for loop. Well not with <em>var</em>,
+					it has no block scope. The same would apply with a while, switch, if, etc.
+				</p>
+				<h4>
+					Hoisting Var
+				</h4>
+				<p>
+					So <em>var</em> has no block scope, but does it do anything else exciting. Well, yes! It supports hosting.
+				</p>
+
+				<pre class="line-numbers"><code class="language-javascript">function fooBar(){
+	foo = "bar";
+	console.log(foo);
+	var foo;
+}
+fooBar(); //prints bar</code></pre>
+
+				<p>
+					I forgot to declare foo using <em>var</em> before I assigned a value to it. Guess what <em>var</em> doesn't care, as long as foo is decalred
+					somewhere in the function, you can assign to it. If your wondering, this is called hoisting. So declarations are hostied,
+					but what about declaration and assignment in one. Lets try it out.
+				</p>
+			
+				<pre class="line-numbers"><code class="language-javascript">function fooBar(){	
+	console.log(foo);
+	var foo = "bar";
+}
+fooBar(); //prints undefined</code></pre>
+				
+				<p>So what happenned. The varaible foo was hoisted (it was decalared), but the assignment happened
+					after the foo was printed, at which point foo was undefined, i.e. it had no data.</p>
+				<p>
+				Hositing can be quite annoying. You might wany improve runtime efficiency in your application by not
+				creating objects that aren't required.
+				</p>
+			<pre class="line-numbers"><code class="language-javascript">var stopMyCode = true;
+if (stopMyCode) {
+    return;
+}
+var myObjectThatShouldExist = 'iExist';
+			</code></pre>
+			<p>As you know myObjectThatShouldExist does exist due to hoisting,
+				even though the return statement is called in the if block!</p>
+			
+			<h4>Global Var</h4>
+			
+			<p>Variables can be declared globally so they're available anywhere.</p>
+			
+			<pre class="line-numbers"><code class="language-javascript">var globalFoo = "bar";
+console.log(globalFoo);//print bar
+console.log(window.globalFoo);//print bar
+window.console.log(window.globalFoo);//print bar
+console.log(this.globalFoo);//print bar
+</code></pre>
+			<p>
+			When using <em>var</em> it gets added to the global object (<em>window</em> in browser), which is also the same as <em>this</em>! 
+			As a side note, <em>window</em> is also where most browser functionality sits, hence the confusing <em>window.console.log</em>!	
+			</p>
+			
+			<h4>Var Idiosyncrasies</h4>
+			
+			<p>
+				There are plenty of examples of unexpected <em>var</em> behaviour, commonly encountered in for loops.
+			</p>
+			
+			<pre class="line-numbers"><code class="language-javascript">var arr = [];
+for (var i=0; i < 3; i++) {
+    arr.push(() => i);
+}
+console.log(arr.map(x => x())); // prints [3,3,3]
+			</code></pre>
+			
+			<p>What happenned, why wasn't i incremented! 
+			This is because <em>i</em> is bound to the same value outside of the annoymous function,
+			therefore it only takes the last value that <em>i</em> was assigned to.
+			So what is the solution?
+			</p>
+			
+			<pre class="line-numbers"><code class="language-javascript">let arr = [];
+for (let i=0; i < 3; i++) {
+    arr.push(() => i);
+}
+console.log(arr.map(x => x())); // [1,2,3]
+			</code></pre>
+			<p>That seemed easy, lets have a quick peek at<em>let</em>.</p>
+			
+			<h3>
+				Let and Const
+			</h3>
+			
+			<p>
+			In 2015 ECMA6 was released (JavaScript 6). 
+			It introduced <em>let</em> and <em>const</em>, amongst other things.
+			You may have guessed but <em>let</em> and <em>varconst</em> are the alternative to <em>var</em>.
+			As we know var has no block scope. 
+			Get ready for this, <em>let</em> allows you to declare a variable with block scope. 
+			<em>Const</em> also allows you to do the same, but the value assigned is a constant.
+			</p>
+			
+			<pre class="line-numbers"><code class="language-javascript">var x = 99; // x is 99
+{ 
+  let x = 9;  // x is 9
+}
+console.log(x); //x is 99
+			</code></pre>
+			<p>Let is used to decalre and assign x in its own scope (defined by curly braces).
+			It does not affect the outer scope.</p>
+			
+						<pre class="line-numbers"><code class="language-javascript">var x = 99; // Here x is 99
+{ 
+  const x = 9;  // Here x is 9
+}
+console.log(x); //x is still 99
+			</code></pre>
+			<p>This time we're using <em>const</em> instead of <em>let</em>, which make no difference in this case, unless...</p>.
+			
+						<pre class="line-numbers"><code class="language-javascript">var x = 99; // Here x is 99
+{ 
+  const x = 9;  // Here x is 9
+  x += 1; // TypeError: Assignment to constant variable.
+}
+			</code></pre>
+			<p>
+			Const x is declared and assigned in the inner scope. It is then incremented by 1, but this fails.
+			As a const is a constant value, trying to change it will throw an error.
+			</p>
+			
+			<h3>
+				Conclusion
+			</h3>
+			
+			<p>
+			If you want block scope for the variables your declare and assign to, which you probably would, 
+			use <em>let</em> or <em>const</em>.
+			If you work with Javascript, you will come accross <em>var</em>, so make sure you understand it.
+			</p>
+
+			</div>
+    </div>
+    
+    </body>
+    
+    
+    
+    </html>
