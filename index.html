@@ -314,7 +314,7 @@ console.log(x); //x is still 99
 	function onPageOneLoad(){
 		stopStars();
 		pageAddress = pageAddresses.postOne;
-		updatePageState();
+		//updatePageState();
 		clearPage();
 		document.querySelector('#postOneDiv').hidden = false;
 		resizePost();
@@ -458,11 +458,11 @@ console.log(x); //x is still 99
 					resizeTimeout = null;
 					updateCanvasSize();
 					if (pageAddress === pageAddresses.welcome) {
-            updatePageState();
+            //updatePageState();
 						setPostsLinkDivPosition();
 					}
 					else if (pageAddress === pageAddresses.postOne) {
-            updatePageState();
+            //updatePageState();
 						resizePost();
 					}
 				}, 66);
