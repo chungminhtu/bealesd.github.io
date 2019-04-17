@@ -33,17 +33,7 @@ function getCurrentPageName(){
 	let addressIndex = Object.keys(pageAddresses).indexOf(addressKey);
 	let pageName = Object.keys(pageAddresses)[addressIndex];
 	
-	return newAddressKey;
-	
-	if (pageAddresses[pageName] === pageAddresses.posts){
-	    onPostsLoad();
-	}
-	else if (pageAddresses[pageName] === pageAddresses.postOne){
-	    onPageOneLoad();
-	}
-	else if (pageAddresses[pageName] === pageAddresses.welcome){
-		onWelcomeLoad();
-	}
+	return pageName;
 }
 	
 
