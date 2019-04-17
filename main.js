@@ -76,12 +76,13 @@ let starColors = null;
 	}
 	
 	function onPageOneLoad(){
-		stopStars();
-		pageAddress = pageAddresses.postOne;
-		//updatePageState();
-		clearPage();
-		document.querySelector('#postOneDiv').hidden = false;
-		resizePost();
+		window.location.href = 'https://bealesd.github.io/postOne.html';
+		//stopStars();
+		//pageAddress = pageAddresses.postOne;
+		////updatePageState();
+		//clearPage();
+		//document.querySelector('#postOneDiv').hidden = false;
+		//resizePost();
 	}
 	
 	function onPostsLoad(){
