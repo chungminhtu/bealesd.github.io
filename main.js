@@ -26,7 +26,7 @@ function getCurrentPageName(){
 	let invertedPageAddresses = swapJsonKeyValues(pageAddresses);
 	let addressKey = invertedPageAddresses.hasOwnProperty(addressSuffix) ? invertedPageAddresses[addressSuffix]: null;
 	if (addressKey === null){
-		loadHomePage();
+		return null;
 	}
 	
 	let addressKeys = Object.keys(pageAddresses);
