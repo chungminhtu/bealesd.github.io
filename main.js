@@ -288,13 +288,13 @@ function swapJsonKeyValues(json) {
 }
 
 function getUrlSuffix() {
-	let url = window.location.pathname;
+	let url = window.location.href;
 	let urlSuffixRegex = url.match(/[A-Za-z]+\.html/);
 	return urlSuffixRegex !== null ? urlSuffixRegex[0].slice(0, -5) : window.page.index.urlSuffix;
 }
 
 function getUrlPrefix() {
-	let url = window.location.pathname;
+	let url = window.location.href;
 	let urlPrefixRegex = url.match(/[A-Za-z]+\.html/);
 	return urlPrefixRegex !== null ? url.substring(0, url.indexOf(urlPrefixRegex)) : null;
 }
