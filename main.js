@@ -296,7 +296,7 @@ function getUrlSuffix() {
 function getUrlPrefix() {
 	let url = window.location.href;
 	let urlPrefixRegex = url.match(/[A-Za-z]+\.html/);
-	return urlPrefixRegex !== null ? url.substring(0, url.indexOf(urlPrefixRegex)) : null;
+	return urlPrefixRegex !== null ? url.substring(0, url.indexOf(urlPrefixRegex)) : url;
 }
 
 function randomRange(min, max) {
