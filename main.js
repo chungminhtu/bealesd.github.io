@@ -7,18 +7,21 @@ window.addEventListener('load', function () {
 	window.page = {
 		index: {
 			urlSuffix: 'index',
+			url: function () { return getUrlPrefix() + this.urlSuffix + ".html"; },
 			load: loadIndex,
 			onLoad: onIndexLoad,
-			onResize: null
+			onResize: onResizeIndex
 		},
 		posts: {
 			urlSuffix: 'posts',
+			url: function () { return getUrlPrefix() + this.urlSuffix + ".html"; },
 			onLoad: onPostsLoad,
-			load: null,
-			onResize: null
+			load: loadPosts,
+			onResize: onResizePosts
 		},
 		postone: {
 			urlSuffix: 'postOne',
+			url: function () { return getUrlPrefix() + this.urlSuffix + ".html"; },
 			onLoad: onPostOneLoad,
 			load: loadPostOne,
 			onResize: onResizePostOne
@@ -27,12 +30,13 @@ window.addEventListener('load', function () {
 
 	let pageName = getUrlSuffix();
 	window.page[`${pageName.toLowerCase()}`].onLoad();
+	window.page[`${pageName.toLowerCase()}`].onResize();
 }.bind(this));
 
 
 //#region index events
 function loadIndex() {
-	window.location.href = getUrlPrefix() + "index.html";
+	window.location.href = window.page.index.url();
 }
 
 function onIndexLoad() {
@@ -40,86 +44,16 @@ function onIndexLoad() {
 	drawStarMap();
 	onResizeIndex();
 
-	document.getElementById('postsLink').addEventListener("click", function (event) {
-		if (event.srcElement.id === 'postsLink')
-			window.page.posts.onLoad();
-	}.bind(this));
-
-	document.getElementById('postOne').addEventListener("click", function (event) {
-		if (event.srcElement.id === 'postOne')
-			window.page.postone.load();
-	}.bind(this));
+	document.querySelectorAll('.postsLink').forEach(function (link) {
+		link.addEventListener("click", function (event) {
+			if (event.srcElement.classList.contains('postsLink'))
+				window.page.posts.load();
+		}.bind(this));
+	})
 }
 
 function onResizeIndex() {
-	window.addEventListener('resize', function () {
-		let resizeTimeout;
-		if (!resizeTimeout) {
-			resizeTimeout = setTimeout(function () {
-				resizeTimeout = null;
-				updateCanvasSize();
-				//what is this, move to config? {
-				setPostsLinkDivPosition();
-				// else if (pageAddress === window.page.postOne) {
-				// 	resizePost();
-				// }
-			}, 66);
-		}
-	}.bind(this));
-}
-
-function shrinkLink() {
-	let div = document.getElementById('postsLinkDiv');
-	let link = document.getElementById('postsLink');
-	this.scale -= this.scaleChange;
-	this.scaleChange += 0.001;
-	link.style.transform = `scale(${this.scale})`;
-	div.style.transform = `scale(${this.scale})`;
-}
-//#endregion 
-
-
-//#region post one events
-function loadPostOne() {
-	window.location.href = getUrlPrefix() + "postOne.html";
-}
-
-function onPostOneLoad() {
-	onResizePostOne();
-}
-
-function onResizePostOne() {
-	let windowWidth = window.innerWidth;
-	if (windowWidth > 750) {
-		document.querySelector('.postContent').style.width = '650px';
-	}
-	else {
-		document.querySelector('.postContent').style.width = '80%';
-	}
-	document.querySelector('.postContent');
-}
-//#endregion 
-
-
-//#region posts events
-function onPostsLoad() {
-	window.interval = setInterval(setIntervalWrapper, 50);
-	window.scale = 0.99;
-	window.scaleChange = 0.01;
-	function setIntervalWrapper() {
-		shrinkLink();
-		if (scale < 0.01) {
-			clearInterval(window.interval);
-			clearPage();
-			loadPosts();
-		}
-	}
-}
-
-function loadPosts() {
-	document.querySelectorAll('.postLinkDiv').forEach(function (div) {
-		div.hidden = false;
-	});
+	managedResize([updateCanvasSize, setPostsLinkDivPosition]);
 }
 
 function setPostsLinkDivPosition() {
@@ -137,6 +71,80 @@ function setPostsLinkDivPosition() {
 	postsLink.style.marginLeft = `${postsLinkGutter}px`;
 	let postsLinkDivGutter = (viewWidth - postsLinkDiv.offsetWidth) / 2;
 	postsLinkDiv.style.marginLeft = `${postsLinkDivGutter}px`;
+}
+//#endregion 
+
+
+//#region posts events
+function loadPosts() {
+	scaleElements(['postsLinkDiv', 'postsLink']).then(function () {
+		window.location.href = window.page.posts.url();
+	});
+}
+
+function scaleElements(elementIds, scaleChange = 0.01, scaleAcceleration = 0.001, refreshRate = 50) {
+	window.scale = 0.99;
+	window.scaleChange = scaleChange;
+	window.scaleAcceleration = scaleAcceleration;
+
+	return new Promise(function (res) {
+		window.interval = setInterval(function () {
+			shrinkElements(elementIds);
+			if (window.scale < 0.01) {
+				clearInterval(window.interval);
+				res();
+			}
+		}, refreshRate);
+	});
+}
+
+function shrinkElements(ids) {
+	window.scale -= window.scaleChange;
+	window.scaleChange += window.scaleAcceleration;
+	for (let index = 0; index < ids.length; index++) {
+		const id = ids[index];
+		document.getElementById(`${id}`).style.transform = `scale(${window.scale})`;
+	}
+}
+
+function onPostsLoad() {
+	drawStarMap();
+	document.querySelectorAll('.postLink').forEach(function (link) {
+		link.addEventListener("click", function (event) {
+			if (event.srcElement.classList.contains('postLink'))
+				window.page[`${link.id.toLowerCase()}`].load();
+		}.bind(this));
+	})
+}
+
+function onResizePosts() {
+
+}
+//#endregion 
+
+
+//#region post one events
+function loadPostOne() {
+	window.location.href = window.page.postone.url();
+}
+
+function onPostOneLoad() {
+	resizePostOne();
+}
+
+function onResizePostOne() {
+	managedResize([resizePostOne]);
+}
+
+function resizePostOne() {
+	let windowWidth = window.innerWidth;
+	if (windowWidth > 750) {
+		document.querySelector('.postContent').style.width = '650px';
+	}
+	else {
+		document.querySelector('.postContent').style.width = '80%';
+	}
+	document.querySelector('.postContent');
 }
 //#endregion 
 
@@ -312,4 +320,18 @@ Array.prototype.removeItem = function (indexToRemove) {
 	}
 	return newArray;
 };
+
+function managedResize(callbacks) {
+	window.addEventListener('resize', function () {
+		let resizeTimeout;
+		if (!resizeTimeout) {
+			resizeTimeout = setTimeout(function () {
+				resizeTimeout = null;
+				for (let index = 0; index < callbacks.length; index++) {
+					callbacks[index]();
+				}
+			}, 66);
+		}
+	}.bind(this));
+}
 //#endregion
