@@ -25,6 +25,13 @@ window.addEventListener('load', function () {
 			onLoad: onPostOneLoad,
 			load: loadPostOne,
 			onResize: onResizePostOne
+		},
+		posttwo: {
+			urlSuffix: 'postTwo',
+			url: function () { return getUrlPrefix() + this.urlSuffix + ".html"; },
+			onLoad: onPostTwoLoad,
+			load: loadPostTwo,
+			onResize: onResizePostTwo
 		}
 	}
 
@@ -148,6 +155,9 @@ function resizePostOne() {
 }
 //#endregion 
 
+function loadPostTwo() {alert('JavaScript promises are coming soon!');}
+function onPostTwoLoad(){}
+function onResizePostTwo(){}
 
 //#region star logic
 function drawStarMap() {
