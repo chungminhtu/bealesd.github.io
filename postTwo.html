@@ -16,12 +16,14 @@
   
   <body>
     <div id="pageWrapper">
+      <div class="postContent">
+      </div>
     </div>
   </body>
 
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <script>
-      document.querySelectorAll('#pageWrapper')[0].innerHTML =
+      document.querySelectorAll('.postContent')[0].innerHTML =
         marked('# Marked in the browser\n\nRendered by **marked**.');
   </script>
     
