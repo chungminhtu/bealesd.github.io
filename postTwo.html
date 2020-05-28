@@ -1,50 +1,28 @@
-function importModule(url) {
-  return new Promise((resolve, reject) => {
-    const script = document.createElement("script");
-    const tempGlobal = "__tempModuleLoadingVariable" + Math.random().toString(32).substring(2);
-    script.type = "module";
-    script.textContent = `import * as m from "${url}"; window.${tempGlobal} = m;`;
-
-    script.onload = () => {
-      resolve(window[tempGlobal]);
-      delete window[tempGlobal];
-      script.remove();
-    };
-
-    script.onerror = () => {
-      reject(new Error("Failed to load module script with URL " + url));
-      delete window[tempGlobal];
-      script.remove();
-    };
-
-    document.documentElement.appendChild(script);
-  });
-}
-
-
-
 <!DOCTYPE html>
-<nav>
-  <a href="books.html" data-entry-module="books">Books</a>
-  <a href="movies.html" data-entry-module="movies">Movies</a>
-  <a href="video-games.html" data-entry-module="video-games">Video Games</a>
-</nav>
+<html>
 
-<main>Content will load here!</main>
+  <head>
+    <link rel="stylesheet" href="prismLight.css" />
+    <script src="prismLight.js"></script>
 
-<script>
-  const main = document.querySelector("main");
-  for (const link of document.querySelectorAll("nav > a")) {
-    link.addEventListener("click", e => {
-      e.preventDefault();
+    <!-- <link rel="stylesheet" href="prismDark.css" />
+    <script src="prismDark.js"></script> -->
 
-      import(`./section-modules/${link.dataset.entryModule}.js`)
-        .then(module => {
-          module.loadPageInto(main);
-        })
-        .catch(err => {
-          main.textContent = err.message;
-        });
-    });
-  }
-</script>
+    <link rel="stylesheet" href="style.css" />
+    <script src="main.js"></script>
+
+    <title>David Beales Blog</title>
+  </head>
+  
+  <body>
+    <div id="pageWrapper">
+    </div>
+  </body>
+
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script>
+      document.querySelectorAll('pageWrapper')[0].innerHTML =
+        marked('# Marked in the browser\n\nRendered by **marked**.');
+  </script>
+    
+</html>
