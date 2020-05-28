@@ -142,7 +142,7 @@ function loadPostScaffoldHtml(){
 
 async function loadPostMarkdownHtml(){
 	let response = await fetch('postTwo.md');
-	let text = await response.test();
+	let text = await response.text();
 	document.querySelector('.postContent').innerHTML = marked(text);
 
 	// document.querySelector('.postContent').innerHTML = 
