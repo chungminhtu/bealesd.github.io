@@ -159,8 +159,13 @@ function loadPostTwo() {
 	window.location.href = window.page.posttwo.url();
 	//alert('JavaScript promises are coming soon!');
 }
-function onPostTwoLoad(){}
-function onResizePostTwo(){}
+function onPostTwoLoad(){
+	resizePostOne
+}
+
+function onResizePostTwo(){
+	managedResize([resizePostOne]);
+}
 
 //#region star logic
 function drawStarMap() {
