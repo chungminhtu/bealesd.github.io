@@ -129,8 +129,28 @@ function onResizePosts() {
 }
 //#endregion 
 
-
 //#region post one events
+function loadPostScaffoldHtml(){
+	document.querySelector('#pageWrapper').innerHTML = 
+		`
+		<div id="postOneDiv" class="postContentDiv">
+			<div class="postContent">
+			</div>
+		</div>
+		`;
+}
+
+async function loadPostMarkdownHtml(){
+	let response = await fetch('postTwo.md');
+	let text = await response.test();
+	document.querySelector('.postContent').innerHTML = marked(text);
+
+	// document.querySelector('.postContent').innerHTML = 
+	// 	`
+	// 	marked('# Marked in the browser\n\nRendered by **marked**.');
+	// 	`;
+}
+
 function loadPostOne() {
 	window.location.href = window.page.postone.url();
 }
@@ -155,8 +175,10 @@ function resizePostOne() {
 }
 //#endregion 
 
-function loadPostTwo() {
-	window.location.href = window.page.posttwo.url();
+async function loadPostTwo() {
+	loadPostScaffoldHtml();
+	await loadPostMarkdownHtml();
+	// window.location.href = window.page.posttwo.url();
 	//alert('JavaScript promises are coming soon!');
 }
 function onPostTwoLoad(){
