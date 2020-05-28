@@ -155,7 +155,10 @@ function resizePostOne() {
 }
 //#endregion 
 
-function loadPostTwo() {alert('JavaScript promises are coming soon!');}
+function loadPostTwo() {
+	window.location.href = window.page.posttwo.url();
+	//alert('JavaScript promises are coming soon!');
+}
 function onPostTwoLoad(){}
 function onResizePostTwo(){}
 
