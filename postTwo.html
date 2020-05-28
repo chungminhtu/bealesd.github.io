@@ -1,27 +1,37 @@
 <!DOCTYPE html>
 <html>
 
-  <head>
+<head>
 
-    <link rel="stylesheet" href="style.css" />
-    <script src="main.js"></script>
+  <link rel="stylesheet" href="style.css" />
+  <script src="main.js"></script>
 
-    <title>David Beales Blog</title>
-  </head>
-  
-  <body>
-    <div id="pageWrapper">
-      <div id="postOneDiv" class="postContentDiv">
-        <div class="postContent">
-        </div>
+  <title>David Beales Blog</title>
+</head>
+
+<body>
+  <div id="pageWrapper">
+    <div id="postOneDiv" class="postContentDiv">
+      <div class="postContent">
       </div>
     </div>
-  </body>
+  </div>
+</body>
 
-  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-  <script>
-      document.querySelectorAll('.postContent')[0].innerHTML =
-        marked('# Marked in the browser\n\nRendered by **marked**.');
-  </script>
-    
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    await loadPostMarkdownHtml();
+  }, false);
+
+  async function loadPostMarkdownHtml() {
+    let response = await fetch('postTwo.md');
+    let text = await response.text();
+    document.querySelector('.postContent').innerHTML = marked(text);
+  }
+
+
+
+</script>
+
 </html>

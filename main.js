@@ -144,11 +144,6 @@ async function loadPostMarkdownHtml(){
 	let response = await fetch('postTwo.md');
 	let text = await response.text();
 	document.querySelector('.postContent').innerHTML = marked(text);
-
-	// document.querySelector('.postContent').innerHTML = 
-	// 	`
-	// 	marked('# Marked in the browser\n\nRendered by **marked**.');
-	// 	`;
 }
 
 function loadPostOne() {
@@ -176,9 +171,7 @@ function resizePostOne() {
 //#endregion 
 
 async function loadPostTwo() {
-	loadPostScaffoldHtml();
-	await loadPostMarkdownHtml();
-	// window.location.href = window.page.posttwo.url();
+	window.location.href = window.page.posttwo.url();
 	//alert('JavaScript promises are coming soon!');
 }
 function onPostTwoLoad(){
