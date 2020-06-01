@@ -173,10 +173,21 @@ body {
 	margin-left: auto;
 	margin-right: auto;
 	border-radius: 10px 10px 10px 10px;
+	border: 1px solid #ddd;
 	padding: 10px 10px 10px 10px;
-	background-color: black;
-	color: lightgray;
+	background-color: #fff;
+	color: black;
 	text-align: left;
 	font-size: 16px;
 	font-family: "Avenir-Book", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+
+pre {
+	padding: 16px;
+    overflow: auto;
+    font-size: 85%;
+    line-height: 1.45;
+    background-color: #f6f8fa;
+    border-radius: 10px;
 }

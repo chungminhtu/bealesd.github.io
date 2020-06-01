@@ -174,8 +174,8 @@ function soughtPostsByProperty(property) {
 	return [...POSTS].sort((a, b) => {
 		let x, y;
 		if (property === 'timestamp') {
-			x = Date.parse(a['timestamp'])*-1;
-			y = Date.parse(b['timestamp'])*-1;
+			x = Date.parse(a['timestamp']) * -1;
+			y = Date.parse(b['timestamp']) * -1;
 		}
 		else {
 			x = a[property].toLowerCase();
@@ -264,6 +264,24 @@ async function loadPostContent(event) {
 async function loadPostMarkdownHtml(pageName) {
 	let response = await fetch(`${pageName}.md`);
 	let text = await response.text();
+
+
+	marked.setOptions({
+		renderer: new marked.Renderer(),
+		highlight: function (code, language) {
+			const validLanguage = hljs.getLanguage(language) ? language : 'plaintext';
+			return hljs.highlight(validLanguage, code).value;
+		},
+		pedantic: false,
+		gfm: true,
+		breaks: false,
+		sanitize: false,
+		smartLists: true,
+		smartypants: false,
+		xhtml: false
+	});
+
+	// Compile
 	document.querySelector('.postContent').innerHTML = marked(text);
 }
 
@@ -401,7 +419,7 @@ function clearCanvas() {
 }
 
 function updateCanvasSize() {
-	window.canvas.width = window.innerWidth ;
+	window.canvas.width = window.innerWidth;
 	// window.canvas.width = (window.innerWidth - (window.innerWidth * 0.1));
 	window.canvas.height = window.innerHeight;
 }
