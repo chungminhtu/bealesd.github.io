@@ -2,72 +2,110 @@ window.starColors = null;
 window.ctx = null
 window.canvas = null
 window.starInterval = null;
+window.currentPage;
 
-window.addEventListener('load', function () {
-	window.page = {
-		index: {
-			urlSuffix: 'index',
-			url: function () { return getUrlPrefix() + this.urlSuffix + ".html"; },
-			load: loadIndex,
-			onLoad: onIndexLoad,
-			onResize: onResizeIndex
-		},
-		posts: {
-			urlSuffix: 'posts',
-			url: function () { return getUrlPrefix() + this.urlSuffix + ".html"; },
-			onLoad: onPostsLoad,
-			load: loadPosts,
-			onResize: onResizePosts
-		},
-		postone: {
-			urlSuffix: 'postOne',
-			url: function () { return getUrlPrefix() + this.urlSuffix + ".html"; },
-			onLoad: onPostOneLoad,
-			load: loadPostOne,
-			onResize: onResizePostOne
-		},
-		posttwo: {
-			urlSuffix: 'postTwo',
-			url: function () { return getUrlPrefix() + this.urlSuffix + ".html"; },
-			onLoad: onPostTwoLoad,
-			load: loadPostTwo,
-			onResize: onResizePostTwo
-		}
+const POSTS = [
+	{
+		'id': 'JavaScriptVariablesAndScope',
+		'displayName': 'Variables And Scope',
+		'tag': 'JavaScript',
+		'subtags': '',
+		'timestamp': '13 Apr 2018'
+	},
+	{
+		'id': 'JavaScriptPromises',
+		'displayName': 'Promises',
+		'tag': 'JavaScript',
+		'subtags': '',
+		'timestamp': '13 May 2018'
 	}
+];
 
-	let pageName = getUrlSuffix();
-	window.page[`${pageName.toLowerCase()}`].onLoad();
-	window.page[`${pageName.toLowerCase()}`].onResize();
+const POSTS_BY_TAG = getPostByTags();
+
+window.addEventListener('DOMContentLoaded', function () {
+	window.events = window.events || {};
+	onLoad();
+	onResize();
 }.bind(this));
 
-
 //#region index events
-function loadIndex() {
-	window.location.href = window.page.index.url();
-}
+function onLoad() {
+	window.currentPage = 'main';
 
-function onIndexLoad() {
-	setPostsLinkDivPosition();
+	let mainHtml = `
+		<div id='pageWrapper'>
+			<div id="postsLinkDiv">
+				<a id="allPostsLink" class="postsLink">David Beales Blog</a>
+			</div>
+		</div>`;
+	updatePageContent(mainHtml);
+
 	drawStarMap();
-	onResizeIndex();
+	updateMainPageLayout();
 
-	document.querySelectorAll('.postsLink').forEach(function (link) {
-		link.addEventListener("click", function (event) {
-			if (event.srcElement.classList.contains('postsLink'))
-				window.page.posts.load();
-		}.bind(this));
-	})
+	const allPostsLink = document.querySelectorAll('#allPostsLink')[0];
+	addEvent("click", allPostsLink, () => {
+		onListPostsLoad();
+	});
 }
 
-function onResizeIndex() {
-	managedResize([updateCanvasSize, setPostsLinkDivPosition]);
+function generatePostHtml(timestamp, id, displayName, tag) {
+	return `
+	<div class="postLinkDiv">
+		<p class="timestamp">${timestamp}</p>
+		<a class="postLink" id="${id}">${displayName}</a>
+		<p class="tags">
+			<em>#${tag}</em>
+		</p>
+	</div>
+	`;
 }
 
-function setPostsLinkDivPosition() {
+function onListPostsLoad() {
+	window.currentPage = 'posts';
+	let postsHtml = '';
+	const postsByDate = soughtPostsByProperty('timestamp');
+	for (let i = 0; i < postsByDate.length; i++) {
+		const post = postsByDate[i];
+		const postHtml = generatePostHtml(
+			post['timestamp'],
+			post['id'],
+			post['displayName'],
+			post['tag']);
+		postsHtml += postHtml;
+	}
+
+	let listPostsHtml = `<div id="pageWrapper">${postsHtml}</div>`
+	updatePageContent(listPostsHtml);
+
+	drawStarMap();
+
+	onPostLoad();
+}
+
+function updatePageContent(html) {
+	document.querySelector('#firstSibling').nextElementSibling.remove();
+	document.querySelector('#firstSibling').insertAdjacentHTML('afterEnd', html);
+}
+
+function onResize() {
+	cb = () => {
+		if (window.currentPage === 'main')
+			return [updateMainPageLayout];
+		else if (window.currentPage === 'posts')
+			return [updateCanvasSize];
+		else
+			return [];
+	}
+	managedResize(cb);
+}
+
+function updateMainPageLayout() {
 	let viewWidth = window.innerWidth;
 	let viewHeight = window.innerHeight;
 	let postsLinkDiv = document.getElementById('postsLinkDiv');
-	let postsLink = document.getElementById('postsLink');
+	let postsLink = document.getElementById('allPostsLink');
 	postsLink.style.transform = `scale(${1})`;
 	postsLinkDiv.style.transform = `scale(${1})`;
 	postsLinkDiv.hidden = false;
@@ -78,16 +116,9 @@ function setPostsLinkDivPosition() {
 	postsLink.style.marginLeft = `${postsLinkGutter}px`;
 	let postsLinkDivGutter = (viewWidth - postsLinkDiv.offsetWidth) / 2;
 	postsLinkDiv.style.marginLeft = `${postsLinkDivGutter}px`;
+	updateCanvasSize();
 }
 //#endregion 
-
-
-//#region posts events
-function loadPosts() {
-	scaleElements(['postsLinkDiv', 'postsLink']).then(function () {
-		window.location.href = window.page.posts.url();
-	});
-}
 
 function scaleElements(elementIds, scaleChange = 0.01, scaleAcceleration = 0.001, refreshRate = 50) {
 	window.scale = 0.99;
@@ -114,77 +145,137 @@ function shrinkElements(ids) {
 	}
 }
 
-function onPostsLoad() {
-	drawStarMap();
-	document.querySelectorAll('.postLink').forEach(function (link) {
-		link.addEventListener("click", function (event) {
-			if (event.srcElement.classList.contains('postLink'))
-				window.page[`${link.id.toLowerCase()}`].load();
-		}.bind(this));
+function onPostLoad() {
+	postLinks = [];
+	document.querySelectorAll('.postLink').forEach(function (post) {
+		const id = `${post.id.toLowerCase()}`;
+		postLinks.push(id);
+	});
+
+	document.querySelectorAll('.postLink').forEach(function (post) {
+		addEvent("click", post, async (event) => {
+			window.currentPage = 'post';
+			removeCanvas();
+			handlePostLoad(event);
+		});
 	})
 }
 
-function onResizePosts() {
+async function handlePostLoad(event) {
+	window.currentPage = 'post';
+	removeCanvas();
 
+	handlePostLinks();
+	await loadPostContent(event);
 }
-//#endregion 
 
-//#region post one events
-function loadPostScaffoldHtml(){
-	document.querySelector('#pageWrapper').innerHTML = 
-		`
-		<div id="postOneDiv" class="postContentDiv">
+function soughtPostsByProperty(property) {
+	// deep copy POSTS
+	return [...POSTS].sort((a, b) => {
+		let x, y;
+		if (property === 'timestamp') {
+			x = Date.parse(a['timestamp'])*-1;
+			y = Date.parse(b['timestamp'])*-1;
+		}
+		else {
+			x = a[property].toLowerCase();
+			y = b[property].toLowerCase();
+		}
+
+		return x < y ? -1 : x > y ? 1 : 0;
+	})
+}
+
+function getPostByTags() {
+	// sought by displayName
+	const postsByDisplayName = soughtPostsByProperty('displayName');
+
+	let postsByTag = {};
+	for (let i = 0; i < postsByDisplayName.length; i++) {
+		const post = postsByDisplayName[i];
+		if (post['tag'] in postsByTag) {
+			postsByTag[post['tag']].push(post)
+		}
+		else {
+			postsByTag[post['tag']] = [post];
+		}
+	}
+	//group by tag
+	let orderedTags = Object.keys(postsByTag).sort((a, b) => {
+		let x = a.toLowerCase();
+		let y = b.toLowerCase();
+		return x < y ? -1 : x > y ? 1 : 0;
+	})
+	orderedPostsByTag = {};
+	for (let i = 0; i < orderedTags.length; i++) {
+		const orderedTag = orderedTags[i];
+		orderedPostsByTag[orderedTag] = postsByTag[orderedTag];
+	}
+
+	return orderedPostsByTag;
+}
+
+function buildPostLinks(htmlGenerator) {
+	let html = "";
+	const orderedPostsByTagKeys = Object.keys(POSTS_BY_TAG);
+	for (let i = 0; i < orderedPostsByTagKeys.length; i++) {
+		const orderedPostsByTagKey = orderedPostsByTagKeys[i];
+		const postArray = orderedPostsByTag[orderedPostsByTagKey];
+		html += `<p class='header'>${orderedPostsByTagKey}</p>`;
+		for (let j = 0; j < postArray.length; j++) {
+			const postValue = postArray[j];
+			html += htmlGenerator(postValue);
+		}
+	}
+	return html;
+}
+
+function handlePostLinks() {
+	const anchors = buildPostLinks((postValue) => {
+		return `<a class='bar-item button' id='${postValue['id']}'>${postValue['displayName']}</a>`;
+	})
+
+	document.querySelector('body').innerHTML =
+		`<div class="sidebar bar-block" style="width:25%">
+			${anchors}
+		</div>
+		` + document.querySelector('body').innerHTML;
+
+	document.querySelectorAll('.button').forEach((link) => {
+		addEvent("click", link, async (event) => {
+			await loadPostContent(event);
+		});
+	});
+}
+
+async function loadPostContent(event) {
+	let id = event.srcElement.id;
+	let postTemplateHtml = `
+	<div id="postTemplate" >
+		<div class="postContentDiv ">
 			<div class="postContent">
 			</div>
 		</div>
-		`;
+	</div>`;
+	updatePageContent(postTemplateHtml);
+	await loadPostMarkdownHtml(id);
 }
 
-async function loadPostMarkdownHtml(){
-	let response = await fetch('postTwo.md');
+async function loadPostMarkdownHtml(pageName) {
+	let response = await fetch(`${pageName}.md`);
 	let text = await response.text();
 	document.querySelector('.postContent').innerHTML = marked(text);
 }
 
-function loadPostOne() {
-	window.location.href = window.page.postone.url();
-}
-
-function onPostOneLoad() {
-	resizePostOne();
-}
-
-function onResizePostOne() {
-	managedResize([resizePostOne]);
-}
-
-function resizePostOne() {
-	let windowWidth = window.innerWidth;
-	if (windowWidth > 750) {
-		document.querySelector('.postContent').style.width = '650px';
-	}
-	else {
-		document.querySelector('.postContent').style.width = '80%';
-	}
-	document.querySelector('.postContent');
-}
-//#endregion 
-
-async function loadPostTwo() {
-	window.location.href = window.page.posttwo.url();
-	//alert('JavaScript promises are coming soon!');
-}
-function onPostTwoLoad(){
-	resizePostOne
-}
-
-function onResizePostTwo(){
-	managedResize([resizePostOne]);
-}
-
 //#region star logic
 function drawStarMap() {
+	if (!document.getElementById('canvas')) {
+		const canvas = document.createElement("canvas");
+		canvas.id = 'canvas';
+		document.querySelector('#firstSibling').insertAdjacentElement('beforebegin', canvas);
+	}
 	window.canvas = document.getElementById('canvas');
+
 	window.canvas.width = window.innerWidth;
 	window.canvas.height = window.innerHeight;
 	window.ctx = this.canvas.getContext('2d');
@@ -222,17 +313,21 @@ function drawStarMap() {
 			lineColor: '#EBB9EB'
 		}
 	}
-	this.stars = [];
-	let currentIteration = 0;
-	let iterations = 10000;
-	this.starInterval = setInterval(setIntervalForMaxIterations, 50);
 
-	function setIntervalForMaxIterations() {
+	setIntervalForMaxIterations = () => {
 		renderStars();
 		currentIteration++;
 		if (currentIteration >= iterations)
 			clearInterval(this.starInterval);
 	}
+
+	this.stars = [];
+	let currentIteration = 0;
+	const iterations = 10000;
+
+	clearInterval(window.starInterval);
+	this.starInterval = setInterval(setIntervalForMaxIterations, 50);
+	window.starInterval = this.starInterval;
 }
 
 function stopStars() {
@@ -295,12 +390,19 @@ function randomStar(maxX, maxY) {
 
 
 //#region canvas helpers
+function removeCanvas() {
+	if (document.querySelector('#canvas')) {
+		document.querySelector('#canvas').remove();
+	}
+}
+
 function clearCanvas() {
 	window.ctx.clearRect(0, 0, window.canvas.width, window.canvas.height);
 }
 
 function updateCanvasSize() {
-	window.canvas.width = window.innerWidth;
+	window.canvas.width = window.innerWidth ;
+	// window.canvas.width = (window.innerWidth - (window.innerWidth * 0.1));
 	window.canvas.height = window.innerHeight;
 }
 
@@ -321,9 +423,8 @@ function clearPage() {
 function swapJsonKeyValues(json) {
 	var key, invertedJson = {};
 	for (key in json) {
-		if (json.hasOwnProperty(key)) {
+		if (json.hasOwnProperty(key))
 			invertedJson[json[key]] = key;
-		}
 	}
 	return invertedJson;
 }
@@ -355,16 +456,41 @@ Array.prototype.removeItem = function (indexToRemove) {
 };
 
 function managedResize(callbacks) {
-	window.addEventListener('resize', function () {
+	let oldCb = window.events['windowResize'];
+	window.removeEventListener('resize', oldCb);
+
+	let cb = () => {
 		let resizeTimeout;
 		if (!resizeTimeout) {
 			resizeTimeout = setTimeout(function () {
 				resizeTimeout = null;
-				for (let index = 0; index < callbacks.length; index++) {
-					callbacks[index]();
+				for (let index = 0; index < callbacks().length; index++) {
+					callbacks()[index]();
 				}
 			}, 66);
 		}
-	}.bind(this));
+	};
+
+	window.addEventListener('resize', cb);
+	window.events['windowResize'] = cb;
+}
+
+function addEvent(eventType, element, callback, callbackArgs) {
+	const id = element.id;
+	window.events[id] = window.events[id] === undefined || window.events[id][eventType] === undefined ?
+		{ [eventType]: [callback] } :
+		{ [eventType]: [...window.events[id][eventType], callback] }
+
+	element.addEventListener(eventType, callback, callbackArgs);
+}
+
+function removeEvents(eventType, element) {
+	const id = element.id;
+	if (window.events[id] !== undefined && window.events[id][eventType] !== undefined) {
+		for (let i = 0; i < window.events[id][eventType].length; i++) {
+			element.removeEventListener(eventType, window.events[id][eventType][i]);
+			window.events[id][eventType].pop(window.events[id][eventType][i]);
+		}
+	}
 }
 //#endregion
