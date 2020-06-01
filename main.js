@@ -269,8 +269,7 @@ async function loadPostMarkdownHtml(pageName) {
 	marked.setOptions({
 		renderer: new marked.Renderer(),
 		highlight: function (code, language) {
-			const validLanguage = hljs.getLanguage(language) ? language : 'plaintext';
-			return hljs.highlight(validLanguage, code).value;
+			return Prism.highlight(code, Prism.languages.javascript, 'javascript');
 		},
 		pedantic: false,
 		gfm: true,
