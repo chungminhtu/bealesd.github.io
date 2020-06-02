@@ -20,15 +20,6 @@ body {
 	padding: 0px 0% 0px 0%;
 }
 
-#pageWrapper2 {
-	position: absolute;
-	z-index: 2;
-	width: 100%;
-	height: 100%;
-	padding: 0px 0% 0px 0%;
-	background-color: white;
-}
-
 #postTemplate {
 	height: 100%;
 	background-color: white;
@@ -59,7 +50,7 @@ body {
 		outline: 0
 	}
 	.header {
-		  margin: 0;
+		margin: 0;
 		width: auto;
 		display: block;
 		padding: 8px 16px;
@@ -94,7 +85,6 @@ body {
 	padding-bottom: 10px;
 	color: white;
 	text-align: center;
-	/* font-family: "Avenir-Book", "Helvetica Neue", Helvetica, Arial, sans-serif; */
 	letter-spacing: 1px;
 	font-weight: 900;
 	text-transform: uppercase;
@@ -133,7 +123,6 @@ body {
 	color: lightgray;
 	text-align: center;
 	font-size: 20px;
-	/* font-family: "Avenir-Book", "Helvetica Neue", Helvetica, Arial, sans-serif; */
 	transition: 1.3s ease-in-out;
 }
 
@@ -150,7 +139,6 @@ body {
 	width: 80%;
 	color: rgb(144, 143, 143);
 	font-size: 12px;
-	/* font-family: "Avenir-Book", "Helvetica Neue", Helvetica, Arial, sans-serif; */
 }
 
 .tags {
@@ -161,7 +149,6 @@ body {
 	color: blue;
 	font-size: 16px;
 	font-weight: 800;
-	/* font-family: "Avenir-Book", "Helvetica Neue", Helvetica, Arial, sans-serif; */
 }
 
 .postContentDiv {
@@ -173,14 +160,13 @@ body {
 	display: block;
 	margin-left: auto;
 	margin-right: auto;
-	border-radius: 10px 10px 10px 10px;
+	border-radius: 40px;
 	border: 1px solid #ddd;
-	padding: 10px 10px 10px 10px;
+	padding: 40px;
 	background-color: #fff;
 	color: black;
 	text-align: left;
 	font-size: 16px;
-	/* font-family: "Avenir-Book", "Helvetica Neue", Helvetica, Arial, sans-serif; */
 }
 
 

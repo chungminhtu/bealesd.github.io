@@ -36,7 +36,7 @@ function onLoad() {
 	let mainHtml = `
 		<div id='pageWrapper'>
 			<div id="postsLinkDiv">
-				<a id="allPostsLink" class="postsLink">David Beales Blog</a>
+				<a id="allPostsLink">David Beales Blog</a>
 			</div>
 		</div>`;
 	updatePageContent(mainHtml);
@@ -44,8 +44,8 @@ function onLoad() {
 	drawStarMap();
 	updateMainPageLayout();
 
-	const allPostsLink = document.querySelectorAll('#allPostsLink')[0];
-	addEvent("click", allPostsLink, () => {
+	const listPostsLink = document.querySelectorAll('#allPostsLink')[0];
+	addEvent("click", listPostsLink, () => {
 		onListPostsLoad();
 	});
 }
@@ -201,7 +201,7 @@ function getPostByTags() {
 		}
 	}
 	//group by tag
-	let orderedTags = Object.keys(postsByTag).sort((a, b) => {
+	const orderedTags = Object.keys(postsByTag).sort((a, b) => {
 		let x = a.toLowerCase();
 		let y = b.toLowerCase();
 		return x < y ? -1 : x > y ? 1 : 0;
@@ -249,8 +249,8 @@ function handlePostLinks() {
 }
 
 async function loadPostContent(event) {
-	let id = event.srcElement.id;
-	let postTemplateHtml = `
+	const id = event.srcElement.id;
+	const postTemplateHtml = `
 	<div id="postTemplate" >
 		<div class="postContentDiv ">
 			<div class="postContent">
@@ -262,9 +262,8 @@ async function loadPostContent(event) {
 }
 
 async function loadPostMarkdownHtml(pageName) {
-	let response = await fetch(`${pageName}.md`);
-	let text = await response.text();
-
+	const response = await fetch(`${pageName}.md`);
+	const text = await response.text();
 
 	marked.setOptions({
 		renderer: new marked.Renderer(),
@@ -280,7 +279,6 @@ async function loadPostMarkdownHtml(pageName) {
 		xhtml: false
 	});
 
-	// Compile
 	document.querySelector('.postContent').innerHTML = marked(text);
 }
 
