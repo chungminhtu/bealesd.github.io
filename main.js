@@ -22,6 +22,13 @@ const POSTS = [
 		'tag': 'JavaScript',
 		'subtags': '',
 		'timestamp': '13 May 2018'
+	},
+	{
+		'id': 'AzureVariables',
+		'displayName': 'Variables',
+		'tag': 'Azure',
+		'subtags': '',
+		'timestamp': '13 May 2020'
 	}
 ];
 
@@ -228,11 +235,12 @@ function buildPostLinks(htmlGenerator) {
 	for (let i = 0; i < orderedPostsByTagKeys.length; i++) {
 		const orderedPostsByTagKey = orderedPostsByTagKeys[i];
 		const postArray = orderedPostsByTag[orderedPostsByTagKey];
-		html += `<a class='bar-item header'>${orderedPostsByTagKey}</a>`;
+		html += `<a class='block bar-item header accordion' data-id='${orderedPostsByTagKey}'>${orderedPostsByTagKey}<span class='up'>&#10148;</span></a><div class='hide'>`;
 		for (let j = 0; j < postArray.length; j++) {
 			const postValue = postArray[j];
 			html += htmlGenerator(postValue);
 		}
+		html += '</div>';
 	}
 	return html;
 }
@@ -259,13 +267,34 @@ function handlePostLinks() {
 			await loadPostContent(event.srcElement.id);
 		});
 	});
+
+	document.querySelectorAll('.accordion').forEach((link) => {
+		addEvent("click", link, () => {
+			//shown sublinks
+			if (!link.nextSibling.classList.contains("show")) {
+				link.nextSibling.classList.add("show");
+				link.querySelector('span').classList.add("down");
+
+				link.nextSibling.classList.remove("hide");
+				link.querySelector('span').classList.remove("up");
+			}
+			//hide sublinks
+			else if (link.nextSibling.classList.contains("show")) {
+				link.nextSibling.classList.remove("show")
+				link.querySelector('span').classList.remove("down");
+
+				link.nextSibling.classList.add("hide");
+				link.querySelector('span').classList.add("up");
+			}
+		});
+	});
 }
 
 function loadPage(id) {
 	if (id === 'home') {
 		onLoad();
 	}
-	else if (id === 'posts'){
+	else if (id === 'posts') {
 		onListPostsLoad();
 	}
 }
@@ -280,6 +309,13 @@ async function loadPostContent(id) {
 	</div>`;
 	updatePageContent(postTemplateHtml);
 	await loadPostMarkdownHtml(id);
+
+	const activeMenuId = POSTS.filter((post)=>{return post.id === id})[0].tag;
+	const activeMenu = document.querySelector(`[data-id="${activeMenuId}"]`);
+	activeMenu.nextSibling.classList.add("show");
+	activeMenu.querySelector('span').classList.remove("up");
+	activeMenu.querySelector('span').classList.add("down");
+	activeMenu.nextSibling.classList.remove("hide");
 }
 
 async function loadPostMarkdownHtml(pageName) {
