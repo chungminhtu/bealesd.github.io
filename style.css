@@ -42,7 +42,6 @@ body {
 	.bar-block .bar-item {
 		width: auto;
 		display: block;
-		padding: 8px 25px;
 		text-align: left;
 		border: none;
 		white-space: normal;
@@ -50,19 +49,24 @@ body {
 		outline: 0
 	}
 	.header {
-		margin: 0;
-		width: auto;
-		display: block;
 		padding: 8px 16px;
-		text-align: left;
-		border: none;
-		white-space: normal;
-		float: none;
-		outline: 0
 	}
 
-	.button:hover{color:#000!important;background-color:#ccc!important}
+	.sub-header{
+		padding: 4px 24px;
 	}
+
+	.bar-item.bar-link:hover{
+		color:#000!important;
+		background-color:#ccc!important
+	}
+
+	.bar-item.header{
+		border-bottom: solid 1pt lightgrey;
+	}
+}
+
+	
 
 @media (max-width: 700px) {
 	.postContentDiv {

@@ -1,3 +1,7 @@
+//todo
+//add accordion
+//add home page button and contents
+
 window.starColors = null;
 window.ctx = null
 window.canvas = null
@@ -166,7 +170,7 @@ async function handlePostLoad(event) {
 	removeCanvas();
 
 	handlePostLinks();
-	await loadPostContent(event);
+	await loadPostContent(event.srcElement.id);
 }
 
 function soughtPostsByProperty(property) {
@@ -217,11 +221,14 @@ function getPostByTags() {
 
 function buildPostLinks(htmlGenerator) {
 	let html = "";
+	html += `<a class='bar-item bar-link header' id='home'>Home</a>`;
+	html += `<a class='bar-item bar-link header' id='posts'>Posts</a>`;
+
 	const orderedPostsByTagKeys = Object.keys(POSTS_BY_TAG);
 	for (let i = 0; i < orderedPostsByTagKeys.length; i++) {
 		const orderedPostsByTagKey = orderedPostsByTagKeys[i];
 		const postArray = orderedPostsByTag[orderedPostsByTagKey];
-		html += `<p class='header'>${orderedPostsByTagKey}</p>`;
+		html += `<a class='bar-item header'>${orderedPostsByTagKey}</a>`;
 		for (let j = 0; j < postArray.length; j++) {
 			const postValue = postArray[j];
 			html += htmlGenerator(postValue);
@@ -232,7 +239,7 @@ function buildPostLinks(htmlGenerator) {
 
 function handlePostLinks() {
 	const anchors = buildPostLinks((postValue) => {
-		return `<a class='bar-item button' id='${postValue['id']}'>${postValue['displayName']}</a>`;
+		return `<a class='bar-item bar-link sub-header' id='${postValue['id']}'>${postValue['displayName']}</a>`;
 	})
 
 	document.querySelector('body').innerHTML =
@@ -241,15 +248,29 @@ function handlePostLinks() {
 		</div>
 		` + document.querySelector('body').innerHTML;
 
-	document.querySelectorAll('.button').forEach((link) => {
+	document.querySelectorAll('.bar-link.header').forEach((link) => {
 		addEvent("click", link, async (event) => {
-			await loadPostContent(event);
+			await loadPage(event.srcElement.id);
+		});
+	});
+
+	document.querySelectorAll('.bar-link.sub-header').forEach((link) => {
+		addEvent("click", link, async (event) => {
+			await loadPostContent(event.srcElement.id);
 		});
 	});
 }
 
-async function loadPostContent(event) {
-	const id = event.srcElement.id;
+function loadPage(id) {
+	if (id === 'home') {
+		onLoad();
+	}
+	else if (id === 'posts'){
+		onListPostsLoad();
+	}
+}
+
+async function loadPostContent(id) {
 	const postTemplateHtml = `
 	<div id="postTemplate" >
 		<div class="postContentDiv ">
