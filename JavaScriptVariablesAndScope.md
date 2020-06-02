@@ -1,4 +1,4 @@
-# JavaScript Variables And Scope
+# *JavaScript*
 
 ## Variables and Scope
 

@@ -1,12 +1,13 @@
 //todo
 //add accordion
-//add home page button and contents
 
 window.starColors = null;
 window.ctx = null
 window.canvas = null
 window.starInterval = null;
 window.currentPage;
+window.postPaginationIndex = 0;
+window.INCREMENT = 3;
 
 const POSTS = [
 	{
@@ -77,7 +78,7 @@ function onListPostsLoad() {
 	window.currentPage = 'posts';
 	let postsHtml = '<div class="postsHeader">Posts by David Beales </div>';
 	const postsByDate = soughtPostsByProperty('timestamp');
-	for (let i = 0; i < postsByDate.length; i++) {
+	for (let i = window.postPaginationIndex; i < postsByDate.length && i < window.postPaginationIndex + INCREMENT; i++) {
 		const post = postsByDate[i];
 		const postHtml = generatePostHtml(
 			post['timestamp'],
@@ -87,12 +88,36 @@ function onListPostsLoad() {
 		postsHtml += postHtml;
 	}
 
-	let listPostsHtml = `<div id="pageWrapper">${postsHtml}</div>`
+	let listPostsHtml = `<div id="pageWrapper">${postsHtml}<div class='paginate later'>previous</div><div class='paginate'>next</div></div>`
 	updatePageContent(listPostsHtml);
 
 	drawStarMap();
 
 	onPostLoad();
+
+	document.querySelectorAll('.paginate').forEach((paginate) => {
+		addEvent("click", paginate, (event) => {
+			if (event.srcElement.classList.contains('later')) {
+				if (window.postPaginationIndex - 1 < 0) {
+					alert('No newer posts!');
+				}
+				else {
+					window.postPaginationIndex -= INCREMENT;
+					onListPostsLoad();
+				}
+			}
+			else {
+				const maxPosts = POSTS.length;
+				if (window.postPaginationIndex + INCREMENT > maxPosts - 1) {
+					alert('No older posts!');
+				}
+				else {
+					window.postPaginationIndex += INCREMENT;
+					onListPostsLoad();
+				}
+			}
+		});
+	});
 }
 
 function updatePageContent(html) {
@@ -310,12 +335,15 @@ async function loadPostContent(id) {
 	updatePageContent(postTemplateHtml);
 	await loadPostMarkdownHtml(id);
 
-	const activeMenuId = POSTS.filter((post)=>{return post.id === id})[0].tag;
+	const activeMenuId = POSTS.filter((post) => { return post.id === id })[0].tag;
 	const activeMenu = document.querySelector(`[data-id="${activeMenuId}"]`);
 	activeMenu.nextSibling.classList.add("show");
 	activeMenu.querySelector('span').classList.remove("up");
 	activeMenu.querySelector('span').classList.add("down");
 	activeMenu.nextSibling.classList.remove("hide");
+
+	document.querySelectorAll(`.activated-link`).forEach((al) => { al.classList.remove('activated-link') });
+	document.querySelector(`#${id}`).classList.add('activated-link');
 }
 
 async function loadPostMarkdownHtml(pageName) {

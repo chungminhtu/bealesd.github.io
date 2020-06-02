@@ -51,42 +51,42 @@ body {
 	.header {
 		padding: 8px 16px;
 	}
-
-	.sub-header{
-		display:none;
-		padding: 4px 24px;
+	.header.accordion {
+		padding: 8px 22px;
 	}
-
-	.bar-item.bar-link:hover{
-		color:#000!;
-		background-color:#ccc;
+	.sub-header {
+		display: none;
+		padding: 4px 28px;
 	}
-
-	.bar-item.accordion:hover{
-		color:#000!;
-		background-color:rgb(177, 177, 206);
+	.bar-item.bar-link:hover {
+		color: #000!;
+		background-color: #ccc;
 	}
-
-	.bar-item.header{
+	.bar-item.accordion:hover {
+		color: #000!;
+		background-color: rgb(177, 177, 206);
+	}
+	.bar-item.header {
 		border-bottom: solid 1pt lightgrey;
 	}
-
-	.hide{
-		display:none!important;
-	} 
-	.show{
-		display:block;
+	.hide {
+		display: none!important;
 	}
-
-	.accordion > span.down {
+	.show {
+		display: block;
+	}
+	.accordion>span.down {
 		display: inline-block;
 		transform: rotate(90deg);
 		-webkit-transform: rotate(90deg);
-		padding-left:10px;
+		padding-left: 10px;
 	}
-	.accordion > span.up {
+	.accordion>span.up {
 		display: inline-block;
-		padding-left:10px;
+		padding-left: 10px;
+	}
+	.activated-link {
+		color: red;
 	}
 }
 
@@ -127,12 +127,9 @@ body {
 	z-index: 1;
 	position: absolute;
 	background-color: black;
-
 }
 
-.postsHeader{
-	/* display: inline-block; */
-	/* box-sizing: border-box; */
+.postsHeader {
 	background-color: black;
 	padding-top: 20px;
 	padding-bottom: 10px;
@@ -144,12 +141,24 @@ body {
 	width: 100%;
 }
 
+.paginate{
+	background-color: black;
+	padding-top: 20px;
+	padding-bottom: 10px;
+	color: white;
+	text-align: center;
+	letter-spacing: 1px;
+	font-size: 14px;
+	margin: auto;
+	width: 100%;
+}
+
 .postLinkDiv {
 	background-color: white;
 	margin: 20px auto 50px auto;
 	padding: 20px 0px 00px 0px;
 	max-width: 600px;
-	border:solid  1px #f6f8fa
+	border: solid 1px #f6f8fa
 }
 
 .postLink {
@@ -183,7 +192,6 @@ body {
 	--paddingHeight: 15px;
 	--paddingWidth: 20px;
 	--contentWidth: 100%;
-
 	display: block;
 	margin-top: 20px;
 	width: calc(var(--contentWidth) - calc(var(--paddingWidth)*2));
@@ -195,14 +203,14 @@ body {
 
 .postContentDiv {
 	background-color: white;
-	padding: 50px 0px 50px 0px;
+	padding: 0px 0px 50px 0px;
 }
 
 .postContent {
 	display: block;
 	margin-left: auto;
 	margin-right: auto;
-	border-radius: 40px;
+	/* border-radius: 40px; */
 	border: 1px solid #ddd;
 	padding: 40px;
 	background-color: #fff;
@@ -211,12 +219,11 @@ body {
 	font-size: 16px;
 }
 
-
 pre {
 	padding: 16px;
-    overflow: auto;
-    font-size: 85%;
-    line-height: 1.45;
-    background-color: #f6f8fa;
-    border-radius: 10px;
+	overflow: auto;
+	font-size: 85%;
+	line-height: 1.45;
+	background-color: #f6f8fa;
+	border-radius: 10px;
 }
