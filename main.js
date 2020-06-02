@@ -66,16 +66,16 @@ function generatePostHtml(timestamp, id, displayName, tag) {
 	<div class="postLinkDiv">
 		<p class="timestamp">${timestamp}</p>
 		<a class="postLink" id="${id}">${displayName}</a>
-		<p class="tags">
+		<div class="tags">
 			<em>#${tag}</em>
-		</p>
+		</div>
 	</div>
 	`;
 }
 
 function onListPostsLoad() {
 	window.currentPage = 'posts';
-	let postsHtml = '';
+	let postsHtml = '<div class="postsHeader">Posts by David Beales </div>';
 	const postsByDate = soughtPostsByProperty('timestamp');
 	for (let i = 0; i < postsByDate.length; i++) {
 		const post = postsByDate[i];
