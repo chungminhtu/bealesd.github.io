@@ -1,14 +1,11 @@
-//todo
-//add accordion
-
 window.starColors = null;
 window.ctx = null
 window.canvas = null
 window.starInterval = null;
 window.currentPage;
 window.postPaginationIndex = 0;
-window.INCREMENT = 3;
 
+window.POSTS_PER_PAGE = 3;
 const POSTS = [
 	{
 		'id': 'JavaScriptVariablesAndScope',
@@ -32,7 +29,6 @@ const POSTS = [
 		'timestamp': '13 May 2020'
 	}
 ];
-
 const POSTS_BY_TAG = getPostByTags();
 
 window.addEventListener('DOMContentLoaded', function () {
@@ -74,11 +70,10 @@ function generatePostHtml(timestamp, id, displayName, tag) {
 	`;
 }
 
-function onListPostsLoad() {
-	window.currentPage = 'posts';
-	let postsHtml = '<div class="postsHeader">Posts by David Beales </div>';
+function generateAllPostsHtml() {
+	let postsHtml= '';
 	const postsByDate = soughtPostsByProperty('timestamp');
-	for (let i = window.postPaginationIndex; i < postsByDate.length && i < window.postPaginationIndex + INCREMENT; i++) {
+	for (let i = window.postPaginationIndex; i < postsByDate.length && i < window.postPaginationIndex + POSTS_PER_PAGE; i++) {
 		const post = postsByDate[i];
 		const postHtml = generatePostHtml(
 			post['timestamp'],
@@ -87,6 +82,13 @@ function onListPostsLoad() {
 			post['tag']);
 		postsHtml += postHtml;
 	}
+	return postsHtml;
+}
+
+function onListPostsLoad() {
+	window.currentPage = 'posts';
+	let postsHtml = '<div class="postsHeader">Posts by David Beales </div>';
+	postsHtml += generateAllPostsHtml();
 
 	let listPostsHtml = `<div id="pageWrapper">${postsHtml}<div class='paginate later'>previous</div><div class='paginate'>next</div></div>`
 	updatePageContent(listPostsHtml);
@@ -102,17 +104,17 @@ function onListPostsLoad() {
 					alert('No newer posts!');
 				}
 				else {
-					window.postPaginationIndex -= INCREMENT;
+					window.postPaginationIndex -= POSTS_PER_PAGE;
 					onListPostsLoad();
 				}
 			}
 			else {
 				const maxPosts = POSTS.length;
-				if (window.postPaginationIndex + INCREMENT > maxPosts - 1) {
+				if (window.postPaginationIndex + POSTS_PER_PAGE > maxPosts - 1) {
 					alert('No older posts!');
 				}
 				else {
-					window.postPaginationIndex += INCREMENT;
+					window.postPaginationIndex += POSTS_PER_PAGE;
 					onListPostsLoad();
 				}
 			}
