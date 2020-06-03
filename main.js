@@ -31,8 +31,20 @@ const POSTS = [
 ];
 const POSTS_BY_TAG = getPostByTags();
 
-window.addEventListener('DOMContentLoaded', function () {
+window.addEventListener('DOMContentLoaded', async function () {
 	window.events = window.events || {};
+
+	//check page:
+	const suffix = getUrlSuffix();
+	if (suffix) {
+		const page = POSTS.filter((p) => { return p['id'] === suffix; });
+		if (page.length === 1) {
+			handlePostLinks();
+			await loadPostContent(page[0]['id']);
+			return;
+		}
+	}
+
 	onLoad();
 	onResize();
 }.bind(this));
@@ -71,7 +83,7 @@ function generatePostHtml(timestamp, id, displayName, tag) {
 }
 
 function generateAllPostsHtml() {
-	let postsHtml= '';
+	let postsHtml = '';
 	const postsByDate = soughtPostsByProperty('timestamp');
 	for (let i = window.postPaginationIndex; i < postsByDate.length && i < window.postPaginationIndex + POSTS_PER_PAGE; i++) {
 		const post = postsByDate[i];
@@ -534,7 +546,7 @@ function swapJsonKeyValues(json) {
 function getUrlSuffix() {
 	let url = window.location.href;
 	let urlSuffixRegex = url.match(/[A-Za-z]+\.html/);
-	return urlSuffixRegex !== null ? urlSuffixRegex[0].slice(0, -5) : window.page.index.urlSuffix;
+	return urlSuffixRegex !== null ? urlSuffixRegex[0].slice(0, -5) : "";
 }
 
 function getUrlPrefix() {
