@@ -361,7 +361,7 @@ async function loadPostContent(id) {
 }
 
 async function loadPostMarkdownHtml(pageName) {
-	const response = await fetch(`${pageName}.md`);
+	const response = await fetch(`/${pageName}.md`);
 	const text = await response.text();
 
 	marked.setOptions({
