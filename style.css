@@ -25,6 +25,7 @@ body {
 	background-color: white;
 }
 
+
 @media (min-width: 700px) {
 	.postContentDiv {
 		width: 50%;
@@ -61,10 +62,12 @@ body {
 	.bar-item.bar-link:hover {
 		color: #000!;
 		background-color: #ccc;
+		cursor: pointer;
 	}
 	.bar-item.accordion:hover {
 		color: #000!;
 		background-color: rgb(177, 177, 206);
+		cursor: crosshair;
 	}
 	.bar-item.header {
 		border-bottom: solid 1pt lightgrey;
@@ -121,6 +124,7 @@ body {
 	background-color: white;
 	color: black;
 	transition: all 1.5s ease-out;
+	cursor: pointer;
 }
 
 #canvas {
@@ -141,7 +145,11 @@ body {
 	width: 100%;
 }
 
-.paginate{
+.postsHeader:hover{
+	cursor: help;
+}
+
+.paginate {
 	background-color: black;
 	padding-top: 20px;
 	padding-bottom: 10px;
@@ -174,8 +182,13 @@ body {
 
 .postLink:hover {
 	color: black;
+	cursor: pointer;
 	background-color: lightgray;
 	transition: all 1s ease-out;
+}
+
+.paginate:hover{
+	cursor: pointer;
 }
 
 .timestamp {
