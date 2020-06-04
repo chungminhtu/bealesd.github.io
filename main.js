@@ -2,7 +2,6 @@ window.starColors = null;
 window.ctx = null
 window.canvas = null
 window.starInterval = null;
-window.currentPage;
 window.postPaginationIndex = 0;
 
 window.POSTS_PER_PAGE = 3;
@@ -43,15 +42,23 @@ window.addEventListener('DOMContentLoaded', async function () {
 			await loadPostContent(page[0]['id']);
 			return;
 		}
+		else if (suffix === 'posts'){
+			onListPostsLoad();
+			return;
+		}
 	}
 
 	onLoad();
 	onResize();
 }.bind(this));
 
+function changeUri(uri){
+	history.pushState({}, null, `${uri}.html`);
+}
+
 //#region index events
 function onLoad() {
-	window.currentPage = 'main';
+	changeUri('/home');
 
 	let mainHtml = `
 		<div id='pageWrapper'>
@@ -98,7 +105,8 @@ function generateAllPostsHtml() {
 }
 
 function onListPostsLoad() {
-	window.currentPage = 'posts';
+	changeUri('/posts');
+
 	let postsHtml = '<div class="postsHeader">Posts by David Beales </div>';
 	postsHtml += generateAllPostsHtml();
 
@@ -141,9 +149,10 @@ function updatePageContent(html) {
 
 function onResize() {
 	cb = () => {
-		if (window.currentPage === 'main')
+		const suffix = getUrlSuffix();
+		if (suffix === 'home')
 			return [updateMainPageLayout];
-		else if (window.currentPage === 'posts')
+		else if (suffix === 'posts')
 			return [updateCanvasSize];
 		else
 			return [];
@@ -204,7 +213,6 @@ function onPostLoad() {
 
 	document.querySelectorAll('.postLink').forEach(function (post) {
 		addEvent("click", post, async (event) => {
-			window.currentPage = 'post';
 			removeCanvas();
 			handlePostLoad(event);
 		});
@@ -212,7 +220,6 @@ function onPostLoad() {
 }
 
 async function handlePostLoad(event) {
-	window.currentPage = 'post';
 	removeCanvas();
 
 	handlePostLinks();
@@ -348,6 +355,7 @@ async function loadPostContent(id) {
 	</div>`;
 	updatePageContent(postTemplateHtml);
 	await loadPostMarkdownHtml(id);
+	changeUri(`/posts/${id}`);
 
 	const activeMenuId = POSTS.filter((post) => { return post.id === id })[0].tag;
 	const activeMenu = document.querySelector(`[data-id="${activeMenuId}"]`);
