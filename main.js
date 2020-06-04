@@ -544,8 +544,9 @@ function swapJsonKeyValues(json) {
 }
 
 function getUrlSuffix() {
-	let url = window.location.href;
-	let urlSuffixRegex = url.match(/[A-Za-z]+\.html/);
+	// const url = window.location.href;
+	const url = window.redirectUrl === undefined ? "" : window.redirectUrl;
+	const urlSuffixRegex = url.match(/[A-Za-z]+\.html/);
 	return urlSuffixRegex !== null ? urlSuffixRegex[0].slice(0, -5) : "";
 }
 
