@@ -32,8 +32,15 @@ const POSTS_BY_TAG = getPostByTags();
 
 window.addEventListener('DOMContentLoaded', async function () {
 	window.events = window.events || {};
+	await routeUrl();
+}.bind(this));
 
-	//check page:
+
+window.onpopstate = async function () {
+	await routeUrl();
+};
+
+async function routeUrl() {
 	const suffix = getUrlSuffix();
 	if (suffix) {
 		const page = POSTS.filter((p) => { return p['id'] === suffix; });
@@ -42,7 +49,7 @@ window.addEventListener('DOMContentLoaded', async function () {
 			await loadPostContent(page[0]['id']);
 			return;
 		}
-		else if (suffix === 'posts'){
+		else if (suffix === 'posts') {
 			onListPostsLoad();
 			return;
 		}
@@ -50,9 +57,9 @@ window.addEventListener('DOMContentLoaded', async function () {
 
 	onLoad();
 	onResize();
-}.bind(this));
+}
 
-function changeUri(uri){
+function changeUri(uri) {
 	history.pushState({}, null, `${uri}.html`);
 }
 
