@@ -4,6 +4,7 @@ window.canvas = null
 window.starInterval = null;
 window.postPaginationIndex = 0;
 
+window.TAG = null;
 window.POSTS_PER_PAGE = 3;
 const POSTS = [
 	{
@@ -90,7 +91,7 @@ function generatePostHtml(timestamp, id, displayName, tag) {
 		<p class="timestamp">${timestamp}</p>
 		<a class="postLink" id="${id}">${displayName}</a>
 		<div class="tags">
-			<em>#${tag}</em>
+			<em id='${tag}'>#${tag}</em>
 		</div>
 	</div>
 	`;
@@ -106,7 +107,13 @@ function generateAllPostsHtml() {
 			post['id'],
 			post['displayName'],
 			post['tag']);
-		postsHtml += postHtml;
+
+		if (TAG !== null && TAG === post['tag']) {
+			postsHtml += postHtml;
+		}
+		else if (TAG === null || TAG === '') {
+			postsHtml += postHtml;
+		}
 	}
 	return postsHtml;
 }
@@ -114,11 +121,25 @@ function generateAllPostsHtml() {
 function onListPostsLoad() {
 	changeUri('/posts');
 
-	let postsHtml = '<div class="postsHeader">Posts by David Beales </div>';
+	let postsHtml = '<div class="postsHeader"><a id="allPosts">Posts</a> by David Beales </div>';
 	postsHtml += generateAllPostsHtml();
 
 	let listPostsHtml = `<div id="pageWrapper">${postsHtml}<div class='paginate later'>previous</div><div class='paginate'>next</div></div>`
 	updatePageContent(listPostsHtml);
+
+	//TODO add on click a tag event
+	document.querySelectorAll('.tags').forEach((tags) => {
+		addEvent("click", tags, (event) => {
+			//do something
+			TAG = event.srcElement.id;
+			onListPostsLoad();
+		});
+	});
+	addEvent('click', document.querySelector('#allPosts'), () => {
+		window.TAG = null;
+		onListPostsLoad();
+	})
+
 
 	drawStarMap();
 

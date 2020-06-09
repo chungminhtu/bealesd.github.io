@@ -214,6 +214,10 @@ body {
 	background-color: lightgrey;
 }
 
+.tags:hover {
+	cursor: pointer;
+}
+
 .postContentDiv {
 	background-color: white;
 	padding: 0px 0px 50px 0px;
