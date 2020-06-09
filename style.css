@@ -25,7 +25,6 @@ body {
 	background-color: white;
 }
 
-
 @media (min-width: 700px) {
 	.postContentDiv {
 		width: 50%;
@@ -134,18 +133,19 @@ body {
 }
 
 .postsHeader {
+	--postHeaderFontSize: 40px;
 	background-color: black;
 	padding-top: 20px;
 	padding-bottom: 10px;
 	color: white;
 	text-align: center;
 	letter-spacing: 1px;
-	font-size: 40px;
+	font-size: var(--postHeaderFontSize);
 	margin: auto;
 	width: 100%;
 }
 
-.postsHeader:hover{
+.postsHeader:hover {
 	cursor: help;
 }
 
@@ -187,7 +187,7 @@ body {
 	transition: all 1s ease-out;
 }
 
-.paginate:hover{
+.paginate:hover {
 	cursor: pointer;
 }
 
@@ -214,8 +214,25 @@ body {
 	background-color: lightgrey;
 }
 
-.tags:hover {
+.tags>em {
+	padding: 0px 4px;
+	border-radius: 4px;
+}
+
+.tags>em:hover {
 	cursor: pointer;
+	background-color: white;
+	transition: all 1s ease-out;
+}
+
+#allPosts {
+	border-bottom: 1px solid rgba(192, 192, 192, 0);
+	transition: border 1s ease; 
+}
+
+#allPosts:hover {
+	cursor: pointer;
+	border-bottom: 2px solid rgba(192, 192, 192, 1);
 }
 
 .postContentDiv {

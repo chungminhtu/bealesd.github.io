@@ -128,9 +128,8 @@ function onListPostsLoad() {
 	updatePageContent(listPostsHtml);
 
 	//TODO add on click a tag event
-	document.querySelectorAll('.tags').forEach((tags) => {
+	document.querySelectorAll('.tags > em').forEach((tags) => {
 		addEvent("click", tags, (event) => {
-			//do something
 			TAG = event.srcElement.id;
 			onListPostsLoad();
 		});
