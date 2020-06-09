@@ -1,3 +1,5 @@
+//TODO, add a posts search
+
 window.starColors = null;
 window.ctx = null
 window.canvas = null
@@ -124,7 +126,7 @@ function onListPostsLoad() {
 	let postsHtml = '<div class="postsHeader"><a id="allPosts">Posts</a> by David Beales </div>';
 	postsHtml += generateAllPostsHtml();
 
-	let listPostsHtml = `<div id="pageWrapper">${postsHtml}<div class='paginate later'>previous</div><div class='paginate'>next</div></div>`
+	let listPostsHtml = `<div id="pageWrapper">${postsHtml}<div><div class='paginate later'>previous</div></div><div><div class='paginate'>next</div></div></div>`
 	updatePageContent(listPostsHtml);
 
 	//TODO add on click a tag event
