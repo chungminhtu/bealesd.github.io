@@ -1,5 +1,3 @@
-//TODO, add a posts search
-
 window.starColors = null;
 window.ctx = null
 window.canvas = null
@@ -7,6 +5,7 @@ window.starInterval = null;
 window.postPaginationIndex = 0;
 
 window.TAG = null;
+window.VALUE = "";
 window.POSTS_PER_PAGE = 3;
 const POSTS = [
 	{
@@ -110,26 +109,92 @@ function generateAllPostsHtml() {
 			post['displayName'],
 			post['tag']);
 
-		if (TAG !== null && TAG === post['tag']) {
-			postsHtml += postHtml;
+		//TODO add multiple value support
+		if (post['displayName'].includes(VALUE)) {
+			if (TAG !== null && TAG === post['tag']) {
+				postsHtml += postHtml;
+			}
+			else if (TAG === null || TAG === '') {
+				postsHtml += postHtml;
+			}
 		}
-		else if (TAG === null || TAG === '') {
-			postsHtml += postHtml;
+
+		else if (VALUE.trim() === "") {
+			if (TAG !== null && TAG === post['tag']) {
+				postsHtml += postHtml;
+			}
+			else if (TAG === null || TAG === '') {
+				postsHtml += postHtml;
+			}
 		}
 	}
 	return postsHtml;
 }
 
 function onListPostsLoad() {
+	///TODO dont refresh window.VALUE
 	changeUri('/posts');
 
 	let postsHtml = '<div class="postsHeader"><a id="allPosts">Posts</a> by David Beales </div>';
 	postsHtml += generateAllPostsHtml();
+	let listPostsHtml = '';
+	if (window.VALUE.trim().length > 0) {
+		listPostsHtml = `
+		<div id="pageWrapper">${postsHtml}
 
-	let listPostsHtml = `<div id="pageWrapper">${postsHtml}<div><div class='paginate later'>previous</div></div><div><div class='paginate'>next</div></div></div>`
+			<div>
+				<div class='paginate later'>previous</div>
+			</div>
+			<div>
+				<div class='paginate'>next</div>
+			</div>
+
+			<div>
+				<div id='search'>
+					<form>
+						<label style="display:inline-block" for="searchInput">&nbsp Filter</label> 
+						<input id="searchInput" type="text" placeholder=" filter posts" maxlength="25" value='${window.VALUE}'>
+					</form>
+				</div>
+			</div>
+			
+		</div>`
+	}
+	else {
+		listPostsHtml = `
+		<div id="pageWrapper">${postsHtml}
+
+			<div>
+				<div class='paginate later'>previous</div>
+			</div>
+			<div>
+				<div class='paginate'>next</div>
+			</div>
+
+			<div>
+				<div id='search'>
+					<form>
+						<label style="display:inline-block" for="searchInput">&nbsp Filter</label> 
+						<input id="searchInput" type="text" placeholder=" filter posts" maxlength="50">
+					</form>
+				</div>
+			</div>
+			
+		</div>`
+	}
+
 	updatePageContent(listPostsHtml);
 
-	//TODO add on click a tag event
+	this.input = document.querySelector(`#searchInput`);
+	this.input.focus();
+	this.input.value = '';
+	this.input.value = VALUE;
+
+	document.querySelector(`#searchInput`).addEventListener('input', (event) => {
+		VALUE = event.srcElement.value;
+		onListPostsLoad();
+	});
+
 	document.querySelectorAll('.tags > em').forEach((tags) => {
 		addEvent("click", tags, (event) => {
 			TAG = event.srcElement.id;

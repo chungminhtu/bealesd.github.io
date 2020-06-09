@@ -135,7 +135,7 @@ body {
 .postsHeader {
 	--postHeaderFontSize: 40px;
 	background-color: black;
-	padding-top: 20px;
+	padding-top: 60px;
 	padding-bottom: 10px;
 	color: white;
 	text-align: center;
@@ -269,4 +269,26 @@ pre {
 	line-height: 1.45;
 	background-color: #f6f8fa;
 	border-radius: 10px;
+}
+
+#search{
+    position: fixed;
+    top: 0;
+    width: 100%;
+    height: 50px;
+
+    background-color: rgba(228, 228, 228, 0.5);
+    border-bottom: black 1px solid;
+}
+
+#searchInput{
+    display: inline-block;
+
+    font-size: 20px;
+    width: 400px;
+
+    border-radius: 10px;
+    margin: 10px 10px;
+    color:  rgb(92, 92, 92);
+    outline: none;
 }
