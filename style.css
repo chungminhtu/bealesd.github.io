@@ -1,3 +1,19 @@
+:root {
+	--main-background-color: rgba(248, 248, 248, 1);
+	--main-header-font-color: black;
+	--main-border-color: lightgrey;
+	--post-header-font-size: 40px;
+	--heading-padding: 10px;
+	--posts-header-width: 100px;
+	--search-bar-height: 50px;
+	--sidebar-width: 200px;
+	--paginate-button-width: 100px;
+	--post-content-padding-width: 40px;
+	--search-margin-left: 10px;
+	--search-form-width: 200px;
+	--main-border: 1px solid var(--main-border-color);
+}
+
 html {
 	height: 100%;
 }
@@ -6,38 +22,32 @@ body {
 	margin: 0px;
 	padding: 0px;
 	border: 0px;
-	background-color: white;
-	height: 100%;
-	overflow: auto;
+	background-color: var(--main-background-color);
 	font-family: 'Roboto', sans-serif;
 }
 
-#pageWrapper {
-	position: absolute;
-	z-index: 2;
+#template {
 	width: 100%;
 	height: 100%;
 	padding: 0px 0% 0px 0%;
 }
 
-#postTemplate {
-	height: 100%;
-	background-color: white;
+#layout {
+	margin-top: var(--search-bar-height);
 }
 
 @media (min-width: 700px) {
-	.postContentDiv {
-		width: 50%;
-		margin: 0 auto;
-		margin-left: 25%;
+	:root {
+		--post-link-width: 450px;
+		--post-content-width: 350px;
 	}
 	.sidebar {
 		height: 100%;
-		width: 200px;
+		width: var(--sidebar-width);
 		background-color: #fff;
+		border: var(--main-border);
 		position: fixed!important;
-		z-index: 1;
-		overflow: auto
+		overflow: auto;
 	}
 	.bar-block .bar-item {
 		width: auto;
@@ -90,93 +100,103 @@ body {
 	.activated-link {
 		color: red;
 	}
+	.postLinkDiv {
+		width: var(--post-link-width);
+		margin-left: calc(var(--sidebar-width) + ((100% - (var(--sidebar-width) + var(--post-link-width)))/2))!important;
+	}
+	.postsHeader {
+		text-align: left !important;
+		margin-left: calc(var(--sidebar-width) + ((100% - (var(--sidebar-width) + var(--posts-header-width)))/2))!important;
+	}
+	.paginate {
+		margin-left: calc(var(--sidebar-width) + ((100% - (var(--sidebar-width) + var(--paginate-button-width)))/2))!important;
+	}
+	.postContent {
+		--post-content-total-width: calc( (var(--post-content-padding-width)*2) + 2px + var(--post-content-width));
+		margin-left: calc(var(--sidebar-width) + ((100% - (var(--sidebar-width) + var(--post-content-total-width)))/2))!important;
+	}
+}
+
+@media (min-width: 900px) {
+	:root {
+		--post-link-width: 650px;
+		--post-content-width: 550px
+	}
+}
+
+@media (min-width: 1200px) {
+	:root {
+		--post-content-width: 800px
+	}
 }
 
 @media (max-width: 700px) {
-	.postContentDiv {
-		width: 100%;
-	}
 	.sidebar {
 		display: none;
 	}
 	.bar-block .bar-item {
 		display: none;
 	}
-}
-
-#allPostsLink {
-	display: inline-block;
-	box-sizing: border-box;
-	background-color: black;
-	border-radius: 50px 50px 50px 50px;
-	padding-top: 10px;
-	padding-bottom: 10px;
-	color: white;
-	text-align: center;
-	letter-spacing: 5px;
-	font-weight: bold;
-	text-transform: uppercase;
-	font-size: 40px;
-}
-
-#allPostsLink:hover {
-	background-color: white;
-	color: black;
-	transition: all 1.5s ease-out;
-	cursor: pointer;
-}
-
-#canvas {
-	z-index: 1;
-	position: absolute;
-	background-color: black;
+	.postLinkDiv {
+		margin-left: auto;
+		margin-right: auto;
+		width: 75%;
+	}
+	.paginate {
+		margin: auto;
+	}
 }
 
 .postsHeader {
-	--postHeaderFontSize: 40px;
-	background-color: black;
-	padding-top: 60px;
-	padding-bottom: 10px;
-	color: white;
+	padding-top: var(--heading-padding);
+	padding-bottom: var(--heading-padding);
+	color: var(--main-header-font-color);
 	text-align: center;
 	letter-spacing: 1px;
-	font-size: var(--postHeaderFontSize);
+	font-size: var(--post-header-font-size);
+}
+
+.postLinkDiv {
+	background-color: white;
+	padding: 20px 0px 00px 0px;
+	border: solid 2px var(--main-border-color);
+	margin-top: 20px;
+	margin-bottom: 50px;
+}
+
+.paginate {
+	width: var(--paginate-button-width);
+	padding-top: 20px;
+	padding-bottom: 10px;
+	border-bottom: 1px solid rgba(192, 192, 192, 0);
+	background-color: var(--main-background-color);
+	color: var(--main-header-font-color);
+	text-align: center;
+	letter-spacing: 1px;
+	font-size: 14px;
+	transition: border 1s ease;
 	margin: auto;
-	width: 100%;
+}
+
+.postContent {
+	width: var(--post-content-width);
+	margin-left: auto;
+	margin-right: auto;
+	border: var(--main-border);
+	padding: var(--post-content-padding-width);
+	background-color: #fff;
+	color: black;
+	text-align: left;
+	font-size: 16px;
 }
 
 .postsHeader:hover {
 	cursor: help;
 }
 
-.paginate {
-	margin: auto;
-	width: 100px;
-	padding-top: 20px;
-	padding-bottom: 10px;
-
-	background-color: black;
-	color: white;
-
-	text-align: center;
-	letter-spacing: 1px;
-	font-size: 14px;
-
-	border-bottom: 1px solid rgba(192, 192, 192, 0);
-	transition: border 1s ease; 
-}
-
 .paginate:hover {
 	cursor: pointer;
 	border-bottom: 2px solid rgba(192, 192, 192, 1);
-}
-
-.postLinkDiv {
-	background-color: white;
-	margin: 20px auto 50px auto;
-	padding: 20px 0px 00px 0px;
-	max-width: 600px;
-	border: solid 1px #f6f8fa
 }
 
 .postLink {
@@ -237,29 +257,12 @@ body {
 
 #allPosts {
 	border-bottom: 1px solid rgba(192, 192, 192, 0);
-	transition: border 1s ease; 
+	transition: border 1s ease;
 }
 
 #allPosts:hover {
 	cursor: pointer;
 	border-bottom: 2px solid rgba(192, 192, 192, 1);
-}
-
-.postContentDiv {
-	background-color: white;
-	padding: 0px 0px 50px 0px;
-}
-
-.postContent {
-	display: block;
-	margin-left: auto;
-	margin-right: auto;
-	border: 1px solid #ddd;
-	padding: 40px;
-	background-color: #fff;
-	color: black;
-	text-align: left;
-	font-size: 16px;
 }
 
 pre {
@@ -271,24 +274,31 @@ pre {
 	border-radius: 10px;
 }
 
-#search{
-    position: fixed;
-    top: 0;
-    width: 100%;
-    height: 50px;
-
-    background-color: rgba(228, 228, 228, 0.5);
-    border-bottom: black 1px solid;
+#search {
+	position: fixed;
+	top: 0;
+	width: 100%;
+	height: var(--search-bar-height);
+	background-color: rgba(228, 228, 228, 0.5);
+	border-bottom: var(--main-border);
 }
 
-#searchInput{
-    display: inline-block;
+#search>form {
+	display: inline-block;
+	width: var(--search-form-width);
+}
 
-    font-size: 20px;
-    width: 400px;
+#searchInput {
+	display: inline-block;
+	font-size: 14px;
+	margin-left: 10px;
+	margin-top: 13px;
+	color: rgb(92, 92, 92);
+	outline: none;
+}
 
-    border-radius: 10px;
-    margin: 10px 10px;
-    color:  rgb(92, 92, 92);
-    outline: none;
+#header {
+	display: inline-block;
+	text-align: right;
+	width: calc(100% - (var(--search-form-width) + var(--search-margin-left)));
 }
