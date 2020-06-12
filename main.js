@@ -1,8 +1,13 @@
 window.postPaginationIndex = 0;
-window.TAG = null;
 window.VALUE = "";
 window.POSTS_PER_PAGE = 3;
-
+window.START = 0;
+window.END = 3;
+window.CURRENT_POSTS = [];
+window.ALL_POSTS = [];
+window.TOASTS = [];
+window.TAG = "";
+window.postsByTag = [];
 const POSTS = [
 	{
 		'id': 'JavaScriptVariablesAndScope',
@@ -85,33 +90,147 @@ function generateAllPostsHtml() {
 			post['displayName'],
 			post['tag']);
 
-		//TODO add multiple value support
-		if (post['displayName'].toLocaleLowerCase().includes(VALUE.toLocaleLowerCase())) {
-			if (TAG !== null && TAG === post['tag']) {
-				postsHtml += postHtml;
-			}
-			else if (TAG === null || TAG === '') {
-				postsHtml += postHtml;
-			}
+		if (TAG !== null && TAG === post['tag']) {
+			postsHtml += postHtml;
 		}
-
-		else if (VALUE.trim() === "") {
-			if (TAG !== null && TAG === post['tag']) {
-				postsHtml += postHtml;
-			}
-			else if (TAG === null || TAG === '') {
-				postsHtml += postHtml;
-			}
+		else if (TAG === null || TAG === '') {
+			postsHtml += postHtml;
 		}
 	}
 	return postsHtml;
 }
 
+function filterPostsByTag(posts, tag) {
+	let postsByTag = [];
+	for (let i = 0; i < posts.length; i++) {
+		const post = posts[i];
+		if (post['tag'].toLocaleLowerCase() === tag.toLocaleLowerCase())
+			postsByTag.push(post);
+	}
+	return postsByTag;
+}
+
+function filterPostsByWord(posts, word) {
+	let postsByWord = [];
+	for (let i = 0; i < posts.length; i++) {
+		const post = posts[i];
+		if (post['displayName'].toLocaleLowerCase().includes(word.toLocaleLowerCase()))
+			postsByWord.push(post);
+	}
+	return postsByWord;
+}
+
+function filterPostsByRange(posts, start, end) {
+	return posts.slice(start, end);
+}
+
+function filterPosts(posts, tag, word) {
+	filteredPosts = [];
+	if (tag && !word) {
+		filteredPosts = filterPostsByTag(posts, tag);
+		return filteredPosts;
+	}
+	else if (tag && word) {
+		filteredPosts = filterPostsByTag(posts, tag);
+		filteredPosts = filterPostsByWord(filteredPosts, word);
+		return filteredPosts;
+	}
+	else {
+		filteredPosts = filterPostsByWord(posts, word);
+		return filteredPosts;
+	}
+}
+
+function generatePosts(posts) {
+	let postsHtml = '';
+	for (let i = 0; i < posts.length; i++) {
+		const post = posts[i];
+		const postHtml = generatePostHtml(
+			post['timestamp'],
+			post['id'],
+			post['displayName'],
+			post['tag']);
+
+		postsHtml += postHtml;
+	}
+	return postsHtml;
+}
+
+function updatePosts(postsHtml) {
+	document.querySelectorAll('.postLinkDiv').forEach((elem) => {
+		elem.remove();
+	})
+	document.querySelector('.postsHeader').insertAdjacentHTML("afterend", postsHtml);
+}
+
+function registerPostsEvents() {
+	document.querySelectorAll('.tags > em').forEach((tag) => {
+		addEvent("click", tag, (event) => {
+			if (TOASTS.includes(event.srcElement.id)) {
+				// removeToast(event.srcElement.id);
+			}
+			else {
+				TAG = event.srcElement.id;
+				addToast('alert-info', `Tag: ${TAG}`, TAG);
+				TOASTS.push(event.srcElement.id);
+
+				let posts = filterPosts(ALL_POSTS, TAG, VALUE);
+				let html = generatePosts(posts);
+				updatePosts(html);
+				registerPostsEvents();
+			}
+		});
+	});
+
+	document.querySelectorAll('.postLink').forEach(function (post) {
+		addEvent("click", post, async (event) => {
+			handlePostLoad(event);
+		});
+	})
+}
+
+function addToast(type, message, id) {
+	let index = 0;
+
+	document.querySelector('#toast').innerHTML =
+		`<div id=${id} class="alert ${type} alert-dismissible">
+		${message}
+		<button type="button" class="close">X</button>
+	</div>` + document.querySelector('#toast').innerHTML;
+
+	document.querySelectorAll('.alert').forEach((elem) => {
+		const positionFromBottom = (80 * index++);
+		elem.style.bottom = `${positionFromBottom}px`;
+	})
+
+	addEvent('click', document.querySelector(`#${id} button`), () => {
+		removeToast();
+		//TODO rerun tags
+		TAG = '';
+		let posts = filterPosts(ALL_POSTS, TAG, VALUE);
+		let html = generatePosts(posts);
+		updatePosts(html);
+		registerPostsEvents();
+	});
+}
+
+function removeToast() {
+	const id = event.srcElement.parentNode.id;
+	event.srcElement.parentNode.remove();
+	window.TOASTS = window.TOASTS.filter(item => item !== id);
+}
+
+function clearToasts() {
+	document.querySelector('#toast').innerHTML = '';
+}
+
 function onListPostsLoad() {
+	ALL_POSTS = soughtPostsByProperty('timestamp');
+	CURRENT_POSTS = ALL_POSTS;
+
 	changeUri('/blog');
 
 	let postsHtml = '<div class="postsHeader"><a id="allPosts">Posts</a></div>';
-	postsHtml += generateAllPostsHtml();
 	postsHtml += `
 			<div>
 				<div class='paginate later'>previous</div>
@@ -121,37 +240,36 @@ function onListPostsLoad() {
 			</div>
 `
 	updateTemplate(postsHtml);
-	updateLayout(
-		`<div id='search'>
-			<form>
-				<input id="searchInput" type="text" placeholder=" Search" maxlength="40" value='${window.VALUE}'>
-			</form>
-			<p id="header">Posts By David Beales</p>
-		</div>`
-	);
 
 	let input = document.querySelector(`#searchInput`);
 	input.focus();
 	input.value = '';
 	input.value = VALUE;
 
-	document.querySelector(`#searchInput`).addEventListener('input', (event) => {
-		VALUE = event.srcElement.value;
-		onListPostsLoad();
+	const postsByWord = filterPostsByWord(CURRENT_POSTS, input.value);
+	let html = generatePosts(postsByWord);
+	updatePosts(html);
+
+	addEvent('input', document.querySelector(`#searchInput`), (event) => {
+		let v = event.srcElement.value;
+		VALUE = v;
+		let posts = filterPosts(ALL_POSTS, TAG, VALUE);
+
+		let html = generatePosts(posts);
+		updatePosts(html);
+		registerPostsEvents();
 	});
 
-	document.querySelectorAll('.tags > em').forEach((tags) => {
-		addEvent("click", tags, (event) => {
-			TAG = event.srcElement.id;
-			onListPostsLoad();
-		});
-	});
-	addEvent('click', document.querySelector('#allPosts'), () => {
-		window.TAG = null;
-		onListPostsLoad();
-	})
+	// addEvent('click', document.querySelector('#allPosts'), () => {
+	// 	let postsByDate = soughtPostsByProperty('timestamp');
+	// 	postsByDate = filterPostsByRange(postsByDate, START, END);
 
-	onPostLoad();
+	// 	let html = generatePosts(postsByDate);
+	// 	updatePosts(html);
+	// 	registerPostsEvents();
+	// })
+
+	registerPostsEvents();
 
 	document.querySelectorAll('.paginate').forEach((paginate) => {
 		addEvent("click", paginate, (event) => {
@@ -186,20 +304,6 @@ function updateLayout(html) {
 	let element = document.createElement('div');
 	element.innerHTML = html;
 	document.querySelector('#layout').appendChild(element);
-}
-
-function onPostLoad() {
-	postLinks = [];
-	document.querySelectorAll('.postLink').forEach(function (post) {
-		const id = `${post.id.toLowerCase()}`;
-		postLinks.push(id);
-	});
-
-	document.querySelectorAll('.postLink').forEach(function (post) {
-		addEvent("click", post, async (event) => {
-			handlePostLoad(event);
-		});
-	})
 }
 
 async function handlePostLoad(event) {
@@ -275,11 +379,7 @@ function handlePostLinks() {
 		return `<a class='bar-item bar-link sub-header' id='${postValue['id']}'>${postValue['displayName']}</a>`;
 	})
 
-	document.querySelector('body').innerHTML =
-		`<div class="sidebar bar-block">
-			${anchors}
-		</div>
-		` + document.querySelector('body').innerHTML;
+	document.querySelector('.sidebar').innerHTML = anchors;
 
 	document.querySelectorAll('.bar-link.header').forEach((link) => {
 		addEvent("click", link, async (event) => {

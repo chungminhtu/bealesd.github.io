@@ -6,7 +6,7 @@
 	<link rel="stylesheet" href="/style.css" />
 
 	<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-	
+
 	<script src="/prismLight.js"></script>
 	<link rel="stylesheet" href="/prismLight.css">
 
@@ -19,8 +19,25 @@
 </head>
 
 <body>
+	<div id='search'>
+		<form>
+			<input id="searchInput" type="text" placeholder=" Search" maxlength="40" value='${window.VALUE}'>
+		</form>
+		<p id="header">Posts By David Beales</p>
+	</div>
+
+	<div class="sidebar bar-block">
+	</div>
+
 	<div id="layout">
 		<div id="template"></div>
+	</div>
+
+	<div id='toast' class="bs-example message-box"> 
+		<!-- <div class="alert alert-info alert-dismissible">
+			<strong>Tag</strong> JavaScript
+			<button type="button" class="close" data-dismiss="alert">×</button>
+		</div> -->
 	</div>
 </body>
 
