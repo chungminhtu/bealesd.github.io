@@ -369,6 +369,16 @@ function setupSidebar() {
 		await onListPostsLoad();
 	});
 
+	addEvent('click', document.querySelector('.container'), () => {
+		const sidebar = document.querySelector('.sidebar');
+		if (sidebar.style.display === 'block') {
+			sidebar.style.display = 'none';
+		}
+		else {
+			sidebar.style.display = 'block';
+		}
+	})
+
 	document.querySelectorAll('.bar-link.sub-header').forEach((link) => {
 		addEvent("click", link, async (event) => {
 			await loadPostContent(event.srcElement.id);
@@ -397,13 +407,13 @@ function setupSidebar() {
 	});
 }
 
-function collapseSidebar(){
-	document.querySelectorAll(`.sidebar span`).forEach((span)=>{
+function collapseSidebar() {
+	document.querySelectorAll(`.sidebar span`).forEach((span) => {
 		span.classList.remove("down");
 		span.classList.add("up");
 	})
 
-	document.querySelectorAll(`.sidebar .show`).forEach((subHeaders)=>{
+	document.querySelectorAll(`.sidebar .show`).forEach((subHeaders) => {
 		subHeaders.classList.remove("show");
 		subHeaders.classList.add("hide");
 	})
@@ -411,19 +421,19 @@ function collapseSidebar(){
 	document.querySelectorAll(`.activated-link`).forEach((al) => { al.classList.remove('activated-link') });
 }
 
-function exapndSidebar(){
-	document.querySelectorAll(`.sidebar span`).forEach((span)=>{
+function exapndSidebar() {
+	document.querySelectorAll(`.sidebar span`).forEach((span) => {
 		span.classList.remove("up");
 		span.classList.add("down");
 	})
 
-	document.querySelectorAll(`.sidebar .hide`).forEach((subHeaders)=>{
+	document.querySelectorAll(`.sidebar .hide`).forEach((subHeaders) => {
 		subHeaders.classList.remove("hide");
 		subHeaders.classList.add("show");
 	})
 }
 
-function showPostInSidebar(postId){
+function showPostInSidebar(postId) {
 	const tag = POSTS.filter((post) => { return post.id === postId })[0].tag;
 	const menuHeader = document.querySelector(`[data-id="${tag}"]`);
 
@@ -443,7 +453,7 @@ async function loadPostContent(id) {
 	updateTemplate('<div class="postContent"></div>');
 
 	await loadPostMarkdownHtml(id);
-	
+
 	changeUri(`/blog/${id}`);
 
 	showPostInSidebar(id);
