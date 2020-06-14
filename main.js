@@ -377,6 +377,15 @@ function setupSidebar() {
 		else {
 			sidebar.style.display = 'block';
 		}
+
+		let hamburgerSlices = document.querySelector('.container').children;
+		for (let i = 0; i < hamburgerSlices.length; i++) {
+			const hamburgerSlice = hamburgerSlices[i];
+			if (hamburgerSlice.classList.contains("change"))
+				hamburgerSlice.classList.remove("change");
+			else
+				hamburgerSlice.classList.add("change");
+		}
 	})
 
 	document.querySelectorAll('.bar-link.sub-header').forEach((link) => {
