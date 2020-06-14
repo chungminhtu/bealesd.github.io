@@ -44,7 +44,7 @@ window.onpopstate = async function () {
 };
 
 async function routeUrl() {
-	handlePostLinks();
+	setupSidebar();
 	const suffix = getUrlSuffix();
 	if (suffix) {
 		const page = POSTS.filter((p) => { return p['id'] === suffix; });
@@ -157,10 +157,19 @@ function generatePosts(posts) {
 }
 
 function updatePosts(postsHtml) {
-	document.querySelectorAll('.postLinkDiv').forEach((elem) => {
-		elem.remove();
+	document.querySelectorAll('.postLinkDiv').forEach((postLinkDiv) => {
+		postLinkDiv.remove();
 	})
-	document.querySelector('.postsHeader').insertAdjacentHTML("afterend", postsHtml);
+
+	const div = document.createElement('div');
+	div.innerHTML = postsHtml;
+
+	const postLinkDivs = div.querySelectorAll('.postLinkDiv');
+	for (let i = postLinkDivs.length - 1; i >= 0; i--) {
+		const postLinkDiv = postLinkDivs[i];
+		document.querySelector('#template').prepend(postLinkDiv)
+
+	}
 }
 
 function registerPostsEvents() {
@@ -184,7 +193,7 @@ function registerPostsEvents() {
 
 	document.querySelectorAll('.postLink').forEach(function (post) {
 		addEvent("click", post, async (event) => {
-			handlePostLoad(event);
+			await loadPostContent(event.srcElement.id);
 		});
 	})
 }
@@ -205,7 +214,6 @@ function addToast(type, message, id) {
 
 	addEvent('click', document.querySelector(`#${id} button`), () => {
 		removeToast();
-		//TODO rerun tags
 		TAG = '';
 		let posts = filterPosts(ALL_POSTS, TAG, VALUE);
 		let html = generatePosts(posts);
@@ -222,6 +230,7 @@ function removeToast() {
 
 function clearToasts() {
 	document.querySelector('#toast').innerHTML = '';
+	window.TOASTS = [];
 }
 
 function onListPostsLoad() {
@@ -230,15 +239,8 @@ function onListPostsLoad() {
 
 	changeUri('/blog');
 
-	let postsHtml = '<div class="postsHeader"><a id="allPosts">Posts</a></div>';
-	postsHtml += `
-			<div>
-				<div class='paginate later'>previous</div>
-			</div>
-			<div>
-				<div class='paginate'>next</div>
-			</div>
-`
+	let postsHtml = `<div class='paginate later'>previous</div>				
+					 <div class='paginate'>next</div>`;
 	updateTemplate(postsHtml);
 
 	let input = document.querySelector(`#searchInput`);
@@ -251,23 +253,13 @@ function onListPostsLoad() {
 	updatePosts(html);
 
 	addEvent('input', document.querySelector(`#searchInput`), (event) => {
-		let v = event.srcElement.value;
-		VALUE = v;
+		VALUE = event.srcElement.value;
 		let posts = filterPosts(ALL_POSTS, TAG, VALUE);
 
 		let html = generatePosts(posts);
 		updatePosts(html);
 		registerPostsEvents();
 	});
-
-	// addEvent('click', document.querySelector('#allPosts'), () => {
-	// 	let postsByDate = soughtPostsByProperty('timestamp');
-	// 	postsByDate = filterPostsByRange(postsByDate, START, END);
-
-	// 	let html = generatePosts(postsByDate);
-	// 	updatePosts(html);
-	// 	registerPostsEvents();
-	// })
 
 	registerPostsEvents();
 
@@ -304,10 +296,6 @@ function updateLayout(html) {
 	let element = document.createElement('div');
 	element.innerHTML = html;
 	document.querySelector('#layout').appendChild(element);
-}
-
-async function handlePostLoad(event) {
-	await loadPostContent(event.srcElement.id);
 }
 
 function soughtPostsByProperty(property) {
@@ -356,35 +344,29 @@ function getPostByTags() {
 	return orderedPostsByTag;
 }
 
-function buildPostLinks(htmlGenerator) {
-	let html = "";
-	html += `<a class='bar-item bar-link header' id='blog'>Home</a>`;
+function createSidebar() {
+	let html = `<a class='bar-item bar-link header' id='blog'>Home</a>`;
 
 	const orderedPostsByTagKeys = Object.keys(POSTS_BY_TAG);
 	for (let i = 0; i < orderedPostsByTagKeys.length; i++) {
 		const orderedPostsByTagKey = orderedPostsByTagKeys[i];
 		const postArray = orderedPostsByTag[orderedPostsByTagKey];
-		html += `<a class='block bar-item header accordion' data-id='${orderedPostsByTagKey}'>${orderedPostsByTagKey}<span class='up'>&#10148;</span></a><div class='hide'>`;
+		html += `<a class='bar-item header accordion' data-id='${orderedPostsByTagKey}'>${orderedPostsByTagKey}<span class='up'>&#10148;</span></a><div class='hide'>`;
 		for (let j = 0; j < postArray.length; j++) {
 			const postValue = postArray[j];
-			html += htmlGenerator(postValue);
+			html += `<a class='bar-item bar-link sub-header' id='${postValue['id']}'>${postValue['displayName']}</a>`
 		}
 		html += '</div>';
 	}
 	return html;
 }
 
-function handlePostLinks() {
-	const anchors = buildPostLinks((postValue) => {
-		return `<a class='bar-item bar-link sub-header' id='${postValue['id']}'>${postValue['displayName']}</a>`;
-	})
+function setupSidebar() {
+	document.querySelector('.sidebar').innerHTML = createSidebar();
 
-	document.querySelector('.sidebar').innerHTML = anchors;
-
-	document.querySelectorAll('.bar-link.header').forEach((link) => {
-		addEvent("click", link, async (event) => {
-			await loadPage(event.srcElement.id);
-		});
+	addEvent("click", document.querySelector('#blog'), async () => {
+		collapseSidebar();
+		await onListPostsLoad();
 	});
 
 	document.querySelectorAll('.bar-link.sub-header').forEach((link) => {
@@ -415,26 +397,56 @@ function handlePostLinks() {
 	});
 }
 
-function loadPage(id) {
-	if (id === 'blog') {
-		onListPostsLoad();
-	}
+function collapseSidebar(){
+	document.querySelectorAll(`.sidebar span`).forEach((span)=>{
+		span.classList.remove("down");
+		span.classList.add("up");
+	})
+
+	document.querySelectorAll(`.sidebar .show`).forEach((subHeaders)=>{
+		subHeaders.classList.remove("show");
+		subHeaders.classList.add("hide");
+	})
+
+	document.querySelectorAll(`.activated-link`).forEach((al) => { al.classList.remove('activated-link') });
+}
+
+function exapndSidebar(){
+	document.querySelectorAll(`.sidebar span`).forEach((span)=>{
+		span.classList.remove("up");
+		span.classList.add("down");
+	})
+
+	document.querySelectorAll(`.sidebar .hide`).forEach((subHeaders)=>{
+		subHeaders.classList.remove("hide");
+		subHeaders.classList.add("show");
+	})
+}
+
+function showPostInSidebar(postId){
+	const tag = POSTS.filter((post) => { return post.id === postId })[0].tag;
+	const menuHeader = document.querySelector(`[data-id="${tag}"]`);
+
+	menuHeader.nextSibling.classList.remove("hide");
+	menuHeader.nextSibling.classList.add("show");
+
+	menuHeader.querySelector('span').classList.remove("up");
+	menuHeader.querySelector('span').classList.add("down");
+
+	document.querySelectorAll(`.activated-link`).forEach((al) => { al.classList.remove('activated-link') });
+	document.querySelector(`#${postId}`).classList.add('activated-link');
 }
 
 async function loadPostContent(id) {
+	clearToasts();
+
 	updateTemplate('<div class="postContent"></div>');
+
 	await loadPostMarkdownHtml(id);
+	
 	changeUri(`/blog/${id}`);
 
-	const activeMenuId = POSTS.filter((post) => { return post.id === id })[0].tag;
-	const activeMenu = document.querySelector(`[data-id="${activeMenuId}"]`);
-	activeMenu.nextSibling.classList.add("show");
-	activeMenu.querySelector('span').classList.remove("up");
-	activeMenu.querySelector('span').classList.add("down");
-	activeMenu.nextSibling.classList.remove("hide");
-
-	document.querySelectorAll(`.activated-link`).forEach((al) => { al.classList.remove('activated-link') });
-	document.querySelector(`#${id}`).classList.add('activated-link');
+	showPostInSidebar(id);
 }
 
 async function loadPostMarkdownHtml(pageName) {

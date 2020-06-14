@@ -2,6 +2,7 @@
 	--main-background-color: rgba(248, 248, 248, 1);
 	--main-header-font-color: black;
 	--main-border-color: lightgrey;
+	--layout-margin-top: 40px;
 	--post-header-font-size: 40px;
 	--heading-padding: 10px;
 	--posts-header-width: 100px;
@@ -33,7 +34,7 @@ body {
 }
 
 #layout {
-	margin-top: var(--search-bar-height);
+	margin-top: calc(var(--search-bar-height) + var(--layout-margin-top));
 }
 
 @media (min-width: 700px) {
@@ -44,6 +45,7 @@ body {
 	.sidebar {
 		height: 100%;
 		width: var(--sidebar-width);
+		margin-top: calc(var(--layout-margin-top) * -1);
 		background-color: #fff;
 		border: var(--main-border);
 		position: fixed!important;
@@ -68,16 +70,31 @@ body {
 		display: none;
 		padding: 4px 28px;
 	}
-	.bar-item.bar-link:hover {
-		color: #000!;
-		background-color: #ccc;
+
+	.bar-item.bar-link.header:hover {
+		color: #0c5460;
+		background-color: #d1ecf1B3;
+		border-color: #bee5eb;
+
 		cursor: pointer;
 	}
-	.bar-item.accordion:hover {
-		color: #000!;
-		background-color: rgb(177, 177, 206);
+
+	.bar-item.header.accordion:hover {
+		color: #155724;
+		background-color: #d4edda;
+		border-color: #c3e6cb;
+
 		cursor: crosshair;
 	}
+
+	.bar-item.sub-header:hover {
+		color: #721c24;
+		background-color: #f8d7da;
+		border-color: #f5c6cb;
+
+		cursor: pointer;
+	}
+
 	.bar-item.header {
 		border-bottom: solid 1pt lightgrey;
 	}
@@ -98,7 +115,9 @@ body {
 		padding-left: 10px;
 	}
 	.activated-link {
-		color: red;
+		color: #721c24;
+		background-color: #f8d7da;
+		border-color: #f5c6cb;
 	}
 	.postLinkDiv {
 		width: var(--post-link-width);
@@ -253,16 +272,6 @@ body {
 	cursor: pointer;
 	background-color: white;
 	transition: all 1s ease-out;
-}
-
-#allPosts {
-	border-bottom: 1px solid rgba(192, 192, 192, 0);
-	transition: border 1s ease;
-}
-
-#allPosts:hover {
-	cursor: pointer;
-	border-bottom: 2px solid rgba(192, 192, 192, 1);
 }
 
 pre {
