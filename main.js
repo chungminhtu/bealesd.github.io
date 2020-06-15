@@ -8,6 +8,7 @@ window.ALL_POSTS = [];
 window.TOASTS = [];
 window.TAG = "";
 window.postsByTag = [];
+window.SIDEBAROFFWIDTH = 700;
 const POSTS = [
 	{
 		'id': 'JavaScriptVariablesAndScope',
@@ -388,6 +389,14 @@ function setupSidebar() {
 		}
 	})
 
+	managedResize('sideBarOn',() => {
+		const sidebar = document.querySelector('.sidebar');
+		const width  = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+		if (sidebar.style.display === 'none' && width > window.SIDEBAROFFWIDTH) {
+			document.querySelector('container').click();
+		}
+	})
+
 	document.querySelectorAll('.bar-link.sub-header').forEach((link) => {
 		addEvent("click", link, async (event) => {
 			await loadPostContent(event.srcElement.id);
@@ -525,8 +534,8 @@ Array.prototype.removeItem = function (indexToRemove) {
 	return newArray;
 };
 
-function managedResize(callbacks) {
-	let oldCb = window.events['windowResize'];
+function managedResize(key, callback) {
+	let oldCb = window.events[key];
 	window.removeEventListener('resize', oldCb);
 
 	let cb = () => {
@@ -534,15 +543,13 @@ function managedResize(callbacks) {
 		if (!resizeTimeout) {
 			resizeTimeout = setTimeout(function () {
 				resizeTimeout = null;
-				for (let index = 0; index < callbacks().length; index++) {
-					callbacks()[index]();
-				}
+				callback();
 			}, 66);
 		}
 	};
 
 	window.addEventListener('resize', cb);
-	window.events['windowResize'] = cb;
+	window.events[key] = cb;
 }
 
 function addEvent(eventType, element, callback, callbackArgs) {
