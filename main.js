@@ -372,12 +372,10 @@ function setupSidebar() {
 
 	addEvent('click', document.querySelector('.container'), () => {
 		const sidebar = document.querySelector('.sidebar');
-		if (sidebar.style.display === 'block') {
+		if (sidebar.style.display === 'block') 
 			sidebar.style.display = 'none';
-		}
-		else {
+		else 
 			sidebar.style.display = 'block';
-		}
 
 		let hamburgerSlices = document.querySelector('.container').children;
 		for (let i = 0; i < hamburgerSlices.length; i++) {
@@ -392,9 +390,8 @@ function setupSidebar() {
 	managedResize('sideBarOn',() => {
 		const sidebar = document.querySelector('.sidebar');
 		const width  = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
-		if (sidebar.style.display === 'none' && width > window.SIDEBAROFFWIDTH) {
-			document.querySelector('container').click();
-		}
+		if (sidebar.style.display === 'none' && width > window.SIDEBAROFFWIDTH) 
+			document.querySelector('.container').click();
 	})
 
 	document.querySelectorAll('.bar-link.sub-header').forEach((link) => {

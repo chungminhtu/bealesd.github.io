@@ -165,7 +165,7 @@ body {
 @media (max-width: 700px) {
 	:root {
 		--post-link-width: 450px;
-		--post-content-width: 350px;
+		--post-content-width: calc(100% - var(--post-content-padding-width)*2);
 	}
 	.sidebar {
 		display: none;
@@ -201,6 +201,9 @@ body {
 	.change.bar3 {
 		-webkit-transform: rotate(45deg) translate(-6px, -6px);
 		transform: rotate(45deg) translate(-6px, -6px);
+	}
+	#header{
+		display: none;
 	}
 }
 
