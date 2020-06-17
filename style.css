@@ -17,7 +17,8 @@
 	--hamburger-margin-top: 15px;
 	--main-border: 1px solid var(--main-border-color);
 	--footer-margin: var(--hamurger-margin);
-	--sidebar-off-width: 700px
+	--sidebar-off-width: 700px;
+	--page-number-width: 100px;
 }
 
 html {
@@ -130,6 +131,16 @@ body {
 	display: inline;
 }
 
+.pageNumber {
+	margin-top: 15px!important;
+}
+
+select {
+	background-color: white;
+	padding: 10px;
+	border: 1px solid var(--main-border-color);
+}
+
 @media (min-width: 700px) {
 	:root {
 		--post-link-width: 450px;
@@ -149,6 +160,9 @@ body {
 	}
 	.paginate {
 		margin-left: calc(var(--sidebar-width) + ((100% - (var(--sidebar-width) + var(--paginate-button-width)))/2))!important;
+	}
+	.pageNumber {
+		margin-left: calc(var(--sidebar-width) + ((100% - (var(--sidebar-width) + var(--page-number-width)))/2))!important;
 	}
 	.postContent {
 		--post-content-total-width: calc( (var(--post-content-padding-width)*2) + 2px + var(--post-content-width));
@@ -183,6 +197,10 @@ body {
 		width: 75%;
 	}
 	.paginate {
+		margin: auto;
+		text-align: center;
+	}
+	.pageNumber {
 		margin: auto;
 		text-align: center;
 	}
@@ -232,7 +250,7 @@ body {
 	margin-bottom: 50px;
 }
 
-.paginate>div{
+.paginate>div {
 	width: var(--paginate-button-width);
 	padding-top: 20px;
 	padding-bottom: 5px;
@@ -246,7 +264,7 @@ body {
 	margin: auto;
 }
 
-.paginate>div:nth-child(2){
+.paginate>div:nth-child(2) {
 	margin-left: 10px;
 }
 

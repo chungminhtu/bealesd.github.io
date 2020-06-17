@@ -8,7 +8,7 @@ window.TAG = "";
 window.postsByTag = [];
 
 window.PAGE = 1;
-window.POSTS_PER_PAGE = 2;
+window.POSTS_PER_PAGE = 3;
 window.CURRENT_POSTS = [];
 // todo add posts per page option, it would reset to page one, but keep the current search and tags
 
@@ -146,13 +146,44 @@ function paginatePosts(posts) {
 
 	let paginatedPosts = posts.slice(startIndex, endIndex);
 
+	// reset page
 	if (paginatedPosts.length === 0) {
-		// reset page
 		PAGE = 1;
 		return paginatePosts(posts);
 	}
 
 	return paginatedPosts;
+}
+
+function setupPages(posts) {
+	let pages = 0;
+	if (posts === null || posts === undefined || posts.length === 0) {
+		pages = 0;
+	}
+	else {
+		pages = Math.ceil(posts.length / POSTS_PER_PAGE);
+	}
+
+	const select = document.querySelector('.pageNumber > select');
+	let options = ' <option hidden value="-1">--</option>';
+	for (let p = 0; p < pages; p++) {
+		options += `<option value="${p}">${p}</option>`;
+	}
+	select.innerHTML = options;
+}
+
+
+function changePage(page) {
+	PAGE = page;
+	let posts = filterPosts(ALL_POSTS, TAG, VALUE);
+	let paginatedPosts = paginatePosts(posts)
+	let html = generatePosts(paginatedPosts);
+	updatePosts(html);
+	registerPostsEvents();
+}
+
+function changePageName(page) {
+	document.querySelectorAll('select')[0].selectedIndex = page;
 }
 
 function generatePosts(posts) {
@@ -199,8 +230,10 @@ function registerPostsEvents() {
 
 				let posts = filterPosts(ALL_POSTS, TAG, VALUE);
 				window.CURRENT_POSTS = posts;
-				posts = paginatePosts(posts);
-				let html = generatePosts(posts);
+				setupPages(posts);
+				changePageName(PAGE);
+				let paginatedPosts = paginatePosts(posts);
+				let html = generatePosts(paginatedPosts);
 				updatePosts(html);
 				registerPostsEvents()
 			}
@@ -234,8 +267,10 @@ function addToast(type, message, id) {
 
 		let posts = filterPosts(ALL_POSTS, TAG, VALUE);
 		window.CURRENT_POSTS = posts;
-		posts = paginatePosts(posts);
-		let html = generatePosts(posts);
+		setupPages(posts);
+		changePageName(PAGE);
+		let paginatedPosts = paginatePosts(posts);
+		let html = generatePosts(paginatedPosts);
 		updatePosts(html);
 		registerPostsEvents();
 	});
@@ -264,7 +299,14 @@ function onListPostsLoad() {
 			<div class='later'>previous</div>				
 			<div class='earlier'>next</div>
 		</div>
+
+		<div class='pageNumber'>
+			<p style='display:inline-block;'>Page</p> 
+			<select onchange="if (this.selectedIndex) changePage(this.selectedIndex);">
+			</select>
+		</div>
 	`;
+
 	updateTemplate(postsHtml);
 
 	let input = document.querySelector(`#searchInput`);
@@ -273,15 +315,21 @@ function onListPostsLoad() {
 	input.value = VALUE;
 
 	let posts = filterPosts(ALL_POSTS, TAG, input.value);
-	posts = paginatePosts(posts);
-	let html = generatePosts(posts);
+	setupPages(posts);
+	changePageName(PAGE);
+	let paginatedPosts = paginatePosts(posts);
+	let html = generatePosts(paginatedPosts);
 	updatePosts(html);
+
+	document.querySelector('.pageNumber > select').selectedIndex = PAGE;
 
 	addEvent('input', document.querySelector(`#searchInput`), (event) => {
 		VALUE = event.srcElement.value;
 		let posts = filterPosts(ALL_POSTS, TAG, VALUE);
-		posts = paginatePosts(posts);
-		let html = generatePosts(posts);
+		setupPages(posts);
+		changePageName(PAGE);
+		let paginatedPosts = paginatePosts(posts);
+		let html = generatePosts(paginatedPosts);
 		updatePosts(html);
 		registerPostsEvents();
 	});
@@ -299,7 +347,12 @@ function onListPostsLoad() {
 				}
 				else {
 					PAGE--;
+
+					document.querySelector('.pageNumber > select').selectedIndex = PAGE;
+
 					let posts = filterPosts(ALL_POSTS, TAG, VALUE);
+					setupPages(posts);
+					changePageName(PAGE);
 					let paginatedPosts = paginatePosts(posts)
 					let html = generatePosts(paginatedPosts);
 					updatePosts(html);
@@ -319,6 +372,9 @@ function onListPostsLoad() {
 				}
 				else {
 					PAGE++;
+					document.querySelector('.pageNumber > select').selectedIndex = PAGE;
+					setupPages(posts);
+					changePageName(PAGE);
 					let paginatedPosts = paginatePosts(posts);
 					let html = generatePosts(paginatedPosts);
 					updatePosts(html);
