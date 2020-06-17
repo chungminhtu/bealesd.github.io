@@ -13,9 +13,11 @@
 	--search-margin-left: 10px;
 	--search-form-width: 200px;
 	--hamurger-width: 20px;
-	--hamurger-margin: 3px;
+	--hamurger-margin: 5px;
 	--hamburger-margin-top: 15px;
 	--main-border: 1px solid var(--main-border-color);
+	--footer-margin: var(--hamurger-margin);
+	--sidebar-off-width: 700px
 }
 
 html {
@@ -124,10 +126,15 @@ body {
 	border-color: #f5c6cb;
 }
 
+.paginate>div {
+	display: inline;
+}
+
 @media (min-width: 700px) {
 	:root {
 		--post-link-width: 450px;
 		--post-content-width: 350px;
+		--footer-margin: calc(var(--hamurger-margin) + var(--sidebar-width))!important;
 	}
 	.sidebar {
 		display: block;
@@ -177,6 +184,7 @@ body {
 	}
 	.paginate {
 		margin: auto;
+		text-align: center;
 	}
 	.container {
 		display: inline-block;
@@ -202,7 +210,7 @@ body {
 		-webkit-transform: rotate(45deg) translate(-6px, -6px);
 		transform: rotate(45deg) translate(-6px, -6px);
 	}
-	#header{
+	#header {
 		display: none;
 	}
 }
@@ -224,18 +232,22 @@ body {
 	margin-bottom: 50px;
 }
 
-.paginate {
+.paginate>div{
 	width: var(--paginate-button-width);
 	padding-top: 20px;
-	padding-bottom: 10px;
+	padding-bottom: 5px;
 	border-bottom: 1px solid rgba(192, 192, 192, 0);
 	background-color: var(--main-background-color);
 	color: var(--main-header-font-color);
-	text-align: center;
+	/* text-align: center; */
 	letter-spacing: 1px;
 	font-size: 14px;
 	transition: border 1s ease;
 	margin: auto;
+}
+
+.paginate>div:nth-child(2){
+	margin-left: 10px;
 }
 
 .postContent {
@@ -254,7 +266,7 @@ body {
 	cursor: help;
 }
 
-.paginate:hover {
+.paginate>div:hover {
 	cursor: pointer;
 	border-bottom: 2px solid rgba(192, 192, 192, 1);
 }
@@ -325,7 +337,7 @@ pre {
 }
 
 #search {
-	position: absolute;
+	position: fixed;
 	top: 0;
 	width: 100%;
 	height: var(--search-bar-height);
@@ -410,4 +422,9 @@ button.close {
 	right: 0;
 	height: 200px;
 	width: 170px;
+}
+
+footer {
+	font-size: 12px;
+	margin-left: var(--footer-margin);
 }

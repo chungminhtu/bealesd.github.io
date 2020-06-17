@@ -1,14 +1,17 @@
 window.postPaginationIndex = 0;
 window.VALUE = "";
-window.POSTS_PER_PAGE = 3;
 window.START = 0;
 window.END = 3;
-window.CURRENT_POSTS = [];
 window.ALL_POSTS = [];
 window.TOASTS = [];
 window.TAG = "";
 window.postsByTag = [];
-window.SIDEBAROFFWIDTH = 700;
+
+window.PAGE = 1;
+window.POSTS_PER_PAGE = 2;
+window.CURRENT_POSTS = [];
+// todo add posts per page option, it would reset to page one, but keep the current search and tags
+
 const POSTS = [
 	{
 		'id': 'JavaScriptVariablesAndScope',
@@ -27,6 +30,20 @@ const POSTS = [
 	{
 		'id': 'AzureVariables',
 		'displayName': 'Variables',
+		'tag': 'Azure',
+		'subtags': '',
+		'timestamp': '13 May 2020'
+	},
+	{
+		'id': 'AzureVariables2',
+		'displayName': 'Variables2',
+		'tag': 'Azure',
+		'subtags': '',
+		'timestamp': '13 May 2020'
+	},
+	{
+		'id': 'AzureVariables3',
+		'displayName': 'Variables3',
 		'tag': 'Azure',
 		'subtags': '',
 		'timestamp': '13 May 2020'
@@ -80,27 +97,6 @@ function generatePostHtml(timestamp, id, displayName, tag) {
 	`;
 }
 
-function generateAllPostsHtml() {
-	let postsHtml = '';
-	const postsByDate = soughtPostsByProperty('timestamp');
-	for (let i = window.postPaginationIndex; i < postsByDate.length && i < window.postPaginationIndex + POSTS_PER_PAGE; i++) {
-		const post = postsByDate[i];
-		const postHtml = generatePostHtml(
-			post['timestamp'],
-			post['id'],
-			post['displayName'],
-			post['tag']);
-
-		if (TAG !== null && TAG === post['tag']) {
-			postsHtml += postHtml;
-		}
-		else if (TAG === null || TAG === '') {
-			postsHtml += postHtml;
-		}
-	}
-	return postsHtml;
-}
-
 function filterPostsByTag(posts, tag) {
 	let postsByTag = [];
 	for (let i = 0; i < posts.length; i++) {
@@ -129,17 +125,34 @@ function filterPosts(posts, tag, word) {
 	filteredPosts = [];
 	if (tag && !word) {
 		filteredPosts = filterPostsByTag(posts, tag);
-		return filteredPosts;
 	}
 	else if (tag && word) {
 		filteredPosts = filterPostsByTag(posts, tag);
 		filteredPosts = filterPostsByWord(filteredPosts, word);
-		return filteredPosts;
 	}
 	else {
 		filteredPosts = filterPostsByWord(posts, word);
-		return filteredPosts;
 	}
+	return filteredPosts;
+}
+
+function paginatePosts(posts) {
+	if (posts === null || posts === undefined || posts.length === 0) {
+		return [];
+	}
+
+	const startIndex = (PAGE * POSTS_PER_PAGE) - POSTS_PER_PAGE;
+	const endIndex = startIndex + POSTS_PER_PAGE;
+
+	let paginatedPosts = posts.slice(startIndex, endIndex);
+
+	if (paginatedPosts.length === 0) {
+		// reset page
+		PAGE = 1;
+		return paginatePosts(posts);
+	}
+
+	return paginatedPosts;
 }
 
 function generatePosts(posts) {
@@ -185,9 +198,11 @@ function registerPostsEvents() {
 				TOASTS.push(event.srcElement.id);
 
 				let posts = filterPosts(ALL_POSTS, TAG, VALUE);
+				window.CURRENT_POSTS = posts;
+				posts = paginatePosts(posts);
 				let html = generatePosts(posts);
 				updatePosts(html);
-				registerPostsEvents();
+				registerPostsEvents()
 			}
 		});
 	});
@@ -216,7 +231,10 @@ function addToast(type, message, id) {
 	addEvent('click', document.querySelector(`#${id} button`), () => {
 		removeToast();
 		TAG = '';
+
 		let posts = filterPosts(ALL_POSTS, TAG, VALUE);
+		window.CURRENT_POSTS = posts;
+		posts = paginatePosts(posts);
 		let html = generatePosts(posts);
 		updatePosts(html);
 		registerPostsEvents();
@@ -231,17 +249,22 @@ function removeToast() {
 
 function clearToasts() {
 	document.querySelector('#toast').innerHTML = '';
+	TAG = '';
 	window.TOASTS = [];
 }
 
 function onListPostsLoad() {
 	ALL_POSTS = soughtPostsByProperty('timestamp');
-	CURRENT_POSTS = ALL_POSTS;
 
 	changeUri('/blog');
 
-	let postsHtml = `<div class='paginate later'>previous</div>				
-					 <div class='paginate'>next</div>`;
+	let postsHtml =
+		`
+		<div class='paginate'>
+			<div class='later'>previous</div>				
+			<div class='earlier'>next</div>
+		</div>
+	`;
 	updateTemplate(postsHtml);
 
 	let input = document.querySelector(`#searchInput`);
@@ -249,14 +272,15 @@ function onListPostsLoad() {
 	input.value = '';
 	input.value = VALUE;
 
-	const postsByWord = filterPostsByWord(CURRENT_POSTS, input.value);
-	let html = generatePosts(postsByWord);
+	let posts = filterPosts(ALL_POSTS, TAG, input.value);
+	posts = paginatePosts(posts);
+	let html = generatePosts(posts);
 	updatePosts(html);
 
 	addEvent('input', document.querySelector(`#searchInput`), (event) => {
 		VALUE = event.srcElement.value;
 		let posts = filterPosts(ALL_POSTS, TAG, VALUE);
-
+		posts = paginatePosts(posts);
 		let html = generatePosts(posts);
 		updatePosts(html);
 		registerPostsEvents();
@@ -267,22 +291,38 @@ function onListPostsLoad() {
 	document.querySelectorAll('.paginate').forEach((paginate) => {
 		addEvent("click", paginate, (event) => {
 			if (event.srcElement.classList.contains('later')) {
-				if (window.postPaginationIndex - 1 < 0) {
-					alert('No newer posts!');
-				}
-				else {
-					window.postPaginationIndex -= POSTS_PER_PAGE;
-					onListPostsLoad();
-				}
-			}
-			else {
-				const maxPosts = POSTS.length;
-				if (window.postPaginationIndex + POSTS_PER_PAGE > maxPosts - 1) {
+				// back
+				let currentPage = PAGE;
+
+				if (currentPage === 1) {
 					alert('No older posts!');
 				}
 				else {
-					window.postPaginationIndex += POSTS_PER_PAGE;
-					onListPostsLoad();
+					PAGE--;
+					let posts = filterPosts(ALL_POSTS, TAG, VALUE);
+					let paginatedPosts = paginatePosts(posts)
+					let html = generatePosts(paginatedPosts);
+					updatePosts(html);
+					registerPostsEvents();
+				}
+
+			}
+			else if (event.srcElement.classList.contains('earlier')) {
+				// forwards
+				let posts = filterPosts(ALL_POSTS, TAG, VALUE);
+				let postsCount = posts.length;
+
+				let currentPage = PAGE;
+
+				if (currentPage * POSTS_PER_PAGE >= postsCount) {
+					alert('No newer posts!');
+				}
+				else {
+					PAGE++;
+					let paginatedPosts = paginatePosts(posts);
+					let html = generatePosts(paginatedPosts);
+					updatePosts(html);
+					registerPostsEvents();
 				}
 			}
 		});
@@ -372,9 +412,9 @@ function setupSidebar() {
 
 	addEvent('click', document.querySelector('.container'), () => {
 		const sidebar = document.querySelector('.sidebar');
-		if (sidebar.style.display === 'block') 
+		if (sidebar.style.display === 'block')
 			sidebar.style.display = 'none';
-		else 
+		else
 			sidebar.style.display = 'block';
 
 		let hamburgerSlices = document.querySelector('.container').children;
@@ -387,10 +427,14 @@ function setupSidebar() {
 		}
 	})
 
-	managedResize('sideBarOn',() => {
+	managedResize('sideBarOn', () => {
 		const sidebar = document.querySelector('.sidebar');
-		const width  = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
-		if (sidebar.style.display === 'none' && width > window.SIDEBAROFFWIDTH) 
+		const width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+
+		let sidebarWidth = getComputedStyle(document.documentElement).getPropertyValue('--sidebar-off-width').trim();
+		sidebarWidth = sidebarWidth.slice(0, sidebarWidth.length - 2);
+
+		if (sidebar.style.display === 'none' && width > sidebarWidth)
 			document.querySelector('.container').click();
 	})
 
