@@ -18,7 +18,10 @@
 	--main-border: 1px solid var(--main-border-color);
 	--footer-margin: var(--hamurger-margin);
 	--sidebar-off-width: 700px;
-	--page-number-width: 100px;
+	/* default page-number-width, set in js*/
+	--page-number-width-total: 10px;
+	--page-number-width: 10px;
+	--page-number-width-spacing: 2px;
 }
 
 html {
@@ -135,11 +138,21 @@ body {
 	margin-top: 15px!important;
 }
 
-select {
-	background-color: white;
-	padding: 10px;
-	border: 1px solid var(--main-border-color);
+a[data-page]{
+	color: blue;
+	margin-left: 3px;
 }
+
+a[data-page].active{
+	color: purple;
+}
+
+a[data-page]:hover{
+	color: red;
+	text-decoration: underline;
+	cursor: pointer;	
+}
+
 
 @media (min-width: 700px) {
 	:root {
@@ -161,9 +174,9 @@ select {
 	.paginate {
 		margin-left: calc(var(--sidebar-width) + ((100% - (var(--sidebar-width) + var(--paginate-button-width)))/2))!important;
 	}
-	.pageNumber {
-		margin-left: calc(var(--sidebar-width) + ((100% - (var(--sidebar-width) + var(--page-number-width)))/2))!important;
-	}
+	/* .pageNumber {
+		margin-left: calc(var(--sidebar-width) + ((100% - (var(--sidebar-width) + var(--page-number-width-total)))/2))!important;
+	} */
 	.postContent {
 		--post-content-total-width: calc( (var(--post-content-padding-width)*2) + 2px + var(--post-content-width));
 		margin-left: calc(var(--sidebar-width) + ((100% - (var(--sidebar-width) + var(--post-content-total-width)))/2))!important;

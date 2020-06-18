@@ -8,7 +8,7 @@ window.TAG = "";
 window.postsByTag = [];
 
 window.PAGE = 1;
-window.POSTS_PER_PAGE = 3;
+window.POSTS_PER_PAGE = 1;
 window.CURRENT_POSTS = [];
 // todo add posts per page option, it would reset to page one, but keep the current search and tags
 
@@ -155,6 +155,23 @@ function paginatePosts(posts) {
 	return paginatedPosts;
 }
 
+function positionPageNumbers() {
+	let spacing = getComputedStyle(document.documentElement).getPropertyValue('--page-number-width-spacing').trim();
+	spacing = parseInt(spacing.slice(0, spacing.length - 2));
+
+	let pageNumberWidth = getComputedStyle(document.documentElement).getPropertyValue('--page-number-width').trim();
+	pageNumberWidth = parseInt(pageNumberWidth.slice(0, pageNumberWidth.length - 2));
+
+	let totalPageNumberWidth = PAGES * (pageNumberWidth + spacing);
+
+	let sidebarWidth = getComputedStyle(document.documentElement).getPropertyValue('--sidebar-width');
+	sidebarWidth = parseInt(sidebarWidth.slice(0, sidebarWidth.length - 2));
+
+	let marginLeft = sidebarWidth + ((window.innerWidth - (sidebarWidth + totalPageNumberWidth)) / 2)
+	marginLeft = window.innerWidth < 700 ? 'auto' : `${marginLeft}px`;
+	document.querySelector('.pageNumber').style.marginLeft = marginLeft;
+}
+
 function setupPages(posts) {
 	let pages = 0;
 	if (posts === null || posts === undefined || posts.length === 0) {
@@ -163,15 +180,29 @@ function setupPages(posts) {
 	else {
 		pages = Math.ceil(posts.length / POSTS_PER_PAGE);
 	}
+	window.PAGES = pages;
+	positionPageNumbers();
 
-	const select = document.querySelector('.pageNumber > select');
-	let options = ' <option hidden value="-1">--</option>';
-	for (let p = 0; p < pages; p++) {
-		options += `<option value="${p}">${p}</option>`;
+	const div = document.querySelector('.pageNumber');
+	let anchor = '';
+	for (let p = 1; p <= pages; p++) {
+		anchor += `<a data-page="${p}">${p}</a>`;
 	}
-	select.innerHTML = options;
+	div.innerHTML = anchor;
+
+	managedResize('pageNumbersResize', () => {
+		positionPageNumbers();
+	});
 }
 
+function changeActivePageLink() {
+	document.querySelectorAll('.pageNumber > a').forEach((anchor) => {
+		anchor.classList.remove("active");
+	});
+
+	const anchor = document.querySelector(`.pageNumber > [data-page="${PAGE}"]`);
+	anchor.classList.add("active");
+}
 
 function changePage(page) {
 	PAGE = page;
@@ -179,11 +210,8 @@ function changePage(page) {
 	let paginatedPosts = paginatePosts(posts)
 	let html = generatePosts(paginatedPosts);
 	updatePosts(html);
+	changeActivePageLink();
 	registerPostsEvents();
-}
-
-function changePageName(page) {
-	document.querySelectorAll('select')[0].selectedIndex = page;
 }
 
 function generatePosts(posts) {
@@ -231,10 +259,11 @@ function registerPostsEvents() {
 				let posts = filterPosts(ALL_POSTS, TAG, VALUE);
 				window.CURRENT_POSTS = posts;
 				setupPages(posts);
-				changePageName(PAGE);
+				onClickPage();
 				let paginatedPosts = paginatePosts(posts);
 				let html = generatePosts(paginatedPosts);
 				updatePosts(html);
+				changeActivePageLink();
 				registerPostsEvents()
 			}
 		});
@@ -268,10 +297,11 @@ function addToast(type, message, id) {
 		let posts = filterPosts(ALL_POSTS, TAG, VALUE);
 		window.CURRENT_POSTS = posts;
 		setupPages(posts);
-		changePageName(PAGE);
+		onClickPage();
 		let paginatedPosts = paginatePosts(posts);
 		let html = generatePosts(paginatedPosts);
 		updatePosts(html);
+		changeActivePageLink();
 		registerPostsEvents();
 	});
 }
@@ -288,6 +318,15 @@ function clearToasts() {
 	window.TOASTS = [];
 }
 
+function onClickPage() {
+	document.querySelectorAll('.pageNumber > a').forEach((anchor) => {
+		anchor.addEventListener('click', () => {
+			const page = parseInt(anchor.dataset.page) ? parseInt(anchor.dataset.page) : 0;
+			changePage(page);
+		});
+	});
+}
+
 function onListPostsLoad() {
 	ALL_POSTS = soughtPostsByProperty('timestamp');
 
@@ -301,9 +340,7 @@ function onListPostsLoad() {
 		</div>
 
 		<div class='pageNumber'>
-			<p style='display:inline-block;'>Page</p> 
-			<select onchange="if (this.selectedIndex) changePage(this.selectedIndex);">
-			</select>
+
 		</div>
 	`;
 
@@ -316,21 +353,21 @@ function onListPostsLoad() {
 
 	let posts = filterPosts(ALL_POSTS, TAG, input.value);
 	setupPages(posts);
-	changePageName(PAGE);
+	onClickPage();
 	let paginatedPosts = paginatePosts(posts);
 	let html = generatePosts(paginatedPosts);
 	updatePosts(html);
-
-	document.querySelector('.pageNumber > select').selectedIndex = PAGE;
+	changeActivePageLink();
 
 	addEvent('input', document.querySelector(`#searchInput`), (event) => {
 		VALUE = event.srcElement.value;
 		let posts = filterPosts(ALL_POSTS, TAG, VALUE);
 		setupPages(posts);
-		changePageName(PAGE);
+		onClickPage();
 		let paginatedPosts = paginatePosts(posts);
 		let html = generatePosts(paginatedPosts);
-		updatePosts(html);
+		updatePosts(html)
+		changeActivePageLink();
 		registerPostsEvents();
 	});
 
@@ -347,14 +384,12 @@ function onListPostsLoad() {
 				}
 				else {
 					PAGE--;
-
-					document.querySelector('.pageNumber > select').selectedIndex = PAGE;
-
 					let posts = filterPosts(ALL_POSTS, TAG, VALUE);
 					setupPages(posts);
-					changePageName(PAGE);
+					onClickPage();
 					let paginatedPosts = paginatePosts(posts)
 					let html = generatePosts(paginatedPosts);
+					changeActivePageLink();
 					updatePosts(html);
 					registerPostsEvents();
 				}
@@ -372,11 +407,11 @@ function onListPostsLoad() {
 				}
 				else {
 					PAGE++;
-					document.querySelector('.pageNumber > select').selectedIndex = PAGE;
 					setupPages(posts);
-					changePageName(PAGE);
+					onClickPage();
 					let paginatedPosts = paginatePosts(posts);
 					let html = generatePosts(paginatedPosts);
+					changeActivePageLink();
 					updatePosts(html);
 					registerPostsEvents();
 				}
