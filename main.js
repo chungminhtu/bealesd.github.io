@@ -1,6 +1,7 @@
 import { Utilities } from './utilites.js';
 import { Router } from './router.js';
 import { Sidebar } from './sidebar.js';
+import { Toasts } from './toasts.js';
 
 // TODO add posts per page option, it would reset to page one, but keep the current search and tags
 
@@ -59,17 +60,12 @@ export class Main {
 			() => { this.onListPostsLoad(); }
 		);
 		this.sidebar = new Sidebar(this.POSTS);
+		this.toasts = new Toasts();
 
 		window.addEventListener('DOMContentLoaded', async () => {
 			window.events = window.events || {};
 			const orderedPostsByTag = this.getPostByTags();
-			this.sidebar.setupSidebar(orderedPostsByTag);
-			// Name: Sidebar
-			// {Name}Controller
-			// - pass in orderedPostsByTag and router
-			// draw{Name}
-			//  - pass in orderedPostsByTag
-			// register{Name}Events
+			this.sidebar.setup(orderedPostsByTag);
 			await this.router.routeUrl();
 		});
 
@@ -165,7 +161,7 @@ export class Main {
 		document.querySelector('.pageNumber').style.marginLeft = marginLeft;
 	}
 
-	setupPages(posts) {
+	setupPageNumbers(posts) {
 		let pages = 0;
 		if (posts === null || posts === undefined || posts.length === 0) {
 			pages = 0;
@@ -186,6 +182,9 @@ export class Main {
 		this.utilities.managedResize('pageNumbersResize', () => {
 			this.positionPageNumbers();
 		});
+
+		this.onClickPage();
+		this.changeActivePageLink();
 	}
 
 	changeActivePageLink() {
@@ -195,16 +194,6 @@ export class Main {
 
 		const anchor = document.querySelector(`.pageNumber > [data-page="${this.PAGE}"]`);
 		anchor.classList.add("active");
-	}
-
-	changePage(page) {
-		this.PAGE = page;
-		let posts = this.filterPosts(this.ALL_POSTS, this.TAG, this.SEARCH_TERM);
-		let paginatedPosts = this.paginatePosts(posts)
-		let html = this.generatePosts(paginatedPosts);
-		this.updatePosts(html);
-		this.changeActivePageLink();
-		this.registerPostsEvents();
 	}
 
 	generatePosts(posts) {
@@ -238,29 +227,38 @@ export class Main {
 		}
 	}
 
+	reloadMain(tag, searchTerm) {
+		this.TAG = tag;
+		this.SEARCH_TERM = searchTerm;
+		// get all the relevant posts
+		let posts = this.filterPosts(this.ALL_POSTS, this.TAG, this.SEARCH_TERM);
+		// get the posts for the page
+		let paginatedPosts = this.paginatePosts(posts);
+		// draw the posts
+		let html = this.generatePosts(paginatedPosts);
+		this.updatePosts(html);
+		// add tag and posts link events.
+		this.registerPostsEvents();
+		this.setupPageNumbers(posts);
+	}
+
+	//TODO rename
 	registerPostsEvents() {
+		// TAG click event
 		document.querySelectorAll('.tags > em').forEach((tag) => {
 			this.utilities.addEvent("click", tag, (event) => {
-				if (this.TOASTS.includes(event.srcElement.id)) {
-					// removeToast(event.srcElement.id);
+				if (this.toasts.toasts.map((t) => { return t.split(':')[0] }).includes(event.srcElement.id)) {
+					const toastId = this.toasts.toasts.filter((t) => { return t.split(':')[0] === event.srcElement.id })[0];
+					this.toasts.removeToast(toastId);
+					this.reloadMain('', this.SEARCH_TERM);
 				}
 				else {
 					this.TAG = event.srcElement.id;
-					this.addToast('alert-info', `Tag: ${this.TAG}`, this.TAG);
-					this.TOASTS.push(event.srcElement.id);
-
-					let posts = this.filterPosts(this.ALL_POSTS, this.TAG, this.SEARCH_TERM);
-					this.setupPages(posts);
-					this.onClickPage();
-					let paginatedPosts = this.paginatePosts(posts);
-					let html = this.generatePosts(paginatedPosts);
-					this.updatePosts(html);
-					this.changeActivePageLink();
-					this.registerPostsEvents()
+					this.toasts.addToast('alert-info', `Tag: ${this.TAG}`, this.TAG, (tag) => { this.reloadMain(tag, this.SEARCH_TERM); });
 				}
 			});
 		});
-
+		// Post load event
 		document.querySelectorAll('.postLink').forEach((post) => {
 			this.utilities.addEvent("click", post, async (event) => {
 				this.router.changeUri(`blog\\${event.srcElement.id}`);
@@ -269,52 +267,12 @@ export class Main {
 		})
 	}
 
-	addToast(type, message, id) {
-		let index = 0;
-
-		document.querySelector('#toast').innerHTML =
-			`<div id=${id} class="alert ${type} alert-dismissible">
-			${message}
-			<button type="button" class="close">X</button>
-		</div>` + document.querySelector('#toast').innerHTML;
-
-		document.querySelectorAll('.alert').forEach((elem) => {
-			const positionFromBottom = (80 * index++);
-			elem.style.bottom = `${positionFromBottom}px`;
-		})
-
-		this.utilities.addEvent('click', document.querySelector(`#${id} button`), () => {
-			this.removeToast();
-			this.TAG = '';
-
-			let posts = this.filterPosts(this.ALL_POSTS, this.TAG, this.SEARCH_TERM);
-			this.setupPages(posts);
-			this.onClickPage();
-			let paginatedPosts = this.paginatePosts(posts);
-			let html = this.generatePosts(paginatedPosts);
-			this.updatePosts(html);
-			this.changeActivePageLink();
-			this.registerPostsEvents();
-		});
-	}
-
-	removeToast() {
-		const id = event.srcElement.parentNode.id;
-		event.srcElement.parentNode.remove();
-		this.TOASTS = this.TOASTS.filter(item => item !== id);
-	}
-
-	clearToasts() {
-		document.querySelector('#toast').innerHTML = '';
-		this.TAG = '';
-		this.TOASTS = [];
-	}
-
 	onClickPage() {
 		document.querySelectorAll('.pageNumber > a').forEach((anchor) => {
 			anchor.addEventListener('click', () => {
 				const page = parseInt(anchor.dataset.page) ? parseInt(anchor.dataset.page) : 0;
-				this.changePage(page);
+				this.PAGE = page;
+				this.reloadMain(this.TAG, this.SEARCH_TERM);
 			});
 		});
 	}
@@ -343,24 +301,11 @@ export class Main {
 		input.value = '';
 		input.value = this.SEARCH_TERM;
 
-		let posts = this.filterPosts(this.ALL_POSTS, this.TAG, input.value);
-		this.setupPages(posts);
-		this.onClickPage();
-		let paginatedPosts = this.paginatePosts(posts);
-		let html = this.generatePosts(paginatedPosts);
-		this.updatePosts(html);
-		this.changeActivePageLink();
+		this.reloadMain(this.TAG, input.value);
 
 		this.utilities.addEvent('input', document.querySelector(`#searchInput`), (event) => {
 			this.SEARCH_TERM = event.srcElement.value;
-			let posts = this.filterPosts(this.ALL_POSTS, this.TAG, this.SEARCH_TERM);
-			this.setupPages(posts);
-			this.onClickPage();
-			let paginatedPosts = this.paginatePosts(posts);
-			let html = this.generatePosts(paginatedPosts);
-			this.updatePosts(html)
-			this.changeActivePageLink();
-			this.registerPostsEvents();
+			this.reloadMain(this.TAG, this.SEARCH_TERM);
 		});
 
 		this.registerPostsEvents();
@@ -376,14 +321,7 @@ export class Main {
 					}
 					else {
 						this.PAGE--;
-						let posts = this.filterPosts(this.ALL_POSTS, this.TAG, this.SEARCH_TERM);
-						this.setupPages(posts);
-						this.onClickPage();
-						let paginatedPosts = this.paginatePosts(posts)
-						let html = this.generatePosts(paginatedPosts);
-						this.changeActivePageLink();
-						this.updatePosts(html);
-						this.registerPostsEvents();
+						this.reloadMain(this.TAG, this.SEARCH_TERM);
 					}
 
 				}
@@ -399,13 +337,7 @@ export class Main {
 					}
 					else {
 						this.PAGE++;
-						this.setupPages(posts);
-						this.onClickPage();
-						let paginatedPosts = this.paginatePosts(posts);
-						let html = this.generatePosts(paginatedPosts);
-						this.changeActivePageLink();
-						this.updatePosts(html);
-						this.registerPostsEvents();
+						this.reloadMain(this.TAG, this.SEARCH_TERM);
 					}
 				}
 			});
@@ -471,7 +403,7 @@ export class Main {
 	async loadPostContent(id) {
 		this.utilities.removeResize('pageNumbersResize');
 
-		this.clearToasts();
+		this.toasts.clearToasts();
 
 		this.updateTemplate('<div class="postContent"></div>');
 
