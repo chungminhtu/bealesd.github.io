@@ -1,13 +1,13 @@
 import { Utilities } from "./utilites.js";
-import { Router } from "./router.js";
 
 export class Sidebar {
-    constructor(postsJson) {
+    constructor(blogPostIndex, router, blogPostController) {
         if (!Sidebar.instance) {
-            this.postsJson = postsJson;
+            this.blogPostIndex = blogPostIndex;
+            this.router = router;
+            this.blogPostController = blogPostController;
 
             this.utilities = new Utilities();
-            this.router = new Router();
 
             Sidebar.instance = this;
         }
@@ -15,6 +15,8 @@ export class Sidebar {
     }
 
     setup(orderedPostsByTag) {
+        this.addBlogPostLoadRoutes();
+
         document.querySelector('.sidebar').innerHTML = this.drawSidebar(orderedPostsByTag);
 
         this.registerHomePageClick();
@@ -24,6 +26,18 @@ export class Sidebar {
         this.registerHamburgerEvents();
 
         this.registerResizeEvents();
+    }
+
+    addBlogPostLoadRoutes(){
+        for (let i = 0; i < this.blogPostIndex.length; i++) {
+            const postJson = this.blogPostIndex[i];
+            const routeId = postJson['id'];
+            this.router.routes[routeId] = () => {
+                this.blogPostController.loadPostContent(routeId, () => {
+                    this.showPostInSidebar(routeId)
+                });
+            }
+        }
     }
 
     registerHamburgerEvents() {
@@ -116,7 +130,7 @@ export class Sidebar {
     }
 
     showPostInSidebar(postId) {
-        const tag = this.postsJson.filter((post) => { return post.id === postId })[0].tag;
+        const tag = this.blogPostIndex.filter((post) => { return post.id === postId })[0].tag;
         const menuHeader = document.querySelector(`[data-id="${tag}"]`);
 
         menuHeader.nextSibling.classList.remove("hide");

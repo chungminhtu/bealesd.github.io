@@ -60,18 +60,6 @@ export class Utilities {
         }
     }
 
-    getUrlSuffix() {
-        let url = window.location.href;
-        let urlSuffixRegex = url.match(/[A-Za-z]+\.html/);
-        return urlSuffixRegex !== null ? urlSuffixRegex[0].slice(0, -5) : "";
-    }
-
-    getUrlPrefix() {
-        let url = window.location.href;
-        let urlPrefixRegex = url.match(/[A-Za-z]+\.html/);
-        return urlPrefixRegex !== null ? url.substring(0, url.indexOf(urlPrefixRegex)) : url;
-    }
-
     addProtoypeMethods() {
         Array.prototype.removeItem = function (indexToRemove) {
             let newArray = [];
@@ -84,31 +72,14 @@ export class Utilities {
         };
     }
 
-    async loadPostMarkdownHtml(pageName) {
-		const response = await fetch(`/${pageName}.md`);
-		const text = await response.text();
-
-		marked.setOptions({
-			renderer: new marked.Renderer(),
-			highlight: function (code, language) {
-				return Prism.highlight(code, Prism.languages.javascript, 'javascript');
-			},
-			pedantic: false,
-			gfm: true,
-			breaks: false,
-			sanitize: false,
-			smartLists: true,
-			smartypants: false,
-			xhtml: false
-		});
-
-		document.querySelector('.postContent').innerHTML = marked(text);
-    }
-    
     uuidv4() {
         return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
             var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
             return v.toString(16);
         });
+    }
+
+    updateTemplate(html) {
+		document.querySelector('#template').innerHTML = html;
     }
 }

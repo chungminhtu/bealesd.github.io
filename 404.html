@@ -2,27 +2,53 @@
 <html>
 
 <head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 	<link rel="stylesheet" href="/style.css" />
 
 	<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-	
+
 	<script src="/prismLight.js"></script>
-	<link rel="stylesheet" href="/prismLight.css"></script>
+	<link rel="stylesheet" href="/prismLight.css">
 
 	<link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
-
-	<script src="/main.js"></script>
 
 	<title>David Beales Blog</title>
 
 </head>
 
 <body>
-	<div id='firstSibling'></div>
+	<div id='search'>
+		<div class="container">
+			<div class="bar1"></div>
+			<div class="bar2"></div>
+			<div class="bar3"></div>
+		</div>
+
+		<form>
+			<input id="searchInput" type="text" placeholder=" Search" maxlength="40" value='${window.VALUE}'>
+		</form>
+		<p id="header">Posts By David Beales</p>
+	</div>
+
+	<div class="sidebar bar-block">
+	</div>
+
+	<div id="layout">
+		<div id="template">	
+		</div>
+	</div>
+
+	<div id='toast' class="bs-example message-box">
+	</div>
+
+	<footer>&copy; David Beales 2020</footer>
+
 </body>
 
-<script>
+<script type="module">
+	import { Startup } from './startup.js';
+	new Startup();
 </script>
 
 </html>
