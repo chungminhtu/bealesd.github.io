@@ -7,20 +7,21 @@ export class BlogPostIndexController {
 	constructor(router, sidebar) {
 		if (!BlogPostIndexController.instance) {
 			this.allPosts = [];
+			this.filteredPosts = [];
 
 			this.searchTerm = "";
 			this.tag = "";
 
-			this.page = 1;
-            this.postsPerPage = 3;
-            
+			this.pageNumber = 1;
+			this.postsPerPage = 3;
+
 			this.router = router;
 			this.router.routes[''] = () => { this.onListPostsLoad(); };
 			this.router.routes['blog'] = () => { this.onListPostsLoad(); };
 
 			this.sidebar = sidebar;
 
-            this.postsRepo = new BlogPostIndexRepo();
+			this.postsRepo = new BlogPostIndexRepo();
 			this.toasts = new Toasts();
 			this.utilities = new Utilities();
 
@@ -33,28 +34,34 @@ export class BlogPostIndexController {
 		return this.postsRepo.blogPostIndex;
 	}
 
-	setupPageNumbers(posts) {
-		let pages = 0;
-		if (posts === null || posts === undefined || posts.length === 0)
-			pages = 0;
+	setupPageNumbers() {
+		let pageCount = 0;
+		if (this.filteredPosts.length === 0)
+			pageCount = 0;
 		else
-			pages = Math.ceil(posts.length / this.postsPerPage);
+			pageCount = Math.ceil(this.filteredPosts.length / this.postsPerPage);
 
 		this.positionPageNumbers();
 
+		this.drawPageNumbers(pageCount);
+
+		if (pageCount > 0) {
+			this.utilities.managedResize('pageNumbersResize', () => {
+				this.positionPageNumbers();
+			});
+
+			this.onClickPage();
+			this.changeActivePageLink();
+		}
+	}
+
+	drawPageNumbers(pageCount) {
 		const div = document.querySelector('.pageNumber');
 		let anchor = '';
-		for (let p = 1; p <= pages; p++) {
-			anchor += `<a data-page="${p}">${p}</a>`;
+		for (let pageNumber = 1; pageNumber <= pageCount; pageNumber++) {
+			anchor += `<a data-page="${pageNumber}">${pageNumber}</a>`;
 		}
 		div.innerHTML = anchor;
-
-		this.utilities.managedResize('pageNumbersResize', () => {
-			this.positionPageNumbers();
-		});
-
-		this.onClickPage();
-		this.changeActivePageLink();
 	}
 
 	positionPageNumbers() {
@@ -64,7 +71,7 @@ export class BlogPostIndexController {
 		let pageNumberWidth = getComputedStyle(document.documentElement).getPropertyValue('--page-number-width').trim();
 		pageNumberWidth = parseInt(pageNumberWidth.slice(0, pageNumberWidth.length - 2));
 
-		let totalPageNumberWidth = this.page * (pageNumberWidth + spacing);
+		let totalPageNumberWidth = this.pageNumber * (pageNumberWidth + spacing);
 
 		let sidebarWidth = getComputedStyle(document.documentElement).getPropertyValue('--sidebar-width');
 		sidebarWidth = parseInt(sidebarWidth.slice(0, sidebarWidth.length - 2));
@@ -75,20 +82,19 @@ export class BlogPostIndexController {
 	}
 
 	changeActivePageLink() {
-		document.querySelectorAll('.pageNumber > a').forEach((anchor) => {
-			anchor.classList.remove("active");
+		document.querySelectorAll('.pageNumber > a').forEach((pageNumber) => {
+			pageNumber.classList.remove("active");
 		});
 
-		const anchor = document.querySelector(`.pageNumber > [data-page="${this.page}"]`);
-		anchor.classList.add("active");
+		const pageNumber = document.querySelector(`.pageNumber > [data-page="${this.pageNumber}"]`);
+		pageNumber.classList.add("active");
 	}
 
 	onClickPage() {
 		document.querySelectorAll('.pageNumber > a').forEach((anchor) => {
 			anchor.addEventListener('click', () => {
-				const page = parseInt(anchor.dataset.page) ? parseInt(anchor.dataset.page) : 0;
-				this.page = page;
-				this.reloadMain(this.tag, this.searchTerm);
+				this.pageNumber = parseInt(anchor.dataset.page) ? parseInt(anchor.dataset.page) : 0;
+				this.reloadPageContent(this.tag, this.searchTerm);
 			});
 		});
 	}
@@ -102,6 +108,7 @@ export class BlogPostIndexController {
 		let html = this.generateBlogPostLinksHtml(posts);
 		this.updateBlogPostLinks(html);
 	}
+
 	generateBlogPostLinksHtml(posts) {
 		let postsHtml = '';
 		for (let i = 0; i < posts.length; i++) {
@@ -140,7 +147,7 @@ export class BlogPostIndexController {
 		const blogPostLinkDivs = div.querySelectorAll('.postLinkDiv');
 		for (let i = blogPostLinkDivs.length - 1; i >= 0; i--) {
 			const blogPostLink = blogPostLinkDivs[i];
-			document.querySelector('#template').prepend(blogPostLink);
+			document.querySelector('#pageContent').prepend(blogPostLink);
 		}
 	}
 
@@ -152,17 +159,25 @@ export class BlogPostIndexController {
 	registerBlogPostTagClickEvent() {
 		document.querySelectorAll('.tags > em').forEach((tag) => {
 			this.utilities.addEvent("click", tag, (event) => {
-				if (this.toasts.toasts.map((t) => { return t.split(':')[0] }).includes(event.srcElement.id)) {
-					const toastId = this.toasts.toasts.filter((t) => { return t.split(':')[0] === event.srcElement.id })[0];
-					this.toasts.removeToast(toastId);
-					this.reloadMain('', this.searchTerm);
-				}
-				else {
-					this.tag = event.srcElement.id;
-					this.toasts.addToast('alert-info', `Tag: ${this.tag}`, this.tag, (tag) => { this.reloadMain(tag, this.searchTerm); });
-				}
+				this.onBlogPostTagClick();
 			});
 		});
+	}
+
+	onBlogPostTagClick() {
+		const isTagActive = this.toasts.toasts.map((t) => { return t.split(':')[0] }).includes(event.srcElement.id);
+		if (isTagActive) {
+			const toastId = this.toasts.toasts.filter((t) => { return t.split(':')[0] === event.srcElement.id })[0];
+			this.toasts.removeToast(toastId);
+			this.tag = '';
+			this.reloadPageContent();
+		}
+		else {
+			this.tag = event.srcElement.id;
+			this.toasts.addToast('alert-info', `Tag: ${this.tag}`, this.tag, () => {
+				this.reloadPageContent();
+			});
+		}
 	}
 
 	registerBlogPostLinkClickEvent() {
@@ -174,21 +189,39 @@ export class BlogPostIndexController {
 		})
 	}
 
-	reloadMain(tag, searchTerm) {
-		this.tag = tag;
-		this.searchTerm = searchTerm;
+	reloadPageContent() {
+		this.filteredPosts = this.postsRepo.filterPosts(this.allPosts, this.tag, this.searchTerm);
+		let currentPagePosts = this.postsRepo.filterPostsByPage(this.filteredPosts, this.pageNumber, this.postsPerPage);
 
-		let posts = this.postsRepo.filterPosts(this.allPosts, this.tag, this.searchTerm);
-
-		let paginatedPosts = this.postsRepo.filterPostsByPage(posts, this.page, this.postsPerPage);
-		if (paginatedPosts.length === 0) {
-			this.page = 1;
-			paginatedPosts = this.postsRepo.filterPostsByPage(posts, this.page, this.postsPerPage);
+		if (currentPagePosts.length === 0) {
+			this.pageNumber = 1;
+			currentPagePosts = this.postsRepo.filterPostsByPage(this.filteredPosts, this.pageNumber, this.postsPerPage);
 		}
 
-		this.setupBlogPostLinks(paginatedPosts);
+		this.utilities.clearPageContent();
+		this.setupBlogPostLinks(currentPagePosts);
+		this.setupPages();
+	}
 
-		this.setupPageNumbers(posts);
+	setupPages() {
+		this.setupChangePage();
+		this.setupPageNumbers();
+	}
+
+	setupChangePage() {
+		if (this.filteredPosts.length > 0) {
+			const paginateHtml = `
+				<div class='paginate'>
+					<div class='later'>previous</div>				
+					<div class='earlier'>next</div>
+				</div>
+		
+				<div class='pageNumber'>
+				</div>
+			`;
+			this.utilities.appendPageContent(paginateHtml);
+			this.registerChangePageClick();
+		}
 	}
 
 	onListPostsLoad() {
@@ -196,67 +229,58 @@ export class BlogPostIndexController {
 
 		this.router.changeUri('/blog');
 
-		const paginateHtml =
-			`
-			<div class='paginate'>
-				<div class='later'>previous</div>				
-				<div class='earlier'>next</div>
-			</div>
-	
-			<div class='pageNumber'>
-			</div>
-			`;
+		this.updateSearchInput();
+		this.reloadPageContent();
 
-		this.utilities.updateTemplate(paginateHtml);
+		this.registerSearchInputEvent();
+	}
 
+	updateSearchInput() {
 		const input = document.querySelector(`#searchInput`);
 		input.hidden = false;
 		input.focus();
 		input.value = '';
 		input.value = this.searchTerm;
-
-		this.reloadMain(this.tag, input.value);
-
-		this.registerSearchInputEvent();
-		this.registerChangePageClick();
 	}
 
 	registerSearchInputEvent() {
 		this.utilities.addEvent('input', document.querySelector(`#searchInput`), (event) => {
 			this.searchTerm = event.srcElement.value;
-			this.reloadMain(this.tag, this.searchTerm);
+			this.reloadPageContent();
 		});
 	}
+
 	registerChangePageClick() {
 		document.querySelectorAll('.paginate').forEach((paginate) => {
 			this.utilities.addEvent("click", paginate, (event) => {
-				if (event.srcElement.classList.contains('later')) {
-					// backwards
-					const currentPage = this.page;
-
-					if (currentPage === 1) {
-						alert('No older posts!');
-					}
-					else {
-						this.page--;
-						this.reloadMain(this.tag, this.searchTerm);
-					}
-				}
-				else if (event.srcElement.classList.contains('earlier')) {
-					// forwards
-					const posts = this.postsRepo.filterPosts(this.allPosts, this.tag, this.searchTerm);
-					const postsCount = posts.length;
-
-					const currentPage = this.page;
-					if (currentPage * this.postsPerPage >= postsCount) {
-						alert('No newer posts!');
-					}
-					else {
-						this.page++;
-						this.reloadMain(this.tag, this.searchTerm);
-					}
-				}
+				if (event.srcElement.classList.contains('later'))
+					this.onLoadPreviousPage();
+				else if (event.srcElement.classList.contains('earlier'))
+					this.onLoadNextPage();
 			});
 		});
+	}
+
+	onLoadPreviousPage() {
+		const currentPage = this.pageNumber;
+		if (currentPage === 1) {
+			alert('No older posts!');
+		}
+		else {
+			this.pageNumber--;
+			this.reloadPageContent();
+		}
+	}
+
+	onLoadNextPage() {
+		const filteredPostsCount = this.filteredPosts.length;
+		const currentPage = this.pageNumber;
+		if (currentPage * this.postsPerPage >= filteredPostsCount) {
+			alert('No newer posts!');
+		}
+		else {
+			this.pageNumber++;
+			this.reloadPageContent();
+		}
 	}
 }

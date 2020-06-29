@@ -2,7 +2,7 @@
 	--main-background-color: rgba(248, 248, 248, 1);
 	--main-header-font-color: black;
 	--main-border-color: lightgrey;
-	--layout-margin-top: 40px;
+	--pageContent-margin-top: 40px;
 	--post-header-font-size: 40px;
 	--heading-padding: 10px;
 	--posts-header-width: 100px;
@@ -36,20 +36,14 @@ body {
 	font-family: 'Roboto', sans-serif;
 }
 
-#template {
-	width: 100%;
-	height: 100%;
-	padding: 0px 0% 0px 0%;
-}
-
-#layout {
-	margin-top: calc(var(--search-bar-height) + var(--layout-margin-top));
+#pageContent {
+	margin-top: calc(var(--search-bar-height) + var(--pageContent-margin-top));
 }
 
 .sidebar {
 	height: 100%;
 	width: var(--sidebar-width);
-	margin-top: calc(var(--layout-margin-top) * -1);
+	margin-top: calc(var(--pageContent-margin-top) * -1);
 	background-color: #fff;
 	border: var(--main-border);
 	position: fixed!important;

@@ -15,7 +15,7 @@ export class BlogPostController {
 		this.utilities.removeResize('pageNumbersResize');
 		this.toasts.clearToasts();
 
-		this.utilities.updateTemplate('<div class="postContent"></div>');
+		this.utilities.updatePageContent('<div class="postContent"></div>');
 		await this.loadPostMarkdownHtml(id);
 
 		showPostInSidebarCb(id);

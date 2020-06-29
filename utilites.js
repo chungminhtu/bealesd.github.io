@@ -5,7 +5,7 @@ export class Utilities {
 
             this.addProtoypeMethods();
         }
-        return Utilities.instance;     
+        return Utilities.instance;
     }
 
     invertJsonKeyValues(json) {
@@ -17,11 +17,11 @@ export class Utilities {
         }
         return invertedJson;
     }
-    
+
     managedResize(key, callback) {
         let oldCb = window.events[key];
         window.removeEventListener('resize', oldCb);
-    
+
         let cb = () => {
             let resizeTimeout;
             if (!resizeTimeout) {
@@ -31,7 +31,7 @@ export class Utilities {
                 }, 66);
             }
         };
-    
+
         window.addEventListener('resize', cb);
         window.events[key] = cb;
     }
@@ -79,7 +79,21 @@ export class Utilities {
         });
     }
 
-    updateTemplate(html) {
-		document.querySelector('#template').innerHTML = html;
+    updatePageContent(html) {
+        // destroy all events
+        document.querySelector('#pageContent').innerHTML = html;
+    }
+
+    appendPageContent(html) {
+        // keep exisiting event
+        const div = document.createElement('div');
+        div.innerHTML = html;
+        document.querySelector('#pageContent').lastElementChild.insertAdjacentElement('afterEnd', div)
+        div.replaceWith(...div.childNodes)
+    }
+
+    clearPageContent() {
+        // destroy all events
+        document.querySelector('#pageContent').innerHTML = '';
     }
 }
