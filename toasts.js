@@ -28,7 +28,7 @@ export class Toasts {
 			elem.style.bottom = `${positionFromBottom}px`;
 		})
 		
-		this.utilities.addEvent('click', document.querySelector(`#toast > [data-toastid="${id}"]`), () => {
+		this.utilities.addEvent('click', document.querySelector(`#toast > [data-toastid="${id}"] > button`), () => {
 			const toastId = event.srcElement.parentNode.dataset.toastid;
 			this.removeToast(toastId);
 			callback('');

@@ -158,7 +158,7 @@ export class BlogPostIndexController {
 					this.reloadMain('', this.searchTerm);
 				}
 				else {
-					this.TAG = event.srcElement.id;
+					this.tag = event.srcElement.id;
 					this.toasts.addToast('alert-info', `Tag: ${this.tag}`, this.tag, (tag) => { this.reloadMain(tag, this.searchTerm); });
 				}
 			});
