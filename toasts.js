@@ -33,7 +33,7 @@ export class Toasts {
 			this.removeToast(toastId);
 			callback('');
 		});
-		callback(event.srcElement.id);
+		// callback(event.srcElement.id);
 	}
 
     removeToast(toastId) {

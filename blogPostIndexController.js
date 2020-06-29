@@ -178,6 +178,7 @@ export class BlogPostIndexController {
 				this.tag = '';
 				this.reloadPageContent();
 			});
+			this.reloadPageContent();
 		}
 	}
 
