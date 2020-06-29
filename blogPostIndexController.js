@@ -175,6 +175,7 @@ export class BlogPostIndexController {
 		else {
 			this.tag = event.srcElement.id;
 			this.toasts.addToast('alert-info', `Tag: ${this.tag}`, this.tag, () => {
+				this.tag = '';
 				this.reloadPageContent();
 			});
 		}
