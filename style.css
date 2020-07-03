@@ -40,6 +40,23 @@ body {
 	margin-top: calc(var(--search-bar-height) + var(--pageContent-margin-top));
 }
 
+#blogPostSort {
+	position: absolute;
+	top: 0;
+	margin-top: 5px;
+}
+
+#blogPostSort>p:first-child {
+	display: inline-block;
+	font-size: 14px;
+}
+
+#blogPostSort>p {
+	display: inline-block;
+	font-size: 12px;
+	font-style: italic;
+}
+
 .sidebar {
 	height: 100%;
 	width: var(--sidebar-width);
@@ -132,21 +149,20 @@ body {
 	margin-top: 15px!important;
 }
 
-a[data-page]{
+a[data-page] {
 	color: blue;
 	margin-left: 3px;
 }
 
-a[data-page].active{
+a[data-page].active {
 	color: purple;
 }
 
-a[data-page]:hover{
+a[data-page]:hover {
 	color: red;
 	text-decoration: underline;
-	cursor: pointer;	
+	cursor: pointer;
 }
-
 
 @media (min-width: 700px) {
 	:root {
@@ -174,6 +190,11 @@ a[data-page]:hover{
 	.postContent {
 		--post-content-total-width: calc( (var(--post-content-padding-width)*2) + 2px + var(--post-content-width));
 		margin-left: calc(var(--sidebar-width) + ((100% - (var(--sidebar-width) + var(--post-content-total-width)))/2))!important;
+	}
+	#blogPostSort {
+		--content-width: 200px;
+		/*factor in hamburger for small size*/
+		margin-left: calc(var(--search-form-width) + ((100% - (var(--search-form-width) + var(--content-width)))/2))!important
 	}
 }
 
@@ -235,8 +256,14 @@ a[data-page]:hover{
 		-webkit-transform: rotate(45deg) translate(-6px, -6px);
 		transform: rotate(45deg) translate(-6px, -6px);
 	}
-	#header {
+	#blogHeader {
 		display: none;
+	}
+	#blogPostSort {
+		--content-width: 200px;
+		--width-used: calc(var(--search-form-width) + var(--hamurger-margin) + var(--hamurger-width));
+		--width-available: calc(100% - var(--width-used));
+		margin-left: calc(var(--width-used) + (var(--width-available) - var(--content-width))/2);
 	}
 }
 
@@ -385,12 +412,15 @@ pre {
 	outline: none;
 }
 
-#header {
+#blogHeader {
 	position: absolute;
 	top: 0;
 	text-align: right;
-	--width-used: calc(var(--search-form-width) + var(--search-margin-left) + var(--hamurger-width) + (var(--hamurger-margin)*2));
-	margin-left: calc(100% - (var(--width-used)));
+	--width-header: 130px;
+	--width-used: calc(var(--search-form-width) + var(--search-margin-left));
+	--width-available: calc(100% - (var(--width-used)));
+	--margin-from-space-available: calc(var(--width-available) - var(--width-header));
+	margin-left: calc( var(--width-used) + var(--margin-from-space-available) - var(--heading-padding));
 }
 
 .alert-success {
