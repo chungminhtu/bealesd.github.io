@@ -28,7 +28,7 @@ export class Sidebar {
         this.registerResizeEvents();
     }
 
-    addBlogPostLoadRoutes(){
+    addBlogPostLoadRoutes() {
         for (let i = 0; i < this.blogPostIndex.length; i++) {
             const postJson = this.blogPostIndex[i];
             const routeId = postJson['id'];
@@ -42,7 +42,8 @@ export class Sidebar {
 
     registerHamburgerEvents() {
         //TODO container is a poor name for hamburger
-        this.utilities.addEvent('click', document.querySelector('.container'), () => {
+        const container = document.querySelector('.container');
+        this.utilities.addEvent(container.id, 'click', container, () => {
             const sidebar = document.querySelector('.sidebar');
             if (sidebar.style.display === 'block')
                 sidebar.style.display = 'none';
@@ -61,7 +62,8 @@ export class Sidebar {
     }
 
     registerHomePageClick() {
-        this.utilities.addEvent("click", document.querySelector('#blog'), async () => {
+        const blog = document.querySelector('#blog');
+        this.utilities.addEvent(blog.id, "click", blog, async () => {
             this.collapseSidebar();
             this.router.changeUri('/blog');
             await this.router.routeUrl();
@@ -70,7 +72,7 @@ export class Sidebar {
 
     registerBlogPostClick() {
         document.querySelectorAll('.bar-link.sub-header').forEach((link) => {
-            this.utilities.addEvent("click", link, async (event) => {
+            this.utilities.addEvent(link.id, "click", link, async (event) => {
                 this.router.changeUri(`blog\\${event.srcElement.id}`);
                 this.router.routeUrl();
             });
@@ -92,7 +94,7 @@ export class Sidebar {
 
     registerAccordionEvents() {
         document.querySelectorAll('.accordion').forEach((link) => {
-            this.utilities.addEvent("click", link, () => {
+            this.utilities.addEvent(link.id, "click", link, () => {
                 //shown sublinks
                 if (!link.nextSibling.classList.contains("show")) {
                     link.nextSibling.classList.add("show");
@@ -119,10 +121,10 @@ export class Sidebar {
         for (let i = 0; i < orderedPostsByTagKeys.length; i++) {
             const orderedPostsByTagKey = orderedPostsByTagKeys[i];
             const postArray = orderedPostsByTag[orderedPostsByTagKey];
-            html += `<a class='bar-item header accordion' data-id='${orderedPostsByTagKey}'>${orderedPostsByTagKey}<span class='up'>&#10148;</span></a><div class='hide'>`;
+            html += `<a class='bar-item header accordion' id='sidebarHeader-${orderedPostsByTagKey}' data-id='${orderedPostsByTagKey}'>${orderedPostsByTagKey}<span class='up'>&#10148;</span></a><div class='hide'>`;
             for (let j = 0; j < postArray.length; j++) {
                 const postValue = postArray[j];
-                html += `<a class='bar-item bar-link sub-header' id='${postValue['id']}'>${postValue['displayName']}</a>`
+                html += `<a class='bar-item bar-link sub-header' id='sidebarLink-${postValue['id']}'>${postValue['displayname']}</a>`
             }
             html += '</div>';
         }

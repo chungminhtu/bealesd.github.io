@@ -10,7 +10,11 @@ export class BlogPostIndexRepo {
 		return BlogPostIndexRepo.instance;
 	}
 
-	filterPosts(posts, tag, search_term) {
+	filterPosts(posts, tag, search_term, orderProperty, ascending = true) {
+		orderProperty = orderProperty.toLowerCase();
+		tag = tag.toLowerCase();
+		search_term = search_term.toLowerCase();
+
 		let filteredPosts = [];
 		if (tag && !search_term) {
 			filteredPosts = this.filterPostsByTag(posts, tag);
@@ -22,6 +26,11 @@ export class BlogPostIndexRepo {
 		else {
 			filteredPosts = this.filterPostsByWord(posts, search_term);
 		}
+
+		filteredPosts = this.soughtPostsByProperty(filteredPosts, orderProperty);
+		if (!ascending)
+			filteredPosts = filteredPosts.reverse();
+
 		return filteredPosts;
 	}
 
@@ -39,7 +48,7 @@ export class BlogPostIndexRepo {
 		let postsByWord = [];
 		for (let i = 0; i < posts.length; i++) {
 			const post = posts[i];
-			if (post['displayName'].toLocaleLowerCase().includes(word.toLocaleLowerCase()))
+			if (post['displayname'].toLocaleLowerCase().includes(word.toLocaleLowerCase()))
 				postsByWord.push(post);
 		}
 		return postsByWord;
@@ -60,9 +69,10 @@ export class BlogPostIndexRepo {
 		return paginatedPosts;
 	}
 
-	soughtPostsByProperty(property) {
+	soughtPostsByProperty(posts, property) {
+		property = property.toLowerCase();
 		// deep copy posts
-		return [...this.blogPostIndex].sort((a, b) => {
+		return [...posts].sort((a, b) => {
 			let x, y;
 			if (property === 'timestamp') {
 				x = Date.parse(a['timestamp']) * -1;
@@ -79,7 +89,7 @@ export class BlogPostIndexRepo {
 
 	getPostByTags() {
 		// sought by displayName
-		const postsByDisplayName = this.soughtPostsByProperty('displayName');
+		const postsByDisplayName = this.soughtPostsByProperty(this.blogPostIndex, 'displayname');
 
 		let postsByTag = {};
 		for (let i = 0; i < postsByDisplayName.length; i++) {

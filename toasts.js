@@ -28,12 +28,13 @@ export class Toasts {
 			elem.style.bottom = `${positionFromBottom}px`;
 		})
 		
-		this.utilities.addEvent('click', document.querySelector(`#toast > [data-toastid="${id}"] > button`), () => {
+		const toastClose = document.querySelector(`#toast > [data-toastid="${id}"] > button`);
+		
+		this.utilities.addEvent(toastClose.parentElement.dataset['toastid'], 'click', toastClose, () => {
 			const toastId = event.srcElement.parentNode.dataset.toastid;
 			this.removeToast(toastId);
 			callback('');
 		});
-		// callback(event.srcElement.id);
 	}
 
     removeToast(toastId) {

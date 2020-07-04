@@ -8,6 +8,8 @@ export class BlogPostIndexController {
 		if (!BlogPostIndexController.instance) {
 			this.allPosts = [];
 			this.filteredPosts = [];
+			this.orderProperty = 'timestamp';
+			this.ascending = true;
 
 			this.searchTerm = "";
 			this.tag = "";
@@ -116,7 +118,7 @@ export class BlogPostIndexController {
 			const postHtml = this.generateBlogPostLinkHtml(
 				post['timestamp'],
 				post['id'],
-				post['displayName'],
+				post['displayname'],
 				post['tag']);
 
 			postsHtml += postHtml;
@@ -125,12 +127,15 @@ export class BlogPostIndexController {
 	}
 
 	generateBlogPostLinkHtml(timestamp, id, displayName, tag) {
+		const uuid = this.utilities.uuidv4();
+		const tagId = `${uuid}-tag-${tag}`;
 		return `
 			<div class="postLinkDiv">
 				<p class="timestamp">${timestamp}</p>
 				<a class="postLink" id="${id}">${displayName}</a>
 				<div class="tags">
-					<em id='${tag}'>#${tag}</em>
+				
+					<em id='${tagId}'>#${tag}</em>
 				</div>
 			</div>
 			`;
@@ -154,26 +159,50 @@ export class BlogPostIndexController {
 	registerBlogPostLinkEvents() {
 		this.registerBlogPostTagClickEvent();
 		this.registerBlogPostLinkClickEvent();
+		this.registerBlogPostSortEvents();
 	}
 
 	registerBlogPostTagClickEvent() {
 		document.querySelectorAll('.tags > em').forEach((tag) => {
-			this.utilities.addEvent("click", tag, (event) => {
+			this.utilities.addEvent(tag.id, "click", tag, (event) => {
 				this.onBlogPostTagClick();
 			});
 		});
 	}
 
+	registerBlogPostSortEvents() {
+		document.querySelectorAll('#blogPostSort > .sort').forEach((sortProperty) => {
+			this.utilities.addEvent(sortProperty.id, "click", sortProperty, (event) => {
+				//TODO, being called multiple times!!
+				this.onBlogPostSoughtClick();
+			});
+		});
+	}
+
+	onBlogPostSoughtClick() {
+		const previousOrderProperty = this.orderProperty;
+		this.orderProperty = event.srcElement.id.substring('sort'.length).toLowerCase();
+
+		if (this.orderProperty === previousOrderProperty)
+			this.ascending = !this.ascending;
+		else
+			this.ascending = true;
+
+		this.reloadPageContent();
+	}
+
 	onBlogPostTagClick() {
-		const isTagActive = this.toasts.toasts.map((t) => { return t.split(':')[0] }).includes(event.srcElement.id);
+		console.log('called');
+		let tagName = event.srcElement.id.split('tag-')[1];
+		const isTagActive = this.toasts.toasts.map((t) => { return t.split(':')[0] }).includes(tagName);
 		if (isTagActive) {
-			const toastId = this.toasts.toasts.filter((t) => { return t.split(':')[0] === event.srcElement.id })[0];
+			const toastId = this.toasts.toasts.filter((t) => { return t.split(':')[0] ===tagName })[0];
 			this.toasts.removeToast(toastId);
 			this.tag = '';
 			this.reloadPageContent();
 		}
 		else {
-			this.tag = event.srcElement.id;
+			this.tag = tagName;
 			this.toasts.addToast('alert-info', `Tag: ${this.tag}`, this.tag, () => {
 				this.tag = '';
 				this.reloadPageContent();
@@ -184,7 +213,7 @@ export class BlogPostIndexController {
 
 	registerBlogPostLinkClickEvent() {
 		document.querySelectorAll('.postLink').forEach((blogPostLink) => {
-			this.utilities.addEvent("click", blogPostLink, async (event) => {
+			this.utilities.addEvent(blogPostLink.id, "click", blogPostLink, async (event) => {
 				this.router.changeUri(`blog\\${event.srcElement.id}`);
 				this.router.routeUrl();
 			});
@@ -192,7 +221,7 @@ export class BlogPostIndexController {
 	}
 
 	reloadPageContent() {
-		this.filteredPosts = this.postsRepo.filterPosts(this.allPosts, this.tag, this.searchTerm);
+		this.filteredPosts = this.postsRepo.filterPosts(this.allPosts, this.tag, this.searchTerm, this.orderProperty, this.ascending);
 		let currentPagePosts = this.postsRepo.filterPostsByPage(this.filteredPosts, this.pageNumber, this.postsPerPage);
 
 		if (currentPagePosts.length === 0) {
@@ -214,8 +243,8 @@ export class BlogPostIndexController {
 		if (this.filteredPosts.length > 0) {
 			const paginateHtml = `
 				<div class='paginate'>
-					<div class='later'>previous</div>				
-					<div class='earlier'>next</div>
+					<div id='paginate-later' class='later'>previous</div>				
+					<div id='paginate-earlier' class='earlier'>next</div>
 				</div>
 		
 				<div class='pageNumber'>
@@ -227,7 +256,7 @@ export class BlogPostIndexController {
 	}
 
 	onListPostsLoad() {
-		this.allPosts = this.postsRepo.soughtPostsByProperty('timestamp');
+		this.allPosts = this.postsRepo.blogPostIndex;
 
 		this.router.changeUri('/blog');
 
@@ -246,15 +275,18 @@ export class BlogPostIndexController {
 	}
 
 	registerSearchInputEvent() {
-		this.utilities.addEvent('input', document.querySelector(`#searchInput`), (event) => {
+		const input = document.querySelector(`#searchInput`);
+		this.utilities.addEvent(input.id, 'input', input, (event) => {
 			this.searchTerm = event.srcElement.value;
 			this.reloadPageContent();
 		});
 	}
 
 	registerChangePageClick() {
-		document.querySelectorAll('.paginate').forEach((paginate) => {
-			this.utilities.addEvent("click", paginate, (event) => {
+		document.querySelectorAll('.paginate > div').forEach((paginate) => {
+			this.utilities.removeEvent(paginate, paginate.id);
+
+			this.utilities.addEvent(paginate.id, "click", paginate, (event) => {
 				if (event.srcElement.classList.contains('later'))
 					this.onLoadPreviousPage();
 				else if (event.srcElement.classList.contains('earlier'))

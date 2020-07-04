@@ -9,7 +9,7 @@ export class BlogPostIndex {
         const blogPostIndex = [
             {
                 'id': 'JavaScriptVariablesAndScope',
-                'displayName': 'Variables And Scope',
+                'displayname': 'Variables And Scope',
                 'tag': 'JavaScript',
                 'subtags': '',
                 'timestamp': '13 Apr 2018'
@@ -17,28 +17,28 @@ export class BlogPostIndex {
             },
             {
                 'id': 'JavaScriptPromises',
-                'displayName': 'Promises',
+                'displayname': 'Promises',
                 'tag': 'JavaScript',
                 'subtags': '',
                 'timestamp': '13 May 2018'
             },
             {
                 'id': 'AzureVariables',
-                'displayName': 'Variables',
+                'displayname': 'Variables',
                 'tag': 'Azure',
                 'subtags': '',
                 'timestamp': '13 May 2020'
             },
             {
                 'id': 'AzureVariables2',
-                'displayName': 'Variables2',
+                'displayname': 'Variables2',
                 'tag': 'Azure',
                 'subtags': '',
                 'timestamp': '13 May 2020'
             },
             {
                 'id': 'AzureVariables3',
-                'displayName': 'Variables3',
+                'displayname': 'Variables3',
                 'tag': 'Azure',
                 'subtags': '',
                 'timestamp': '13 May 2020'

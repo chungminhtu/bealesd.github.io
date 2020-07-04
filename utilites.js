@@ -41,13 +41,22 @@ export class Utilities {
         window.removeEventListener('resize', oldCb);
     }
 
-    addEvent(eventType, element, callback, callbackArgs) {
-        const id = element.id;
-        window.events[id] = window.events[id] === undefined || window.events[id][eventType] === undefined ?
-            { [eventType]: [callback] } :
-            { [eventType]: [...window.events[id][eventType], callback] }
+    addEvent(id, eventType, element, callback, callbackArgs) {
+        if (window.events[id] === undefined) {
+            const events = {};
+            events[`${eventType}`] = () => { callback(callbackArgs) };
+            window.events[id] = events;
+            element.addEventListener(eventType, callback, callbackArgs)
+        }
+    }
 
-        element.addEventListener(eventType, callback, callbackArgs);
+    removeEvent(element, id){
+        if(window.events[id] !== undefined){
+            const eventType = Object.keys(window.events[id])[0];
+            const callback = window.events[id][eventType]
+            element.removeEventListener(eventType, callback);
+            window.events[id] = undefined;
+        }
     }
 
     removeEvents(eventType, element) {

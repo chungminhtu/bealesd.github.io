@@ -18,8 +18,7 @@
 	--main-border: 1px solid var(--main-border-color);
 	--footer-margin: var(--hamurger-margin);
 	--sidebar-off-width: 700px;
-	/* default page-number-width, set in js*/
-	--page-number-width-total: 10px;
+	--page-number-width-total: 0px;
 	--page-number-width: 10px;
 	--page-number-width-spacing: 2px;
 }
@@ -291,7 +290,6 @@ a[data-page]:hover {
 	border-bottom: 1px solid rgba(192, 192, 192, 0);
 	background-color: var(--main-background-color);
 	color: var(--main-header-font-color);
-	/* text-align: center; */
 	letter-spacing: 1px;
 	font-size: 14px;
 	transition: border 1s ease;
