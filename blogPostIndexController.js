@@ -9,7 +9,7 @@ export class BlogPostIndexController {
 			this.allPosts = [];
 			this.filteredPosts = [];
 			this.orderProperty = 'timestamp';
-			this.ascending = true;
+			this.ascending = false;
 
 			this.searchTerm = "";
 			this.tag = "";
@@ -103,6 +103,7 @@ export class BlogPostIndexController {
 
 	setupBlogPostLinks(posts) {
 		this.drawBlogPostLinks(posts);
+		document.querySelector('#blogPostSort').hidden = false;
 		this.registerBlogPostLinkEvents();
 	}
 
@@ -126,15 +127,14 @@ export class BlogPostIndexController {
 		return postsHtml;
 	}
 
-	generateBlogPostLinkHtml(timestamp, id, displayName, tag) {
+	generateBlogPostLinkHtml(timestamp, id, displayName, tag, index) {
 		const uuid = this.utilities.uuidv4();
-		const tagId = `${uuid}-tag-${tag}`;
+		const tagId = `tag-${tag}-${uuid}`;
 		return `
 			<div class="postLinkDiv">
 				<p class="timestamp">${timestamp}</p>
-				<a class="postLink" id="${id}">${displayName}</a>
+				<a class="postLink" id="postLink-${id}">${displayName}</a>
 				<div class="tags">
-				
 					<em id='${tagId}'>#${tag}</em>
 				</div>
 			</div>
@@ -163,7 +163,10 @@ export class BlogPostIndexController {
 	}
 
 	registerBlogPostTagClickEvent() {
+		this.utilities.removeEventKeys('tag-');
+
 		document.querySelectorAll('.tags > em').forEach((tag) => {
+			this.utilities.removeEvent(tag, tag.id);
 			this.utilities.addEvent(tag.id, "click", tag, (event) => {
 				this.onBlogPostTagClick();
 			});
@@ -173,15 +176,41 @@ export class BlogPostIndexController {
 	registerBlogPostSortEvents() {
 		document.querySelectorAll('#blogPostSort > .sort').forEach((sortProperty) => {
 			this.utilities.addEvent(sortProperty.id, "click", sortProperty, (event) => {
-				//TODO, being called multiple times!!
-				this.onBlogPostSoughtClick();
+				this.onBlogPostSortClick();
 			});
 		});
 	}
 
-	onBlogPostSoughtClick() {
+	onBlogPostSortClick() {
+		document.querySelectorAll('#blogPostSort > .sort').forEach((sortProperty) => { 
+			sortProperty.classList.remove('sortActive'); 
+			sortProperty.querySelector('span').hidden = true;
+		});
+
+		event.srcElement.classList.add('sortActive');
+
+		const arrowUp = '&#8638';
+		const arrowDown = '&#8642';
+
+		const arrow = event.srcElement.querySelector('span');
+		arrow.hidden = false;
+
+		const arrowType = arrow.classList[0];
+		arrow.className = "";
+
+		if (arrowType === 'up') {
+			arrow.classList.add('down');
+			arrow.innerHTML = arrowDown;
+		}
+
+		else {
+			arrow.classList.add('up');
+			arrow.innerHTML = arrowUp;
+		}
+
+
 		const previousOrderProperty = this.orderProperty;
-		this.orderProperty = event.srcElement.id.substring('sort'.length).toLowerCase();
+		this.orderProperty = event.srcElement.id.substring('sort-'.length).toLowerCase();
 
 		if (this.orderProperty === previousOrderProperty)
 			this.ascending = !this.ascending;
@@ -192,11 +221,10 @@ export class BlogPostIndexController {
 	}
 
 	onBlogPostTagClick() {
-		console.log('called');
-		let tagName = event.srcElement.id.split('tag-')[1];
+		let tagName = event.srcElement.id.split('tag-')[1].split('-')[0]
 		const isTagActive = this.toasts.toasts.map((t) => { return t.split(':')[0] }).includes(tagName);
 		if (isTagActive) {
-			const toastId = this.toasts.toasts.filter((t) => { return t.split(':')[0] ===tagName })[0];
+			const toastId = this.toasts.toasts.filter((t) => { return t.split(':')[0] === tagName })[0];
 			this.toasts.removeToast(toastId);
 			this.tag = '';
 			this.reloadPageContent();
@@ -213,6 +241,7 @@ export class BlogPostIndexController {
 
 	registerBlogPostLinkClickEvent() {
 		document.querySelectorAll('.postLink').forEach((blogPostLink) => {
+			this.utilities.removeEvent(blogPostLink, blogPostLink.id);
 			this.utilities.addEvent(blogPostLink.id, "click", blogPostLink, async (event) => {
 				this.router.changeUri(`blog\\${event.srcElement.id}`);
 				this.router.routeUrl();
@@ -221,8 +250,13 @@ export class BlogPostIndexController {
 	}
 
 	reloadPageContent() {
-		this.filteredPosts = this.postsRepo.filterPosts(this.allPosts, this.tag, this.searchTerm, this.orderProperty, this.ascending);
-		let currentPagePosts = this.postsRepo.filterPostsByPage(this.filteredPosts, this.pageNumber, this.postsPerPage);
+		this.filteredPosts = this.postsRepo.filterPosts(this.allPosts, this.tag, this.searchTerm);
+		const sortedPosts = this.postsRepo.sortPostsByProperty(this.filteredPosts, this.orderProperty.toLowerCase(), undefined, this.ascending);
+
+		document.querySelectorAll('#blogPostSort > .sort').forEach((sortProperty) => { sortProperty.classList.remove('sortActive'); });
+		document.querySelector(`#sort-${this.orderProperty.toLowerCase()}`).classList.add('sortActive');
+
+		let currentPagePosts = this.postsRepo.filterPostsByPage(sortedPosts, this.pageNumber, this.postsPerPage);
 
 		if (currentPagePosts.length === 0) {
 			this.pageNumber = 1;

@@ -21,6 +21,7 @@ export class BlogPostController {
 		showPostInSidebarCb(id);
 
 		document.querySelector('#searchInput').hidden = true;
+		document.querySelector('#blogPostSort').hidden = true;
 	}
 
 	async loadPostMarkdownHtml(pageName) {

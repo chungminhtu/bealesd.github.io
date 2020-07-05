@@ -19,8 +19,7 @@ export class Utilities {
     }
 
     managedResize(key, callback) {
-        let oldCb = window.events[key];
-        window.removeEventListener('resize', oldCb);
+        this.removeEvent(window, key);
 
         let cb = () => {
             let resizeTimeout;
@@ -32,8 +31,7 @@ export class Utilities {
             }
         };
 
-        window.addEventListener('resize', cb);
-        window.events[key] = cb;
+        this.addEvent(key, 'resize', window, cb)
     }
 
     removeResize(key) {
@@ -50,8 +48,8 @@ export class Utilities {
         }
     }
 
-    removeEvent(element, id){
-        if(window.events[id] !== undefined){
+    removeEvent(element, id) {
+        if (window.events[id] !== undefined) {
             const eventType = Object.keys(window.events[id])[0];
             const callback = window.events[id][eventType]
             element.removeEventListener(eventType, callback);
@@ -67,6 +65,10 @@ export class Utilities {
                 window.events[id][eventType].pop(window.events[id][eventType][i]);
             }
         }
+    }
+
+    removeEventKeys(pattern) {
+        Object.keys(window.events).forEach((e) => { if (e.includes(pattern)) delete window.events[e]; })
     }
 
     addProtoypeMethods() {
@@ -89,7 +91,7 @@ export class Utilities {
     }
 
     updatePageContent(html) {
-        // destroy all events
+        // destroys all events
         document.querySelector('#pageContent').innerHTML = html;
     }
 

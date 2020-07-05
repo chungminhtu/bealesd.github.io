@@ -10,8 +10,7 @@ export class BlogPostIndexRepo {
 		return BlogPostIndexRepo.instance;
 	}
 
-	filterPosts(posts, tag, search_term, orderProperty, ascending = true) {
-		orderProperty = orderProperty.toLowerCase();
+	filterPosts(posts, tag, search_term) {
 		tag = tag.toLowerCase();
 		search_term = search_term.toLowerCase();
 
@@ -27,11 +26,7 @@ export class BlogPostIndexRepo {
 			filteredPosts = this.filterPostsByWord(posts, search_term);
 		}
 
-		filteredPosts = this.soughtPostsByProperty(filteredPosts, orderProperty);
-		if (!ascending)
-			filteredPosts = filteredPosts.reverse();
-
-		return filteredPosts;
+		return filteredPosts
 	}
 
 	filterPostsByTag(posts, tag) {
@@ -69,27 +64,49 @@ export class BlogPostIndexRepo {
 		return paginatedPosts;
 	}
 
-	soughtPostsByProperty(posts, property) {
-		property = property.toLowerCase();
-		// deep copy posts
-		return [...posts].sort((a, b) => {
-			let x, y;
-			if (property === 'timestamp') {
-				x = Date.parse(a['timestamp']) * -1;
-				y = Date.parse(b['timestamp']) * -1;
-			}
-			else {
-				x = a[property].toLowerCase();
-				y = b[property].toLowerCase();
-			}
+	sortPostsByProperty(posts, propertyOne = 'timestamp', propertyTwo = 'displayname', propertyOneAscending = true) {
+		//TODO inidicate if asc or desc as well
+		const propertyTwoAscending = true;
+		propertyOne = propertyOne.toLowerCase();
+		propertyTwo = propertyTwo.toLowerCase();
 
-			return x < y ? -1 : x > y ? 1 : 0;
-		})
+		let sorter = this.mulitSortCompare(propertyOne, propertyTwo, propertyOneAscending, propertyTwoAscending);
+		const sortedPosts = [...posts].sort(sorter);
+
+		return sortedPosts;
+	}
+
+
+	mulitSortCompare(key1, key2, key1Ascending, key2Ascending) {
+		return (a, b) => {
+			return this.multiSort(a, b, key1, key2, key1Ascending, key2Ascending);
+		}
+	}
+
+	multiSort(postA, postB, key1, key2, key1Ascending, key2Ascending) {
+		const post_A_key_1 = postA[key1].toLowerCase();
+		const post_B_key_1 = postB[key1].toLowerCase();
+
+		const post_A_key_2 = postA[key2].toLowerCase();
+		const post_B_key_2 = postB[key2].toLowerCase();
+
+		const post_A_before_post_B = -1;
+		const post_B_before_post_A = 1;
+
+		const post_A_before_post_B_for_key_1 = key1Ascending ? post_A_before_post_B : post_B_before_post_A;
+		const post_A_before_post_B_for_key_2 = key2Ascending ? post_A_before_post_B : post_B_before_post_A;
+
+		if (post_A_key_1 < post_B_key_1) return post_A_before_post_B_for_key_1;
+		if (post_A_key_1 > post_B_key_1) return post_A_before_post_B_for_key_1 * -1;
+
+		if (post_A_key_2 < post_B_key_2) return post_A_before_post_B_for_key_2;
+		if (post_A_key_2 > post_B_key_2) return !post_A_before_post_B_for_key_2 * -1;
+
+		return 0;
 	}
 
 	getPostByTags() {
-		// sought by displayName
-		const postsByDisplayName = this.soughtPostsByProperty(this.blogPostIndex, 'displayname');
+		const postsByDisplayName = this.sortPostsByProperty(this.blogPostIndex, 'displayname');
 
 		let postsByTag = {};
 		for (let i = 0; i < postsByDisplayName.length; i++) {

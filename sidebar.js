@@ -142,7 +142,7 @@ export class Sidebar {
         menuHeader.querySelector('span').classList.add("down");
 
         document.querySelectorAll(`.activated-link`).forEach((al) => { al.classList.remove('activated-link') });
-        document.querySelector(`#${postId}`).classList.add('activated-link');
+        document.querySelector(`#sidebarLink-${postId}`).classList.add('activated-link');
     }
 
     collapseSidebar() {
