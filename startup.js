@@ -15,11 +15,13 @@ export class Startup {
 	constructor() {
 		this.router = new Router();
 
-		this.blogPostController = new BlogPostController();
 		this.blogPostIndexRepo = new BlogPostIndexRepo();		
 
-		this.sidebar = new Sidebar(this.blogPostIndexRepo.blogPostIndex, this.router, this.blogPostController);
-		new BlogPostIndexController(this.router, this.sidebar, this.blogPostController);
+		this.sidebar = new Sidebar(this.router, this.blogPostIndexRepo.blogPostIndex);
+
+		this.blogPostController = new BlogPostController(this.sidebar, this.router, this.blogPostIndexRepo.blogPostIndex);
+
+		new BlogPostIndexController(this.router, this.sidebar);
 
 		this.utilities = new Utilities();
 		this.toasts = new Toasts();

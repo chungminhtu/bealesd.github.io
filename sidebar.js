@@ -1,11 +1,10 @@
 import { Utilities } from "./utilites.js";
 
 export class Sidebar {
-    constructor(blogPostIndex, router, blogPostController) {
+    constructor(router, blogPostIndex) {
         if (!Sidebar.instance) {
             this.blogPostIndex = blogPostIndex;
             this.router = router;
-            this.blogPostController = blogPostController;
 
             this.utilities = new Utilities();
 
@@ -15,8 +14,6 @@ export class Sidebar {
     }
 
     setup(orderedPostsByTag) {
-        this.addBlogPostLoadRoutes();
-
         document.querySelector('.sidebar').innerHTML = this.drawSidebar(orderedPostsByTag);
 
         this.registerHomePageClick();
@@ -26,18 +23,6 @@ export class Sidebar {
         this.registerHamburgerEvents();
 
         this.registerResizeEvents();
-    }
-
-    addBlogPostLoadRoutes() {
-        for (let i = 0; i < this.blogPostIndex.length; i++) {
-            const postJson = this.blogPostIndex[i];
-            const routeId = postJson['id'];
-            this.router.routes[routeId] = () => {
-                this.blogPostController.loadPostContent(routeId, () => {
-                    this.showPostInSidebar(routeId)
-                });
-            }
-        }
     }
 
     registerHamburgerEvents() {

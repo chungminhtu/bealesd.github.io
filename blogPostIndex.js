@@ -37,9 +37,9 @@ export class BlogPostIndex {
                 'timestamp': '13 May 2020'
             },
             {
-                'id': 'AzureVariables3',
-                'displayname': 'Variables3',
-                'tag': 'Azure',
+                'id': 'EventCRUD',
+                'displayname': 'Events CRUD',
+                'tag': 'JavaScript',
                 'subtags': '',
                 'timestamp': '13 May 2020'
             }

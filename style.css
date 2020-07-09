@@ -11,7 +11,7 @@
 	--paginate-button-width: 100px;
 	--post-content-padding-width: 40px;
 	--search-margin-left: 10px;
-	--search-form-width: 200px;
+	--search-form-width: 180px;
 	--hamurger-width: 20px;
 	--hamurger-margin: 5px;
 	--hamburger-margin-top: 15px;
@@ -250,6 +250,7 @@ a[data-page]:hover {
 	:root {
 		--post-link-width: 450px;
 		--post-content-width: calc(100% - var(--post-content-padding-width)*2);
+		--search-form-width: 100px;
 	}
 	.sidebar {
 		display: none;
@@ -433,7 +434,6 @@ pre {
 
 #search>form {
 	display: inline-block;
-	width: var(--search-form-width);
 }
 
 #searchInput {
@@ -441,9 +441,11 @@ pre {
 	top: 0;
 	font-size: 14px;
 	margin-left: 10px;
+	margin-right: 10px;
 	margin-top: 13px;
 	color: rgb(92, 92, 92);
 	outline: none;
+	width: var(--search-form-width);
 }
 
 #blogHeader {
@@ -451,7 +453,7 @@ pre {
 	top: 0;
 	text-align: right;
 	--width-header: 130px;
-	--width-used: calc(var(--search-form-width) + var(--search-margin-left));
+	--width-used: calc(var(--search-form-width) + var(--search-margin-left) + var(--search-margin-left));
 	--width-available: calc(100% - (var(--width-used)));
 	--margin-from-space-available: calc(var(--width-available) - var(--width-header));
 	margin-left: calc( var(--width-used) + var(--margin-from-space-available) - var(--heading-padding));

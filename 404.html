@@ -28,7 +28,15 @@
 		<form>
 			<input id="searchInput" type="text" placeholder=" Search" maxlength="40" value='${window.VALUE}'>
 		</form>
-		<p id="blogHeader">David Beales Blog</p>
+
+		<div id='blogPostSort'>
+			<div class='sort' id='sort-displayname'>Name<span class='down' hidden>&#8642;</span></div>
+			<div class='sort' id='sort-tag'>Tag<span class='down' hidden>&#8642;</span></div>
+			<div class='sort sortActive' id='sort-timestamp'>Date<span class='down'>&#8642;</span></div>
+		</div>
+	</div>
+
+	<p id="blogHeader">David Beales Blog</p>
 	</div>
 
 	<div class="sidebar bar-block">
