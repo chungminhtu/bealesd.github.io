@@ -13,7 +13,7 @@ import { Utilities } from './utilites.js';
 
 export class Startup {
 	constructor() {
-		console.log('in startup js');
+		alert('in startup js');
 		this.router = new Router();
 		console.log('router done');
 		this.blogPostIndexRepo = new BlogPostIndexRepo();		
