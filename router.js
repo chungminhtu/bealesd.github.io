@@ -9,31 +9,24 @@ export class Router {
 
     async routeUrl() {
 		const suffix = this.getUrlSuffix();
-       
         this.routes[suffix]();
 	}
 
     getUrlSuffix() {
-        let url = window.location.href;
-        let urlSuffixRegex = url.match(/[A-Za-z]+\.html/);
-        return urlSuffixRegex !== null ? urlSuffixRegex[0].slice(0, -5) : "";
+        let urlSuffix = window.location.pathname.split('\/')[window.location.pathname.split('\/').length-1].match(/(?<=-|_).*/);
+        return urlSuffix ? urlSuffix[0].match(/[\w]+(?=\.html)/)[0] : '';
     }
 
     getFullUrlSuffix() {
-        let url = window.location.href;
-        let urlSuffixRegex = url.match(/[A-Za-z]+\.html/);
-        return urlSuffixRegex !== null ? urlSuffixRegex[0].slice(0, -5) : "";
+        return window.location.pathname;
     }
 
     getUrlPrefix() {
-        let url = window.location.href;
-        let urlPrefixRegex = url.match(/[A-Za-z]+\.html/);
-        return urlPrefixRegex !== null ? url.substring(0, url.indexOf(urlPrefixRegex)) : url;
+        return window.location.origin;
     }
 
     changeUri(uri) {
-        let prefix = this.getUrlPrefix().split('\\');
-
-		history.pushState({}, null, `${uri}.html`);
+        uri = this.getUrlPrefix()+`\\${uri}.html`;
+		history.pushState({}, null, uri);
 	}
 }
