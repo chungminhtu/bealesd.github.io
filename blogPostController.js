@@ -4,10 +4,10 @@ import { Toasts } from './toasts.js';
 export class BlogPostController {
 	constructor(sidebar, router, blogPostIndex) {
 		if (!BlogPostController.instance) {
-			this.toasts = new Toasts();
-			this.utilities = new Utilities();
 			this.sidebar = sidebar;
 			this.router = router;
+			this.toasts = new Toasts();
+			this.utilities = new Utilities();
 
 			this.blogPostIndex = blogPostIndex;
 
@@ -22,20 +22,21 @@ export class BlogPostController {
 		for (let i = 0; i < this.blogPostIndex.length; i++) {
 			const postJson = this.blogPostIndex[i];
 			const routeId = postJson['id'];
+			const language = postJson['tag'].toLowerCase();
 			this.router.routes[routeId] = () => {
-				this.loadPostContent(routeId, () => {
+				this.loadPostContent(routeId, language, () => {
 					this.sidebar.showPostInSidebar(routeId)
 				});
 			}
 		}
-    }
+	}
 
-	async loadPostContent(id, showPostInSidebarCb) {
+	async loadPostContent(id, language, showPostInSidebarCb) {
 		this.utilities.removeResize('pageNumbersResize');
 		this.toasts.clearToasts();
 
 		this.utilities.updatePageContent('<div class="postContent"></div>');
-		await this.loadPostMarkdownHtml(id);
+		await this.loadPostMarkdownHtml(id, language);
 
 		showPostInSidebarCb(id);
 
@@ -43,14 +44,22 @@ export class BlogPostController {
 		document.querySelector('#blogPostSort').hidden = true;
 	}
 
-	async loadPostMarkdownHtml(pageName) {
+	async loadPostMarkdownHtml(pageName, language) {
+		const languageSelector = {
+			'javascript': () => { return Prism.languages.javascript; }
+		}
+
 		const response = await fetch(`/${pageName}.md`);
-		const text = await response.text();
+		let text = '';
+		if (!response.ok)
+			text = "# Page not found!"
+		else
+			text = await response.text();
 
 		marked.setOptions({
 			renderer: new marked.Renderer(),
-			highlight: function (code, language) {
-				return Prism.highlight(code, Prism.languages.javascript, 'javascript');
+			highlight: (code, language) => {
+				return Prism.highlight(code, languageSelector[language](), language);
 			},
 			pedantic: false,
 			gfm: true,
@@ -61,7 +70,7 @@ export class BlogPostController {
 			xhtml: false
 		});
 
-		document.querySelector('.postContent').innerHTML = marked(text);
-    }
-    
+		document.querySelector('.postContent').innerHTML = marked(text, 'javascript');
+	}
+
 }

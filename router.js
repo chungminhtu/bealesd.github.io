@@ -19,6 +19,12 @@ export class Router {
         return urlSuffixRegex !== null ? urlSuffixRegex[0].slice(0, -5) : "";
     }
 
+    getFullUrlSuffix() {
+        let url = window.location.href;
+        let urlSuffixRegex = url.match(/[A-Za-z]+\.html/);
+        return urlSuffixRegex !== null ? urlSuffixRegex[0].slice(0, -5) : "";
+    }
+
     getUrlPrefix() {
         let url = window.location.href;
         let urlPrefixRegex = url.match(/[A-Za-z]+\.html/);
@@ -26,6 +32,8 @@ export class Router {
     }
 
     changeUri(uri) {
+        let prefix = this.getUrlPrefix().split('\\');
+
 		history.pushState({}, null, `${uri}.html`);
 	}
 }
