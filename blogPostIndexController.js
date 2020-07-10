@@ -243,7 +243,7 @@ export class BlogPostIndexController {
 		document.querySelectorAll('.postLink').forEach((blogPostLink) => {
 			this.utilities.removeEvent(blogPostLink, blogPostLink.id);
 			this.utilities.addEvent(blogPostLink.id, "click", blogPostLink, async (event) => {
-				this.router.changeUri(`blog\\${event.srcElement.id}`);
+				this.router.changeUri(`blog/${event.srcElement.id}`);
 				this.router.routeUrl();
 			});
 		})
@@ -292,7 +292,7 @@ export class BlogPostIndexController {
 	onListPostsLoad() {
 		this.allPosts = this.postsRepo.blogPostIndex;
 
-		this.router.changeUri('/blog');
+		this.router.changeUri('blog');
 
 		this.updateSearchInput();
 		this.reloadPageContent();

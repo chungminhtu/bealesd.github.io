@@ -50,7 +50,7 @@ export class Sidebar {
         const blog = document.querySelector('#blog');
         this.utilities.addEvent(blog.id, "click", blog, async () => {
             this.collapseSidebar();
-            this.router.changeUri('/blog');
+            this.router.changeUri('blog');
             await this.router.routeUrl();
         });
     }
@@ -58,7 +58,7 @@ export class Sidebar {
     registerBlogPostClick() {
         document.querySelectorAll('.bar-link.sub-header').forEach((link) => {
             this.utilities.addEvent(link.id, "click", link, async (event) => {
-                this.router.changeUri(`blog\\${event.srcElement.id}`);
+                this.router.changeUri(`blog/${event.srcElement.id}`);
                 this.router.routeUrl();
             });
         });

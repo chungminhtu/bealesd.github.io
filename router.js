@@ -8,12 +8,12 @@ export class Router {
     }
 
     async routeUrl() {
-		const suffix = this.getUrlSuffix();
+        const suffix = this.getUrlSuffix();
         this.routes[suffix]();
-	}
+    }
 
     getUrlSuffix() {
-        let urlSuffix = window.location.pathname.split('\/')[window.location.pathname.split('\/').length-1].match(/(?<=-|_).*/);
+        let urlSuffix = window.location.pathname.split('\/')[window.location.pathname.split('\/').length - 1].match(/(?<=-|_).*/);
         return urlSuffix ? urlSuffix[0].match(/[\w]+(?=\.html)/)[0] : '';
     }
 
@@ -26,7 +26,7 @@ export class Router {
     }
 
     changeUri(uri) {
-        uri = this.getUrlPrefix()+`\\${uri}.html`;
-		history.pushState({}, null, uri);
-	}
+        uri = this.getUrlPrefix() + "/" + `${uri}.html`;
+        history.pushState({}, null, uri);
+    }
 }
