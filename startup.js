@@ -13,25 +13,24 @@ import { Utilities } from './utilites.js';
 
 export class Startup {
 	constructor() {
-		alert('in startup js');
 		this.router = new Router();
-		console.log('router done');
+
 		this.blogPostIndexRepo = new BlogPostIndexRepo();		
-		console.log('blogPostIndexRepo done');
+
 		this.sidebar = new Sidebar(this.router, this.blogPostIndexRepo.blogPostIndex);
-		console.log('sidebar done');
+
 		this.blogPostController = new BlogPostController(this.sidebar, this.router, this.blogPostIndexRepo.blogPostIndex);
-		console.log('blogPostController done');
+
 		new BlogPostIndexController(this.router, this.sidebar);
-		console.log('BlogPostIndexController done');
+
 		this.utilities = new Utilities();
 		this.toasts = new Toasts();
-		console.log('toasts done');
+
 		window.addEventListener('DOMContentLoaded', async () => {
 			window.events = window.events || {};
 			const orderedPostsByTag = this.blogPostIndexRepo.getPostByTags();
 			this.sidebar.setup(orderedPostsByTag);
-			console.log('sidebar setup done');
+
 			await this.router.routeUrl();
 		});
 
