@@ -52,12 +52,12 @@
 </body>
 
 
-<script src="https://cdn.polyfill.io/v2/polyfill.js?features=es6"></script>
-
 <script type="module">
 	alert('before startup');
-	import { Startup } from './startup.js';
+
+	import { Startup } from '/startup.js';
 	new Startup();
+
 	alert('after startup');
 </script>
 
