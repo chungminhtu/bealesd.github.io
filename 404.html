@@ -14,7 +14,6 @@
 	<link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
 
 	<title>David Beales Blog</title>
-
 </head>
 
 <body>
@@ -53,7 +52,8 @@
 </body>
 
 
-<script src="./dist/es6-module-loader-dev.js"></script>
+<script src="https://cdn.polyfill.io/v2/polyfill.js?features=es6"></script>
+
 <script type="module">
 	alert('before startup');
 	import { Startup } from './startup.js';
