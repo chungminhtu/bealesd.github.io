@@ -14,7 +14,6 @@ import { Utilities } from './utilites.js';
 export class Startup {
 	constructor() {
 		return (async () => {
-			window.addEventListener('DOMContentLoaded', () => { console.log('Start'); })
 			this.router = new Router();
 
 			this.blogPostIndexRepo = await new BlogPostIndexRepo();
@@ -38,7 +37,7 @@ export class Startup {
 					await this.router.routeUrl();
 				})();
 			}
-			
+
 			window.onpopstate = async function () {
 				await this.router.routeUrl();
 			};
