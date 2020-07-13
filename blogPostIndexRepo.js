@@ -2,12 +2,14 @@ import { BlogPostIndex } from "./blogPostIndex.js";
 
 export class BlogPostIndexRepo {
 	constructor() {
-		if (!BlogPostIndexRepo.instance) {
-			this.blogPostIndex = new BlogPostIndex().get();
-
-			BlogPostIndexRepo.instance = this;
-		}
-		return BlogPostIndexRepo.instance;
+		return (async () => {
+			if (!BlogPostIndexRepo.instance) {
+				this.blogPostIndex = await new BlogPostIndex().get();
+	
+				BlogPostIndexRepo.instance = this;
+			}
+			return BlogPostIndexRepo.instance;
+		})();
 	}
 
 	filterPosts(posts, tag, search_term) {

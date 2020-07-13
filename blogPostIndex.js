@@ -5,7 +5,7 @@ export class BlogPostIndex {
         }
         return BlogPostIndex.instance;
     }
-    get() {
+    async get() {
         const blogPostIndex = [
             {
                 'id': 'JavaScriptVariablesAndScope',
@@ -44,6 +44,20 @@ export class BlogPostIndex {
                 'timestamp': '13 May 2020'
             }
         ];
+
+        const response = await fetch(`/blogPostsIndex.json`);
+        let json = {};
+        if (response.ok)
+            json = await response.json();
+
+        let blogPostIndexArray = []
+        Object.keys(json).forEach((id) => {
+            let c = json[id];
+            c['id'] = id;
+            blogPostIndexArray.push(c);
+        });
+
+        return blogPostIndexArray;
         return blogPostIndex;
     }
 }

@@ -5,31 +5,34 @@ import { Utilities } from './utilites.js';
 
 export class BlogPostIndexController {
 	constructor(router, sidebar) {
-		if (!BlogPostIndexController.instance) {
-			this.allPosts = [];
-			this.filteredPosts = [];
-			this.orderProperty = 'timestamp';
-			this.ascending = false;
+		return (async () => {
+			if (!BlogPostIndexController.instance) {
+				this.allPosts = [];
+				this.filteredPosts = [];
+				this.orderProperty = 'timestamp';
+				this.ascending = false;
 
-			this.searchTerm = "";
-			this.tag = "";
+				this.searchTerm = "";
+				this.tag = "";
 
-			this.pageNumber = 1;
-			this.postsPerPage = 3;
+				this.pageNumber = 1;
+				this.postsPerPage = 3;
 
-			this.router = router;
-			this.router.routes[''] = () => { this.onListPostsLoad(); };
-			this.router.routes['blog'] = () => { this.onListPostsLoad(); };
+				this.router = router;
+				this.router.routes[''] = () => { this.onListPostsLoad(); };
+				this.router.routes['blog'] = () => { this.onListPostsLoad(); };
 
-			this.sidebar = sidebar;
+				this.sidebar = sidebar;
 
-			this.postsRepo = new BlogPostIndexRepo();
-			this.toasts = new Toasts();
-			this.utilities = new Utilities();
+				this.postsRepo = await new BlogPostIndexRepo();
+				this.toasts = new Toasts();
+				this.utilities = new Utilities();
 
-			BlogPostIndexController.instance = this;
-		}
-		return BlogPostIndexController.instance;
+				BlogPostIndexController.instance = this;
+			}
+			return BlogPostIndexController.instance;
+		})();
+
 	}
 
 	getAllPosts() {
@@ -182,8 +185,8 @@ export class BlogPostIndexController {
 	}
 
 	onBlogPostSortClick() {
-		document.querySelectorAll('#blogPostSort > .sort').forEach((sortProperty) => { 
-			sortProperty.classList.remove('sortActive'); 
+		document.querySelectorAll('#blogPostSort > .sort').forEach((sortProperty) => {
+			sortProperty.classList.remove('sortActive');
 			sortProperty.querySelector('span').hidden = true;
 		});
 
