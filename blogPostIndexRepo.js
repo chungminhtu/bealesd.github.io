@@ -67,14 +67,12 @@ export class BlogPostIndexRepo {
 	}
 
 	sortPostsByProperty(posts, propertyOne = 'timestamp', propertyTwo = 'displayname', propertyOneAscending = true) {
-		//TODO inidicate if asc or desc as well
 		const propertyTwoAscending = true;
 		propertyOne = propertyOne.toLowerCase();
 		propertyTwo = propertyTwo.toLowerCase();
 
 		let sorter = this.mulitSortCompare(propertyOne, propertyTwo, propertyOneAscending, propertyTwoAscending);
 		const sortedPosts = [...posts].sort(sorter);
-
 		return sortedPosts;
 	}
 

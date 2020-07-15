@@ -4,136 +4,117 @@ import { Toasts } from './toasts.js';
 import { Utilities } from './utilites.js';
 
 export class BlogPostIndexController {
-	constructor(router, sidebar) {
-		return (async () => {
-			if (!BlogPostIndexController.instance) {
-				this.allPosts = [];
-				this.filteredPosts = [];
-				this.orderProperty = 'timestamp';
-				this.ascending = false;
+    constructor(router, sidebar) {
+        return (async() => {
+            if (!BlogPostIndexController.instance) {
+                this.allPosts = [];
+                this.filteredPosts = [];
+                this.orderProperty = 'timestamp';
+                this.ascending = false;
 
-				this.searchTerm = "";
-				this.tag = "";
+                this.searchTerm = "";
+                this.tag = "";
 
-				this.pageNumber = 1;
-				this.postsPerPage = 3;
+                this.pageNumber = 1;
+                this.postsPerPage = 4;
 
-				this.router = router;
-				this.router.routes[''] = () => { this.onListPostsLoad(); };
-				this.router.routes['blog'] = () => { this.onListPostsLoad(); };
+                this.router = router;
+                this.router.routes[''] = () => { this.onListPostsLoad(); };
+                this.router.routes['blog'] = () => { this.onListPostsLoad(); };
 
-				this.sidebar = sidebar;
+                this.sidebar = sidebar;
 
-				this.postsRepo = await new BlogPostIndexRepo();
-				this.toasts = new Toasts();
-				this.utilities = new Utilities();
+                this.postsRepo = await new BlogPostIndexRepo();
+                this.toasts = new Toasts();
+                this.utilities = new Utilities();
 
-				BlogPostIndexController.instance = this;
-			}
-			return BlogPostIndexController.instance;
-		})();
+                BlogPostIndexController.instance = this;
+            }
+            return BlogPostIndexController.instance;
+        })();
 
-	}
+    }
 
-	getAllPosts() {
-		return this.postsRepo.blogPostIndex;
-	}
+    getAllPosts() {
+        return this.postsRepo.blogPostIndex;
+    }
 
-	setupPageNumbers() {
-		let pageCount = 0;
-		if (this.filteredPosts.length === 0)
-			pageCount = 0;
-		else
-			pageCount = Math.ceil(this.filteredPosts.length / this.postsPerPage);
+    setupPageNumbers() {
+        let pageCount = 0;
+        if (this.filteredPosts.length === 0)
+            pageCount = 0;
+        else
+            pageCount = Math.ceil(this.filteredPosts.length / this.postsPerPage);
 
-		this.positionPageNumbers();
+        this.drawPageNumbers(pageCount);
 
-		this.drawPageNumbers(pageCount);
+        if (pageCount > 0) {
+            this.onClickPage();
+            this.changeActivePageLink();
+        }
+    }
 
-		if (pageCount > 0) {
-			this.utilities.managedResize('pageNumbersResize', () => {
-				this.positionPageNumbers();
-			});
+    drawPageNumbers(pageCount) {
+        const startPage = this.pageNumber - 5 > 0 ? this.pageNumber - 5 : 1;
+        const endPage = startPage + 9 <= pageCount ? startPage + 9 : pageCount;
+        const div = document.querySelector('.pageNumber');
+        for (let pageNumber = startPage; pageNumber <= endPage; pageNumber++) {
+            const anchor = document.createElement('a');
+            anchor.setAttribute('data-page', `${pageNumber}`);
+            anchor.innerHTML = `${pageNumber}`
+            div.append(anchor);
+        }
+    }
 
-			this.onClickPage();
-			this.changeActivePageLink();
-		}
-	}
+    changeActivePageLink() {
+        document.querySelectorAll('.pageNumber > a').forEach((pageNumber) => {
+            pageNumber.classList.remove("active");
+        });
 
-	drawPageNumbers(pageCount) {
-		const div = document.querySelector('.pageNumber');
-		let anchor = '';
-		for (let pageNumber = 1; pageNumber <= pageCount; pageNumber++) {
-			anchor += `<a data-page="${pageNumber}">${pageNumber}</a>`;
-		}
-		div.innerHTML = anchor;
-	}
+        const pageNumber = document.querySelector(`.pageNumber > [data-page="${this.pageNumber}"]`);
+        pageNumber.classList.add("active");
+    }
 
-	positionPageNumbers() {
-		let spacing = getComputedStyle(document.documentElement).getPropertyValue('--page-number-width-spacing').trim();
-		spacing = parseInt(spacing.slice(0, spacing.length - 2));
+    onClickPage() {
+        document.querySelectorAll('.pageNumber > a').forEach((anchor) => {
+            anchor.addEventListener('click', () => {
+                this.pageNumber = parseInt(anchor.dataset.page) ? parseInt(anchor.dataset.page) : 0;
+                this.reloadPageContent(this.tag, this.searchTerm);
+            });
+        });
+    }
 
-		let pageNumberWidth = getComputedStyle(document.documentElement).getPropertyValue('--page-number-width').trim();
-		pageNumberWidth = parseInt(pageNumberWidth.slice(0, pageNumberWidth.length - 2));
+    setupBlogPostLinks(posts) {
+        this.drawBlogPostLinks(posts);
+        document.querySelector('#blogPostSort').hidden = false;
+        this.registerBlogPostLinkEvents();
+    }
 
-		let totalPageNumberWidth = this.pageNumber * (pageNumberWidth + spacing);
+    drawBlogPostLinks(posts) {
+        let html = this.generateBlogPostLinksHtml(posts);
+        this.updateBlogPostLinks(html);
+    }
 
-		let sidebarWidth = getComputedStyle(document.documentElement).getPropertyValue('--sidebar-width');
-		sidebarWidth = parseInt(sidebarWidth.slice(0, sidebarWidth.length - 2));
+    generateBlogPostLinksHtml(posts) {
+        let postsHtml = '<div id="postLinkDivContainer">';
+        for (let i = 0; i < posts.length; i++) {
+            const post = posts[i];
+            const postHtml = this.generateBlogPostLinkHtml(
+                post['timestamp'],
+                post['id'],
+                post['displayname'],
+                post['tag']);
 
-		let marginLeft = sidebarWidth + ((window.innerWidth - (sidebarWidth + totalPageNumberWidth)) / 2)
-		marginLeft = window.innerWidth < 700 ? 'auto' : `${marginLeft}px`;
-		document.querySelector('.pageNumber').style.marginLeft = marginLeft;
-	}
+            postsHtml += postHtml;
+        }
+        postsHtml += '</div>'
+        return postsHtml;
+    }
 
-	changeActivePageLink() {
-		document.querySelectorAll('.pageNumber > a').forEach((pageNumber) => {
-			pageNumber.classList.remove("active");
-		});
-
-		const pageNumber = document.querySelector(`.pageNumber > [data-page="${this.pageNumber}"]`);
-		pageNumber.classList.add("active");
-	}
-
-	onClickPage() {
-		document.querySelectorAll('.pageNumber > a').forEach((anchor) => {
-			anchor.addEventListener('click', () => {
-				this.pageNumber = parseInt(anchor.dataset.page) ? parseInt(anchor.dataset.page) : 0;
-				this.reloadPageContent(this.tag, this.searchTerm);
-			});
-		});
-	}
-
-	setupBlogPostLinks(posts) {
-		this.drawBlogPostLinks(posts);
-		document.querySelector('#blogPostSort').hidden = false;
-		this.registerBlogPostLinkEvents();
-	}
-
-	drawBlogPostLinks(posts) {
-		let html = this.generateBlogPostLinksHtml(posts);
-		this.updateBlogPostLinks(html);
-	}
-
-	generateBlogPostLinksHtml(posts) {
-		let postsHtml = '';
-		for (let i = 0; i < posts.length; i++) {
-			const post = posts[i];
-			const postHtml = this.generateBlogPostLinkHtml(
-				post['timestamp'],
-				post['id'],
-				post['displayname'],
-				post['tag']);
-
-			postsHtml += postHtml;
-		}
-		return postsHtml;
-	}
-
-	generateBlogPostLinkHtml(timestamp, id, displayName, tag, index) {
-		const uuid = this.utilities.uuidv4();
-		const tagId = `tag-${tag}-${uuid}`;
-		return `
+    generateBlogPostLinkHtml(timestamp, id, displayName, tag, index) {
+        const uuid = this.utilities.uuidv4();
+        const tagId = `tag-${tag}-${uuid}`;
+        return `
 			<div class="postLinkDiv">
 				<p class="timestamp">${timestamp}</p>
 				<a class="postLink" id="postLink-${id}">${displayName}</a>
@@ -142,216 +123,244 @@ export class BlogPostIndexController {
 				</div>
 			</div>
 			`;
-	}
+    }
 
-	updateBlogPostLinks(blogPostLinksHtml) {
-		document.querySelectorAll('.postLinkDiv').forEach((postLinkDiv) => {
-			postLinkDiv.remove();
-		});
+    updateBlogPostLinks(blogPostLinksHtml) {
+        document.querySelectorAll('.postLinkDiv').forEach((postLinkDiv) => {
+            postLinkDiv.remove();
+        });
 
-		const div = document.createElement('div');
-		div.innerHTML = blogPostLinksHtml;
+        const div = document.createElement('div');
+        div.innerHTML = blogPostLinksHtml;
 
-		const blogPostLinkDivs = div.querySelectorAll('.postLinkDiv');
-		for (let i = blogPostLinkDivs.length - 1; i >= 0; i--) {
-			const blogPostLink = blogPostLinkDivs[i];
-			document.querySelector('#pageContent').prepend(blogPostLink);
-		}
-	}
+        const blogPostLinkDivs = div.querySelectorAll('#postLinkDivContainer');
+        for (let i = blogPostLinkDivs.length - 1; i >= 0; i--) {
+            const blogPostLink = blogPostLinkDivs[i];
+            document.querySelector('#pageContent').prepend(blogPostLink);
+        }
+    }
 
-	registerBlogPostLinkEvents() {
-		this.registerBlogPostTagClickEvent();
-		this.registerBlogPostLinkClickEvent();
-		this.registerBlogPostSortEvents();
-	}
+    registerBlogPostLinkEvents() {
+        this.registerBlogPostTagClickEvent();
+        this.registerBlogPostLinkClickEvent();
+        this.registerBlogPostSortEvents();
+    }
 
-	registerBlogPostTagClickEvent() {
-		this.utilities.removeEventKeys('tag-');
+    registerChangeNumberOfPostsPerPageEvent() {
+        const input = document.querySelector(`#postsPerPageContainer>form>input`);
+        this.utilities.removeEvent(input, input.id);
+        this.utilities.addEvent(input.id, 'input', input, (event) => {
+            this.postsPerPage = parseInt(event.srcElement.value);
+            this.onChangeNumberOfPostsPerPageClick();
+        });
+    }
 
-		document.querySelectorAll('.tags > em').forEach((tag) => {
-			this.utilities.removeEvent(tag, tag.id);
-			this.utilities.addEvent(tag.id, "click", tag, (event) => {
-				this.onBlogPostTagClick();
-			});
-		});
-	}
+    registerBlogPostTagClickEvent() {
+        this.utilities.removeEventKeys('tag-');
 
-	registerBlogPostSortEvents() {
-		document.querySelectorAll('#blogPostSort > .sort').forEach((sortProperty) => {
-			this.utilities.addEvent(sortProperty.id, "click", sortProperty, (event) => {
-				this.onBlogPostSortClick();
-			});
-		});
-	}
+        document.querySelectorAll('.tags > em').forEach((tag) => {
+            this.utilities.removeEvent(tag, tag.id);
+            this.utilities.addEvent(tag.id, "click", tag, (event) => {
+                this.onBlogPostTagClick();
+            });
+        });
+    }
 
-	onBlogPostSortClick() {
-		document.querySelectorAll('#blogPostSort > .sort').forEach((sortProperty) => {
-			sortProperty.classList.remove('sortActive');
-			sortProperty.querySelector('span').hidden = true;
-		});
+    registerBlogPostSortEvents() {
+        document.querySelectorAll('#blogPostSort > .sort').forEach((sortProperty) => {
+            this.utilities.addEvent(sortProperty.id, "click", sortProperty, (event) => {
+                this.onBlogPostSortClick();
+            });
+        });
+    }
 
-		event.srcElement.classList.add('sortActive');
+    onChangeNumberOfPostsPerPageClick() {
+        this.postsPerPage = parseInt(event.srcElement.value);
+        this.reloadPageContent();
+    }
 
-		const arrowUp = '&#8638';
-		const arrowDown = '&#8642';
+    onBlogPostSortClick() {
+        document.querySelectorAll('#blogPostSort > .sort').forEach((sortProperty) => {
+            sortProperty.classList.remove('sortActive');
+            sortProperty.querySelector('span').hidden = true;
+        });
 
-		const arrow = event.srcElement.querySelector('span');
-		arrow.hidden = false;
+        event.srcElement.classList.add('sortActive');
 
-		const arrowType = arrow.classList[0];
-		arrow.className = "";
+        const arrowUp = '&#8638';
+        const arrowDown = '&#8642';
 
-		if (arrowType === 'up') {
-			arrow.classList.add('down');
-			arrow.innerHTML = arrowDown;
-		}
+        const arrow = event.srcElement.querySelector('span');
+        arrow.hidden = false;
 
-		else {
-			arrow.classList.add('up');
-			arrow.innerHTML = arrowUp;
-		}
+        const arrowType = arrow.classList[0];
+        arrow.className = "";
+
+        if (arrowType === 'up') {
+            arrow.classList.add('down');
+            arrow.innerHTML = arrowDown;
+        } else {
+            arrow.classList.add('up');
+            arrow.innerHTML = arrowUp;
+        }
 
 
-		const previousOrderProperty = this.orderProperty;
-		this.orderProperty = event.srcElement.id.substring('sort-'.length).toLowerCase();
+        const previousOrderProperty = this.orderProperty;
+        this.orderProperty = event.srcElement.id.substring('sort-'.length).toLowerCase();
 
-		if (this.orderProperty === previousOrderProperty)
-			this.ascending = !this.ascending;
-		else
-			this.ascending = true;
+        if (this.orderProperty === previousOrderProperty)
+            this.ascending = !this.ascending;
+        else
+            this.ascending = true;
 
-		this.reloadPageContent();
-	}
+        this.reloadPageContent();
+    }
 
-	onBlogPostTagClick() {
-		let tagName = event.srcElement.id.split('tag-')[1].split('-')[0]
-		const isTagActive = this.toasts.toasts.map((t) => { return t.split(':')[0] }).includes(tagName);
-		if (isTagActive) {
-			const toastId = this.toasts.toasts.filter((t) => { return t.split(':')[0] === tagName })[0];
-			this.toasts.removeToast(toastId);
-			this.tag = '';
-			this.reloadPageContent();
-		}
-		else {
-			this.tag = tagName;
-			this.toasts.addToast('alert-info', `Tag: ${this.tag}`, this.tag, () => {
-				this.tag = '';
-				this.reloadPageContent();
-			});
-			this.reloadPageContent();
-		}
-	}
+    onBlogPostTagClick() {
+        let tagName = event.srcElement.id.split('tag-')[1].split('-')[0]
+        const isTagActive = this.toasts.toasts.map((t) => { return t.split(':')[0] }).includes(tagName);
+        if (isTagActive) {
+            const toastId = this.toasts.toasts.filter((t) => { return t.split(':')[0] === tagName })[0];
+            this.toasts.removeToast(toastId);
+            this.tag = '';
+            this.reloadPageContent();
+        } else {
+            this.tag = tagName;
+            this.toasts.addToast('alert-info', `Tag: ${this.tag}`, this.tag, () => {
+                this.tag = '';
+                this.reloadPageContent();
+            });
+            this.reloadPageContent();
+        }
+    }
 
-	registerBlogPostLinkClickEvent() {
-		document.querySelectorAll('.postLink').forEach((blogPostLink) => {
-			this.utilities.removeEvent(blogPostLink, blogPostLink.id);
-			this.utilities.addEvent(blogPostLink.id, "click", blogPostLink, async (event) => {
-				this.router.changeUri(`blog/${event.srcElement.id}`);
-				this.router.routeUrl();
-			});
-		})
-	}
+    registerBlogPostLinkClickEvent() {
+        document.querySelectorAll('.postLink').forEach((blogPostLink) => {
+            this.utilities.removeEvent(blogPostLink, blogPostLink.id);
+            this.utilities.addEvent(blogPostLink.id, "click", blogPostLink, async(event) => {
+                this.router.changeUri(`blog/${event.srcElement.id}`);
+                this.router.routeUrl();
+            });
+        })
+    }
 
-	reloadPageContent() {
-		this.filteredPosts = this.postsRepo.filterPosts(this.allPosts, this.tag, this.searchTerm);
-		const sortedPosts = this.postsRepo.sortPostsByProperty(this.filteredPosts, this.orderProperty.toLowerCase(), undefined, this.ascending);
 
-		document.querySelectorAll('#blogPostSort > .sort').forEach((sortProperty) => { sortProperty.classList.remove('sortActive'); });
-		document.querySelector(`#sort-${this.orderProperty.toLowerCase()}`).classList.add('sortActive');
+    reloadPageContent() {
+        this.filteredPosts = this.postsRepo.filterPosts(this.allPosts, this.tag, this.searchTerm);
+        const sortedPosts = this.postsRepo.sortPostsByProperty(this.filteredPosts, this.orderProperty.toLowerCase(), undefined, this.ascending);
 
-		let currentPagePosts = this.postsRepo.filterPostsByPage(sortedPosts, this.pageNumber, this.postsPerPage);
+        document.querySelectorAll('#blogPostSort > .sort').forEach((sortProperty) => { sortProperty.classList.remove('sortActive'); });
+        document.querySelector(`#sort-${this.orderProperty.toLowerCase()}`).classList.add('sortActive');
 
-		if (currentPagePosts.length === 0) {
-			this.pageNumber = 1;
-			currentPagePosts = this.postsRepo.filterPostsByPage(this.filteredPosts, this.pageNumber, this.postsPerPage);
-		}
+        let currentPagePosts = this.postsRepo.filterPostsByPage(sortedPosts, this.pageNumber, this.postsPerPage);
 
-		this.utilities.clearPageContent();
-		this.setupBlogPostLinks(currentPagePosts);
-		this.setupPages();
-	}
+        if (currentPagePosts.length === 0) {
+            this.pageNumber = 1;
+            currentPagePosts = this.postsRepo.filterPostsByPage(this.filteredPosts, this.pageNumber, this.postsPerPage);
+        }
 
-	setupPages() {
-		this.setupChangePage();
-		this.setupPageNumbers();
-	}
+        this.utilities.clearPageContent();
+        this.setupBlogPostLinks(currentPagePosts);
+        this.setupPages();
+    }
 
-	setupChangePage() {
-		if (this.filteredPosts.length > 0) {
-			const paginateHtml = `
-				<div class='paginate'>
-					<div id='paginate-later' class='later'>previous</div>				
-					<div id='paginate-earlier' class='earlier'>next</div>
-				</div>
-		
-				<div class='pageNumber'>
-				</div>
+    setupPages() {
+        this.setupChangePage();
+        this.setupPageNumbers();
+        //TODO element not drawn at this stage
+        this.updatePostPerPageInput();
+        this.registerChangeNumberOfPostsPerPageEvent();
+    }
+
+    setupChangePage() {
+        if (this.filteredPosts.length > 0) {
+            const paginateHtml = `
+                <div id='pageControls'>
+                    <div id='postsPerPageContainer'>
+                        <form id="postsPerPage">
+                            <input id="postPerPageInput" type="number" min="1" max="100" value='2'>
+                        </form>
+                    </div>
+                    
+                    <div class='paginate'>
+                        <a id='paginate-later' class='later'>prev</a>
+                        <div class='pageNumber'></div>				
+                        <a id='paginate-earlier' class='earlier'>next</a>
+                    </div>
+                    
+                </div>
 			`;
-			this.utilities.appendPageContent(paginateHtml);
-			this.registerChangePageClick();
-		}
-	}
+            this.utilities.appendPageContent(paginateHtml);
+            this.registerChangePageClick();
+        }
+    }
 
-	onListPostsLoad() {
-		this.allPosts = this.postsRepo.blogPostIndex;
+    onListPostsLoad() {
+        this.allPosts = this.postsRepo.blogPostIndex;
 
-		this.router.changeUri('blog');
+        this.router.changeUri('blog');
 
-		this.updateSearchInput();
-		this.reloadPageContent();
+        this.updateSearchInput();
+        this.reloadPageContent();
 
-		this.registerSearchInputEvent();
-	}
+        this.registerSearchInputEvent();
+    }
 
-	updateSearchInput() {
-		const input = document.querySelector(`#searchInput`);
-		input.hidden = false;
-		input.focus();
-		input.value = '';
-		input.value = this.searchTerm;
-	}
+    updatePostPerPageInput() {
+        const input = document.querySelector(`#postPerPageInput`);
+        input.hidden = false;
+        // input.focus();
+        input.value = '';
+        input.value = this.postsPerPage;
+    }
 
-	registerSearchInputEvent() {
-		const input = document.querySelector(`#searchInput`);
-		this.utilities.addEvent(input.id, 'input', input, (event) => {
-			this.searchTerm = event.srcElement.value;
-			this.reloadPageContent();
-		});
-	}
+    updateSearchInput() {
+        const input = document.querySelector(`#searchInput`);
+        input.hidden = false;
+        input.focus();
+        input.value = '';
+        input.value = this.searchTerm;
+    }
 
-	registerChangePageClick() {
-		document.querySelectorAll('.paginate > div').forEach((paginate) => {
-			this.utilities.removeEvent(paginate, paginate.id);
+    registerSearchInputEvent() {
+        const input = document.querySelector(`#searchInput`);
+        this.utilities.addEvent(input.id, 'input', input, (event) => {
+            this.searchTerm = event.srcElement.value;
+            this.reloadPageContent();
+        });
+    }
 
-			this.utilities.addEvent(paginate.id, "click", paginate, (event) => {
-				if (event.srcElement.classList.contains('later'))
-					this.onLoadPreviousPage();
-				else if (event.srcElement.classList.contains('earlier'))
-					this.onLoadNextPage();
-			});
-		});
-	}
+    registerChangePageClick() {
+        document.querySelectorAll('.paginate > a').forEach((paginate) => {
+            this.utilities.removeEvent(paginate, paginate.id);
 
-	onLoadPreviousPage() {
-		const currentPage = this.pageNumber;
-		if (currentPage === 1) {
-			alert('No older posts!');
-		}
-		else {
-			this.pageNumber--;
-			this.reloadPageContent();
-		}
-	}
+            this.utilities.addEvent(paginate.id, "click", paginate, (event) => {
+                if (event.srcElement.classList.contains('later'))
+                    this.onLoadPreviousPage();
+                else if (event.srcElement.classList.contains('earlier'))
+                    this.onLoadNextPage();
+            });
+        });
+    }
 
-	onLoadNextPage() {
-		const filteredPostsCount = this.filteredPosts.length;
-		const currentPage = this.pageNumber;
-		if (currentPage * this.postsPerPage >= filteredPostsCount) {
-			alert('No newer posts!');
-		}
-		else {
-			this.pageNumber++;
-			this.reloadPageContent();
-		}
-	}
+    onLoadPreviousPage() {
+        const currentPage = this.pageNumber;
+        if (currentPage === 1) {
+            alert('No older posts!');
+        } else {
+            this.pageNumber--;
+            this.reloadPageContent();
+        }
+    }
+
+    onLoadNextPage() {
+        const filteredPostsCount = this.filteredPosts.length;
+        const currentPage = this.pageNumber;
+        if (currentPage * this.postsPerPage >= filteredPostsCount) {
+            alert('No newer posts!');
+        } else {
+            this.pageNumber++;
+            this.reloadPageContent();
+        }
+    }
 }

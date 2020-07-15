@@ -26,16 +26,15 @@ export class Sidebar {
     }
 
     registerHamburgerEvents() {
-        //TODO container is a poor name for hamburger
-        const container = document.querySelector('.container');
-        this.utilities.addEvent(container.id, 'click', container, () => {
+        const hamburger = document.querySelector('.hamburger');
+        this.utilities.addEvent(hamburger.id, 'click', hamburger, () => {
             const sidebar = document.querySelector('.sidebar');
             if (sidebar.style.display === 'block')
                 sidebar.style.display = 'none';
             else
                 sidebar.style.display = 'block';
 
-            let hamburgerSlices = document.querySelector('.container').children;
+            let hamburgerSlices = document.querySelector('.hamburger').children;
             for (let i = 0; i < hamburgerSlices.length; i++) {
                 const hamburgerSlice = hamburgerSlices[i];
                 if (hamburgerSlice.classList.contains("change"))
