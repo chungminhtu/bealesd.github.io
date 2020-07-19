@@ -7,6 +7,15 @@ export class BlogPostIndexController {
     constructor(router, sidebar) {
         return (async() => {
             if (!BlogPostIndexController.instance) {
+                this.pageNumberElement = '.pageNumber';
+                this.blogPostSortElement = '#blogPostSort';
+                this.postLinkDivContainerElement = '#postLinkDivContainer';
+                this.postPerPageInputElement = '#postPerPageInput';
+                this.postsPerPageContainerElement = '#postsPerPageContainer';
+                this.postsPerPageElement = '#postsPerPage';
+                this.searchInputElement = '#searchInput';
+                this.paginateElement = '.paginate';
+
                 this.allPosts = [];
                 this.filteredPosts = [];
                 this.orderProperty = 'timestamp';
@@ -57,7 +66,7 @@ export class BlogPostIndexController {
     drawPageNumbers(pageCount) {
         const startPage = this.pageNumber - 5 > 0 ? this.pageNumber - 5 : 1;
         const endPage = startPage + 9 <= pageCount ? startPage + 9 : pageCount;
-        const div = document.querySelector('.pageNumber');
+        const div = document.querySelector(this.pageNumberElement);
         for (let pageNumber = startPage; pageNumber <= endPage; pageNumber++) {
             const anchor = document.createElement('a');
             anchor.setAttribute('data-page', `${pageNumber}`);
@@ -67,16 +76,16 @@ export class BlogPostIndexController {
     }
 
     changeActivePageLink() {
-        document.querySelectorAll('.pageNumber > a').forEach((pageNumber) => {
+        document.querySelectorAll(`${this.pageNumberElement} > a`).forEach((pageNumber) => {
             pageNumber.classList.remove("active");
         });
 
-        const pageNumber = document.querySelector(`.pageNumber > [data-page="${this.pageNumber}"]`);
+        const pageNumber = document.querySelector(`${this.pageNumberElement} > [data-page="${this.pageNumber}"]`);
         pageNumber.classList.add("active");
     }
 
     onClickPage() {
-        document.querySelectorAll('.pageNumber > a').forEach((anchor) => {
+        document.querySelectorAll(`${this.pageNumberElement} > a`).forEach((anchor) => {
             anchor.addEventListener('click', () => {
                 this.pageNumber = parseInt(anchor.dataset.page) ? parseInt(anchor.dataset.page) : 0;
                 this.reloadPageContent(this.tag, this.searchTerm);
@@ -86,7 +95,7 @@ export class BlogPostIndexController {
 
     setupBlogPostLinks(posts) {
         this.drawBlogPostLinks(posts);
-        document.querySelector('#blogPostSort').hidden = false;
+        document.querySelector(`${this.blogPostSortElement}`).hidden = false;
         this.registerBlogPostLinkEvents();
     }
 
@@ -147,7 +156,7 @@ export class BlogPostIndexController {
     }
 
     registerChangeNumberOfPostsPerPageEvent() {
-        const input = document.querySelector(`#postsPerPageContainer>form>input`);
+        const input = document.querySelector(`${this.postsPerPageContainerElement}>form>input`);
         this.utilities.removeEvent(input, input.id);
         this.utilities.addEvent(input.id, 'input', input, (event) => {
             this.postsPerPage = parseInt(event.srcElement.value);
@@ -267,7 +276,7 @@ export class BlogPostIndexController {
     setupPages() {
         this.setupChangePage();
         this.setupPageNumbers();
-        //TODO element not drawn at this stage
+
         this.updatePostPerPageInput();
         this.registerChangeNumberOfPostsPerPageEvent();
     }
@@ -276,8 +285,8 @@ export class BlogPostIndexController {
         if (this.filteredPosts.length > 0) {
             const paginateHtml = `
                 <div id='pageControls'>
-                    <div id='postsPerPageContainer'>
-                        <form id="postsPerPage">
+                    <div id='${this.postsPerPageContainerElement.slice(1)}'>
+                        <form id="${this.postsPerPageElement.slice(1)}">
                             <input id="postPerPageInput" type="number" min="1" max="100" value='2'>
                         </form>
                     </div>
@@ -307,15 +316,14 @@ export class BlogPostIndexController {
     }
 
     updatePostPerPageInput() {
-        const input = document.querySelector(`#postPerPageInput`);
+        const input = document.querySelector(this.postPerPageInputElement);
         input.hidden = false;
-        // input.focus();
         input.value = '';
         input.value = this.postsPerPage;
     }
 
     updateSearchInput() {
-        const input = document.querySelector(`#searchInput`);
+        const input = document.querySelector(this.searchInputElement);
         input.hidden = false;
         input.focus();
         input.value = '';
@@ -323,7 +331,7 @@ export class BlogPostIndexController {
     }
 
     registerSearchInputEvent() {
-        const input = document.querySelector(`#searchInput`);
+        const input = document.querySelector(this.searchInputElement);
         this.utilities.addEvent(input.id, 'input', input, (event) => {
             this.searchTerm = event.srcElement.value;
             this.reloadPageContent();
@@ -331,7 +339,7 @@ export class BlogPostIndexController {
     }
 
     registerChangePageClick() {
-        document.querySelectorAll('.paginate > a').forEach((paginate) => {
+        document.querySelectorAll(`${this.paginateElement} > a`).forEach((paginate) => {
             this.utilities.removeEvent(paginate, paginate.id);
 
             this.utilities.addEvent(paginate.id, "click", paginate, (event) => {
