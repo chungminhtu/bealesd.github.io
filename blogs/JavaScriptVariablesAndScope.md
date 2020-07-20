@@ -1,6 +1,4 @@
-# *JavaScript*
-
-## Variables and Scope
+# Variables and Scope
 
  Like any language JavaScript has scopes and variables.
 

@@ -49,7 +49,7 @@ export class BlogPostController {
 			'javascript': () => { return Prism.languages.javascript; }
 		}
 
-		const response = await fetch(`/${pageName}.md`);
+		const response = await fetch(`/blogs/${pageName}.md`);
 		let text = '';
 		if (!response.ok)
 			text = "# Page not found!"

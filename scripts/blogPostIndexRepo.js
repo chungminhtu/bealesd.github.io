@@ -5,7 +5,7 @@ export class BlogPostIndexRepo {
 		return (async () => {
 			if (!BlogPostIndexRepo.instance) {
 				this.blogPostIndex = await new BlogPostIndex().get();
-	
+
 				BlogPostIndexRepo.instance = this;
 			}
 			return BlogPostIndexRepo.instance;
@@ -67,6 +67,10 @@ export class BlogPostIndexRepo {
 	}
 
 	sortPostsByProperty(posts, propertyOne = 'timestamp', propertyTwo = 'displayname', propertyOneAscending = true) {
+		if (propertyOne === 'timestamp' || propertyTwo === 'timestamp' ) {
+			// TODO use updated instead of timestamp for date sort.
+		}
+
 		const propertyTwoAscending = true;
 		propertyOne = propertyOne.toLowerCase();
 		propertyTwo = propertyTwo.toLowerCase();

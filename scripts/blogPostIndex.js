@@ -6,7 +6,7 @@ export class BlogPostIndex {
         return BlogPostIndex.instance;
     }
     async get() {
-        const response = await fetch(`/blogPostsIndex.json`);
+        const response = await fetch(`/blogIndex/blogPostsIndex.json`);
         let json = {};
         if (response.ok)
             json = await response.json();
