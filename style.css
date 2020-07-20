@@ -185,7 +185,7 @@ a[data-page]:hover {
 }
 
 @media (min-width: 700px) {
-     :root {
+    :root {
         --space-available: calc(100% - var(--sidebar-width));
         --post-link-width: 450px;
         --post-content-width: 350px;
@@ -227,20 +227,20 @@ a[data-page]:hover {
 }
 
 @media (min-width: 900px) {
-     :root {
+    :root {
         --post-link-width: 650px;
         --post-content-width: 550px
     }
 }
 
 @media (min-width: 1200px) {
-     :root {
+    :root {
         --post-content-width: 800px
     }
 }
 
 @media (max-width: 700px) {
-     :root {
+    :root {
         --post-link-width: 450px;
         --post-content-width: calc(100% - var(--post-content-padding-width)*2);
         --search-form-width: 100px;
@@ -271,9 +271,7 @@ a[data-page]:hover {
     .bar1 {
         margin-top: var(--hamburger-margin-top)!important;
     }
-    .bar1,
-    .bar2,
-    .bar3 {
+    .bar1, .bar2, .bar3 {
         width: var(--hamurger-width);
         height: 5px;
         background-color: #333;
@@ -499,7 +497,6 @@ pre {
     margin-left: calc( var(--width-used) + var(--margin-from-space-available) - var(--heading-padding));
 }
 
-
 /*transparency: CC-80% B3-70% 99-60% */
 
 .alert-success {
@@ -563,4 +560,8 @@ button.close {
 footer {
     font-size: 12px;
     margin-left: var(--footer-margin);
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
 }
