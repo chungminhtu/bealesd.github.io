@@ -3,35 +3,21 @@
         "displayname": "Variables And Scope",
         "tag": "JavaScript",
         "subtags": "",
-        "timestamp": "13 Apr 2018",
+        "timestamp": "13 Jun 2020",
         "updated": ""
     },
-    "JavaScriptPromises": {
-        "displayname": "Promises",
-        "tag": "JavaScript",
-        "subtags": "",
-        "timestamp": "13 May 2018",
-        "updated": ""
-    },
-    "AzureVariables": {
-        "displayname": "Variables",
+    "AzureDeveloper204ExamNotes": {
+        "displayname": "Azure 204 Notes",
         "tag": "Azure",
         "subtags": "",
-        "timestamp": "13 May 2020",
+        "timestamp": "22 Jun 2020",
         "updated": ""
-    },
-    "AzureVariables2": {
-        "displayname": "Variables2",
-        "tag": "Azure",
-        "subtags": "",
-        "timestamp": "13 May 2020",
-        "updated": "14 May 2020"
     },
     "EventCRUD": {
         "displayname": "Events CRUD",
         "tag": "JavaScript",
         "subtags": "",
-        "timestamp": "13 May 2020",
+        "timestamp": "21 Jun 2020",
         "updated": ""
     }
 }
