@@ -3,6 +3,8 @@
 # Overview
 These are Azure Developer 204 exam revision notes. All pictures are taken from https://docs.microsoft.com/en-us/azure. All content is based on these docs.
 
+[Read on github for a better viewing experience.](https://github.com/bealesd/bealesd.github.io/blob/master/blogs/AzureDeveloper204ExamNotes.md)
+
 # Azure services
  - SAAS- Data, config, software already there, 365, ymail, etc.
  - PAAS- Web apps, create application and data, choose runtime.
