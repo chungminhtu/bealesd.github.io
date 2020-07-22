@@ -1,6 +1,10 @@
+import { Utilities } from "./utilites.js";
+
 export class BlogPostIndex {
     constructor() {
         if (!BlogPostIndex.instance) {
+            this.utilities = new Utilities();
+            
             BlogPostIndex.instance = this;
         }
         return BlogPostIndex.instance;
@@ -14,8 +18,13 @@ export class BlogPostIndex {
         let blogPostIndexArray = []
         Object.keys(json).forEach((id) => {
             let index = json[id];
-            index['id'] = id;
-            blogPostIndexArray.push(index);
+            if(this.utilities.dateInFuture(new Date(index['timestamp']))){
+                //dont add future date
+            }
+            else{
+                index['id'] = id;
+                blogPostIndexArray.push(index);
+            }
         });
 
         return blogPostIndexArray;

@@ -108,20 +108,14 @@ export class BlogPostIndexController {
 		let postsHtml = '<div id="postLinkDivContainer">';
 		for (let i = 0; i < posts.length; i++) {
 			const post = posts[i];
+			const postHtml = this.generateBlogPostLinkHtml(
+				post['timestamp'],
+				post['updated'],
+				post['id'],
+				post['displayname'],
+				post['tag']);
 
-			if (this.utilities.dateInFuture(new Date(post['timestamp']))) {
-				//don't show post
-			}
-			else {
-				const postHtml = this.generateBlogPostLinkHtml(
-					post['timestamp'],
-					post['updated'],
-					post['id'],
-					post['displayname'],
-					post['tag']);
-
-				postsHtml += postHtml;
-			}
+			postsHtml += postHtml;
 		}
 		postsHtml += '</div>'
 		return postsHtml;
