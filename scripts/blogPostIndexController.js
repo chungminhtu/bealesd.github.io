@@ -108,14 +108,20 @@ export class BlogPostIndexController {
 		let postsHtml = '<div id="postLinkDivContainer">';
 		for (let i = 0; i < posts.length; i++) {
 			const post = posts[i];
-			const postHtml = this.generateBlogPostLinkHtml(
-				post['timestamp'],
-				post['updated'],
-				post['id'],
-				post['displayname'],
-				post['tag']);
 
-			postsHtml += postHtml;
+			if (this.utilities.dateInFuture(new Date(post['timestamp']))) {
+				//don't show post
+			}
+			else {
+				const postHtml = this.generateBlogPostLinkHtml(
+					post['timestamp'],
+					post['updated'],
+					post['id'],
+					post['displayname'],
+					post['tag']);
+
+				postsHtml += postHtml;
+			}
 		}
 		postsHtml += '</div>'
 		return postsHtml;
@@ -125,10 +131,10 @@ export class BlogPostIndexController {
 		const uuid = this.utilities.uuidv4();
 		const tagId = `tag-${tag}-${uuid}`;
 		let time = '';
-		if(updated.length > 0){
+		if (updated.length > 0) {
 			time = `${timestamp}&nbsp&nbsp<i>updated: ${updated}</i>`;
 		}
-		else{
+		else {
 			time = timestamp;
 		}
 		return `

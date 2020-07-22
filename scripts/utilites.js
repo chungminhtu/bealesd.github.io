@@ -107,4 +107,8 @@ export class Utilities {
         // destroy all events
         document.querySelector('#pageContent').innerHTML = '';
     }
+
+    dateInFuture(date) {
+        return date.setHours(0,0,0,0) > new Date().setHours(0,0,0,0)
+    }
 }

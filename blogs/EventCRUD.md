@@ -7,13 +7,13 @@
 
  #### Figure 1 - inline click event on DOM element of type button
 
-  ```javascript
+  ```html
 <button onclick="myFunction()">Click Me</button>
 ```
 
 When the button **Click Me** is clicked, a function called **myFunction** is called. 
 
-Generally, when dealling with applications, you would not want to assign functions to the DOM inline, as your scripts would become unmaintainable and probably not very modular. Instead you would reference the DOM element in JavaScript and add a callback function, (figure 2).
+Generally, when dealing with applications, you would not want to assign functions to the DOM inline, as your scripts would become unmaintainable and probably not very modular. Instead you would reference the DOM element in JavaScript and add a callback function, (figure 2).
 
 #### Figure 2 - add an event listener to the 1st button found
 
@@ -72,9 +72,9 @@ So what does the function addEvent do? It has 4 args, where
  - *callback* - the function to execute on the event firing
  - *callbackArgs* - the args that the callback requires
 
-It's uses the global variable *window* as a store for adding a JSON object. This *id* is then added to the JSON object if the id has not been taken. the value associated to the id is then a univoked annoymous function containing the callback and its args. Only then is the *addEventListener* function invoked with the args.
+It uses the global variable *window* as a store for adding a JSON object. This *id* is then added to the JSON object, if the id has not been taken. The value associated to the *id* is then an univoked annoymous function containing the callback and its' args. Only then is the *addEventListener* function invoked with the args.
 
-N.B. This is a quick approach, which works, although if you are impleneting this in live code, addEvent function should be in a class. Also there is no need to use the global variable *window* as an events store. Instead use a class variable. In fact, if you used window.event, you would be overriding an in-built variable. So you can see the risk. Also *window* is often used by developers who may not understand scope and therfore always want access to there vairables.
+N.B. This is a quick approach, which works, although if you are implementing this in live code, the *addEvent* function should be in a class. Also there is no need to use the global variable *window* as an events store. Instead use a class variable. In fact, if you used window.event, you would be overriding an in-built variable. So you can see the risk. Also *window* is often used by developers who may not understand scope and therfore always want access to their vairables.
 
 ## Delete
 
@@ -107,4 +107,4 @@ Tracking events is very easy in JavaScript, with just a little work. I will prov
     }
 ```
 
-N.B. you may feel cheated, I have not added a read or update event method (yet the post os called event CRUD). To be honest, these would be trivial to implement, and would add little value, so I have left them out. It could be useful to add a *remove all events* method, for an element as well.
+N.B. you may feel cheated, I have not added a read or update event method (yet the post is called event CRUD). To be honest, these would be trivial to implement, and would add little value, so I have left them out. It could be useful to add a *remove all events* method, for an element as well.

@@ -7,7 +7,7 @@ You want to run some asynchronous code in your class constructor. You wisely bel
 ```javascript
 class GoogleClass {
     async constructor() {
-            const response = await fetch('https://www.google.com')
+            const response = await fetch('https://www.google.com');
             ...some logic;
         }
 }
@@ -26,7 +26,7 @@ So there is a really simple solution, return a function in the constructor, i.e.
 class GoogleClass {
     constructor() {
         return (async () => {
-                    const response = await fetch('https://www.google.com')
+                    const response = await fetch('https://www.google.com');
                     ...some logic;
                 })();
     }

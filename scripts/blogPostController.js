@@ -46,7 +46,17 @@ export class BlogPostController {
 
 	async loadPostMarkdownHtml(pageName, language) {
 		const languageSelector = {
-			'javascript': () => { return Prism.languages.javascript; }
+			'c': () => { return Prism.languages.c; },
+			'csharp': () => { return Prism.languages.csharp; },
+			'git': () => { return Prism.languages.git; },
+			'html': () => { return Prism.languages.html; },
+			'javascript': () => { return Prism.languages.javascript; },
+			'markdown': () => { return Prism.languages.markdown; },
+			'python': () => { return Prism.languages.python; },
+			'powershell': () => { return Prism.languages.powershell; },
+			'typescript': () => { return Prism.languages.typescript; },
+			'webassembly': () => { return Prism.languages.webassembly; },
+			'yaml': () => { return Prism.languages.yaml; },
 		}
 
 		const response = await fetch(`/blogs/${pageName}.md`);
