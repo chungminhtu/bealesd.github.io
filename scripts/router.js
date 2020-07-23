@@ -26,7 +26,7 @@ export class Router {
     }
 
     changeUri(uri) {
-        uri = this.getUrlPrefix() + "/" + `${uri}.html`;
+        uri = this.getUrlPrefix() + '/' + `${uri}.html`;
         history.pushState({}, null, uri);
     }
 }

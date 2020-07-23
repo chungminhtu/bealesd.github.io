@@ -25,8 +25,8 @@ export class Startup {
             this.utilities = new Utilities();
             this.toasts = new Toasts();
 
-            if (document.readyState !== "loading" &&
-                document.readyState === "complete") {
+            if (document.readyState !== 'loading' &&
+                document.readyState === 'complete') {
                 (async() => {
                     window.events = window.events || {};
                     const orderedPostsByTag = await this.blogPostIndexRepo.getPostByTags();

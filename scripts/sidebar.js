@@ -1,4 +1,4 @@
-import { Utilities } from "./utilites.js";
+import { Utilities } from './utilites.js';
 
 export class Sidebar {
     constructor(router, blogPostIndex) {
@@ -37,17 +37,17 @@ export class Sidebar {
             let hamburgerSlices = document.querySelector('.hamburger').children;
             for (let i = 0; i < hamburgerSlices.length; i++) {
                 const hamburgerSlice = hamburgerSlices[i];
-                if (hamburgerSlice.classList.contains("change"))
-                    hamburgerSlice.classList.remove("change");
+                if (hamburgerSlice.classList.contains('change'))
+                    hamburgerSlice.classList.remove('change');
                 else
-                    hamburgerSlice.classList.add("change");
+                    hamburgerSlice.classList.add('change');
             }
         })
     }
 
     registerHomePageClick() {
         const blog = document.querySelector('#blog');
-        this.utilities.addEvent(blog.id, "click", blog, async () => {
+        this.utilities.addEvent(blog.id, "click", blog, async() => {
             this.collapseSidebar();
             this.router.changeUri('blog');
             await this.router.routeUrl();
@@ -56,7 +56,7 @@ export class Sidebar {
 
     registerBlogPostClick() {
         document.querySelectorAll('.bar-link.sub-header').forEach((link) => {
-            this.utilities.addEvent(link.id, "click", link, async (event) => {
+            this.utilities.addEvent(link.id, "click", link, async(event) => {
                 this.router.changeUri(`blog/${event.srcElement.id}`);
                 this.router.routeUrl();
             });
@@ -78,22 +78,22 @@ export class Sidebar {
 
     registerAccordionEvents() {
         document.querySelectorAll('.accordion').forEach((link) => {
-            this.utilities.addEvent(link.id, "click", link, () => {
+            this.utilities.addEvent(link.id, 'click', link, () => {
                 //shown sublinks
-                if (!link.nextSibling.classList.contains("show")) {
-                    link.nextSibling.classList.add("show");
-                    link.querySelector('span').classList.add("down");
+                if (!link.nextSibling.classList.contains('show')) {
+                    link.nextSibling.classList.add('show');
+                    link.querySelector('span').classList.add('down');
 
-                    link.nextSibling.classList.remove("hide");
-                    link.querySelector('span').classList.remove("up");
+                    link.nextSibling.classList.remove('hide');
+                    link.querySelector('span').classList.remove('up');
                 }
                 //hide sublinks
-                else if (link.nextSibling.classList.contains("show")) {
-                    link.nextSibling.classList.remove("show")
-                    link.querySelector('span').classList.remove("down");
+                else if (link.nextSibling.classList.contains('show')) {
+                    link.nextSibling.classList.remove('show')
+                    link.querySelector('span').classList.remove('down');
 
-                    link.nextSibling.classList.add("hide");
-                    link.querySelector('span').classList.add("up");
+                    link.nextSibling.classList.add('hide');
+                    link.querySelector('span').classList.add('up');
                 }
             });
         });
@@ -119,11 +119,11 @@ export class Sidebar {
         const tag = this.blogPostIndex.filter((post) => { return post.id === postId })[0].tag;
         const menuHeader = document.querySelector(`[data-id="${tag}"]`);
 
-        menuHeader.nextSibling.classList.remove("hide");
-        menuHeader.nextSibling.classList.add("show");
+        menuHeader.nextSibling.classList.remove('hide');
+        menuHeader.nextSibling.classList.add('show');
 
-        menuHeader.querySelector('span').classList.remove("up");
-        menuHeader.querySelector('span').classList.add("down");
+        menuHeader.querySelector('span').classList.remove('up');
+        menuHeader.querySelector('span').classList.add('down');
 
         document.querySelectorAll(`.activated-link`).forEach((al) => { al.classList.remove('activated-link') });
         document.querySelector(`#sidebarLink-${postId}`).classList.add('activated-link');
@@ -131,13 +131,13 @@ export class Sidebar {
 
     collapseSidebar() {
         document.querySelectorAll(`.sidebar span`).forEach((span) => {
-            span.classList.remove("down");
-            span.classList.add("up");
+            span.classList.remove('down');
+            span.classList.add('up');
         })
 
         document.querySelectorAll(`.sidebar .show`).forEach((subHeaders) => {
-            subHeaders.classList.remove("show");
-            subHeaders.classList.add("hide");
+            subHeaders.classList.remove('show');
+            subHeaders.classList.add('hide');
         })
 
         document.querySelectorAll(`.activated-link`).forEach((al) => { al.classList.remove('activated-link') });
@@ -145,13 +145,13 @@ export class Sidebar {
 
     exapndSidebar() {
         document.querySelectorAll(`.sidebar span`).forEach((span) => {
-            span.classList.remove("up");
-            span.classList.add("down");
+            span.classList.remove('up');
+            span.classList.add('down');
         })
 
         document.querySelectorAll(`.sidebar .hide`).forEach((subHeaders) => {
-            subHeaders.classList.remove("hide");
-            subHeaders.classList.add("show");
+            subHeaders.classList.remove('hide');
+            subHeaders.classList.add('show');
         })
     }
 

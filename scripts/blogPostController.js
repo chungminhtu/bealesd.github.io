@@ -61,7 +61,7 @@ export class BlogPostController {
         const response = await fetch(`/blogs/${pageName}.md`);
         let rawMarkdown = '';
         if (!response.ok)
-            rawMarkdown = "# Page not found!"
+            rawMarkdown = '# Page not found!';
         else
             rawMarkdown = await response.text();
 
@@ -86,8 +86,8 @@ export class BlogPostController {
         const tokens = marked.lexer(rawMarkdown);
         const codeTokens = tokens.filter(token => { return token.type === 'code'; });
 
-        this.updateCodeBlockTokens(codeTokens);
         const codeBlockExampleType = this.getCodeBlockExampleType(codeTokens);
+        this.updateCodeBlockTokens(codeTokens);
 
         let htmlString = marked.parser(tokens);
 
@@ -136,7 +136,7 @@ export class BlogPostController {
 
         div.querySelectorAll('pre').forEach((pre) => {
             const language = [...pre.querySelector('code[class*=language]').classList].find((className) => { if (className.includes('language')) { return className; } });
-            pre.classList.add([`line-numbers`]);
+            pre.classList.add(['line-numbers']);
             pre.classList.add([`${language}`]);
             const lineCount = pre.innerText.split('\n').length;
 
@@ -145,7 +145,7 @@ export class BlogPostController {
                 linesHtml += '<span></span>';
             linesHtml += '</span>';
 
-            pre.querySelector("code").lastElementChild.insertAdjacentHTML('afterEnd', linesHtml);
+            pre.querySelector('code').lastElementChild.insertAdjacentHTML('afterEnd', linesHtml);
         });
 
         return div.innerHTML;
