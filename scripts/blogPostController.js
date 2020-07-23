@@ -59,11 +59,11 @@ export class BlogPostController {
         }
 
         const response = await fetch(`/blogs/${pageName}.md`);
-        let text = '';
+        let rawMarkdown = '';
         if (!response.ok)
-            text = "# Page not found!"
+            rawMarkdown = "# Page not found!"
         else
-            text = await response.text();
+            rawMarkdown = await response.text();
 
         marked.setOptions({
             renderer: new marked.Renderer(),
@@ -79,38 +79,65 @@ export class BlogPostController {
             xhtml: false
         });
 
-        document.querySelector('.postContent').innerHTML = this.addLineNumbersToMarked(text, 'javascript');
+        document.querySelector('.postContent').innerHTML = this.parseMardown(rawMarkdown);
     }
 
-    addLineNumbersToMarked(text) {
-        const token = marked.lexer(text);
-        let codeBlockLookup = {};
-        token
-            .filter(token => { return token.type === 'code'; })
-            .forEach((token, index) => {
-                let language, exampleType;
-                if (token['lang'].split(' ').length > 1)
-                    [language, exampleType] = token['lang'].split(' ');
-                else
-                    [language, exampleType] = [token['lang'], 'example']
+    parseMardown(rawMarkdown) {
+        const tokens = marked.lexer(rawMarkdown);
+        const codeTokens = tokens.filter(token => { return token.type === 'code'; });
 
-                codeBlockLookup[`${index}`] = {
-                    'language': `language-${language}`,
-                    'exampleType': exampleType
-                };
-                token['lang'] = language;
-            });
+        this.updateCodeBlockTokens(codeTokens);
+        const codeBlockExampleType = this.getCodeBlockExampleType(codeTokens);
 
-        text = marked.parser(token);
+        let htmlString = marked.parser(tokens);
 
+        htmlString = this.setCodeBlockExampleType(codeBlockExampleType, htmlString);
+        htmlString = this.setCodeBlockLineNumbers(htmlString);
+
+        return htmlString;
+    }
+
+    updateCodeBlockTokens(tokens) {
+        tokens.forEach((token) => {
+            token['lang'] = token['lang'].split(' ')[0];
+        });
+    }
+
+    getCodeBlockExampleType(tokens) {
+        let codeBlockExampleType = {};
+        tokens.forEach((token, index) => {
+            let exampleType;
+            if (token['lang'].split(' ').length > 1)
+                exampleType = token['lang'].split(' ')[1];
+            else
+                exampleType = 'example';
+
+            codeBlockExampleType[`${index}`] = {
+                'exampleType': exampleType
+            };
+        });
+        return codeBlockExampleType;
+    }
+
+    setCodeBlockExampleType(codeBlockExampleType, htmlString) {
         const div = document.createElement('div');
-        div.innerHTML = text;
+        div.innerHTML = htmlString;
 
         div.querySelectorAll('pre').forEach((pre, index) => {
-            const language = codeBlockLookup[`${index}`]['language'];
-            const exampleType = codeBlockLookup[`${index}`]['exampleType'];
+            const exampleType = codeBlockExampleType[`${index}`]['exampleType'];
+            pre.classList.add(exampleType);
+        });
+        return div.innerHTML;
+    }
 
-            pre.classList = `line-numbers ${language} ${exampleType}`
+    setCodeBlockLineNumbers(htmlString) {
+        const div = document.createElement('div');
+        div.innerHTML = htmlString;
+
+        div.querySelectorAll('pre').forEach((pre) => {
+            const language = [...pre.querySelector('code[class*=language]').classList].find((className) => { if (className.includes('language')) { return className; } });
+            pre.classList.add([`line-numbers`]);
+            pre.classList.add([`${language}`]);
             const lineCount = pre.innerText.split('\n').length;
 
             let linesHtml = '<span aria-hidden="true" class="line-numbers-rows">'
