@@ -55,14 +55,14 @@ Create is the obvious place to start. If we are going to track events in our SPA
 
 #### Figure 4 - addEvent function
 ```javascript
-    addEvent(id, eventType, element, callback, callbackArgs) {
-        if (window.events[id] === undefined) {
-            const events = {};
-            events[`${eventType}`] = () => { callback(callbackArgs) };
-            window.events[id] = events;
-            element.addEventListener(eventType, callback, callbackArgs)
-        }
+addEvent(id, eventType, element, callback, callbackArgs) {
+    if (window.events[id] === undefined) {
+        const events = {};
+        events[`${eventType}`] = () => { callback(callbackArgs) };
+        window.events[id] = events;
+        element.addEventListener(eventType, callback, callbackArgs)
     }
+}
 ```
 
 So what does the function addEvent do? It has 4 args, where
@@ -83,13 +83,13 @@ Removing an event is now very easy. Just enter the event ID and the element and 
 #### Figure 4 - removeEvent function
 ```javascript
  removeEvent(element, id) {
-        if (window.events[id] !== undefined) {
-            const eventType = Object.keys(window.events[id])[0];
-            const callback = window.events[id][eventType]
-            element.removeEventListener(eventType, callback);
-            window.events[id] = undefined;
-        }
+    if (window.events[id] !== undefined) {
+        const eventType = Object.keys(window.events[id])[0];
+        const callback = window.events[id][eventType]
+        element.removeEventListener(eventType, callback);
+        window.events[id] = undefined;
     }
+}
 ```
 
 # Conclusion
@@ -98,13 +98,13 @@ Tracking events is very easy in JavaScript, with just a little work. I will prov
 
 #### Figure 5 - annoymous function
 ```javascript
-    myFunction(arg1){
+myFunction(arg1){
     ...some logic;
-    }
+}
 
-    ()=>{
-        myFunction(arg1);
-    }
+() => {
+    myFunction(arg1);
+}
 ```
 
 N.B. you may feel cheated, I have not added a read or update event method (yet the post is called event CRUD). To be honest, these would be trivial to implement, and would add little value, so I have left them out. It could be useful to add a *remove all events* method, for an element as well.

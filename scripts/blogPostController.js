@@ -22,21 +22,20 @@ export class BlogPostController {
 		for (let i = 0; i < this.blogPostIndex.length; i++) {
 			const postJson = this.blogPostIndex[i];
 			const routeId = postJson['id'];
-			const language = postJson['tag'].toLowerCase();
 			this.router.routes[routeId] = () => {
-				this.loadPostContent(routeId, language, () => {
+				this.loadPostContent(routeId, () => {
 					this.sidebar.showPostInSidebar(routeId)
 				});
 			}
 		}
 	}
 
-	async loadPostContent(id, language, showPostInSidebarCb) {
+	async loadPostContent(id, showPostInSidebarCb) {
 		this.utilities.removeResize('pageNumbersResize');
 		this.toasts.clearToasts();
 
 		this.utilities.updatePageContent('<div class="postContent"></div>');
-		await this.loadPostMarkdownHtml(id, language);
+		await this.loadPostMarkdownHtml(id);
 
 		showPostInSidebarCb(id);
 
@@ -44,7 +43,7 @@ export class BlogPostController {
 		document.querySelector('#blogPostSort').hidden = true;
 	}
 
-	async loadPostMarkdownHtml(pageName, language) {
+	async loadPostMarkdownHtml(pageName) {
 		const languageSelector = {
 			'c': () => { return Prism.languages.c; },
 			'csharp': () => { return Prism.languages.csharp; },
@@ -66,6 +65,8 @@ export class BlogPostController {
 		else
 			text = await response.text();
 
+		const markedWithLineNumber  = this.addLineNumbersToMarked(marked);
+
 		marked.setOptions({
 			renderer: new marked.Renderer(),
 			highlight: (code, language) => {
@@ -80,7 +81,32 @@ export class BlogPostController {
 			xhtml: false
 		});
 
-		document.querySelector('.postContent').innerHTML = marked(text, 'javascript');
+		document.querySelector('.postContent').innerHTML = markedWithLineNumber(text, 'javascript');
+	}
+
+	addLineNumbersToMarked(marked) {
+		const markedWithLineNumber = function (text) {
+			const token = marked.lexer(text);
+			text = marked.parser(token);
+
+			const div = document.createElement('div');
+			div.innerHTML = text;
+
+			div.querySelectorAll('pre').forEach(pre => {
+				pre.classList = `line-numbers language-`
+
+				const lineCount = pre.innerText.split('\n').length;
+				let linesHtml = '<span aria-hidden="true" class="line-numbers-rows">'
+				for (let i = 0; i < lineCount; i++) {
+					linesHtml += '<span></span>';
+				}
+				linesHtml += '</span>';
+				pre.querySelector("code").lastElementChild.insertAdjacentHTML('afterEnd', linesHtml);
+			});
+
+			return div.innerHTML;
+		};
+		return markedWithLineNumber;
 	}
 
 }
