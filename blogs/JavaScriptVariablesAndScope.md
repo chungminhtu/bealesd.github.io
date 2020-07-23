@@ -37,7 +37,7 @@ console.log(index); // print 98
 ## Hoisting Var
  So **var** has no block scope, but does it do anything else exciting. Well, yes! It supports hoisting.
 
-```javascript
+```javascript exampleGood
 function fooBar(){
 	foo = "bar";
 	console.log(foo);
@@ -49,7 +49,7 @@ fooBar(); //prints bar
 
  I forgot to declare **foo** using **var** before I assigned a value to it. Guess what **var** doesn't care, as long as **foo** is declared somewhere in the function, you can assign to it. If your wondering, this is called hoisting. So declarations are hostied, but what about declaration and assignment in one. Lets try it out.
 
-```javascript
+```javascript exampleBad
 function fooBar(){	
 	console.log(foo);
 	var foo = "bar";
@@ -62,7 +62,7 @@ fooBar(); //prints undefined
 
  Hositing can be quite annoying. You might want to improve runtime efficiency in your application by not	creating objects that aren't required.
 
-```javascript
+```javascript exampleGood
 var stopMyCode = true;
 if (stopMyCode) {
     return;
@@ -94,7 +94,7 @@ console.log(this.globalFoo);//print bar
 ## Var Idiosyncrasies
  There are plenty of examples of unexpected **var** behaviour, commonly encountered in **for** loops.
 
-```javascript
+```javascript exampleBad
 var arr = [];
 for (var i=0; i < 3; i++) {
     arr.push(() => i);
@@ -105,7 +105,7 @@ console.log(arr.map(x => x())); // prints [3,3,3]
 
  What happenned, why wasn't **i** incremented! This is because **i** is bound to the same value outside of the annoymous function, therefore it only takes the last value that **i** was assigned to. So what is the solution?
 
-```javascript
+```javascript exampleGood
 let arr = [];
 for (let i=0; i < 3; i++) {
     arr.push(() => i);
@@ -114,7 +114,7 @@ for (let i=0; i < 3; i++) {
 console.log(arr.map(x => x())); // [0,1,2]
 ```
 
- That seemed easy, lets have a quick peek at*let*.
+ That seemed easy, lets have a quick peek at *let*.
 
 ***
 
@@ -122,7 +122,7 @@ console.log(arr.map(x => x())); // [0,1,2]
 
  In 2015 ECMA6 was released (JavaScript 6). It introduced **let** and *const*, amongst other things. You may have guessed but **let** and **const** are the alternative to *var*. As we know **var** has no block scope. Get ready for this, *let* allows you to declare a variable with block scope. *Const* also allows you to do the same, but the value assigned is a constant.
 
-```javascript
+```javascript exampleGood
 var x = 99; // x is 99
 { 
   let x = 9;  // x is 9
@@ -132,7 +132,7 @@ console.log(x); //x is 99
 
  *Let* is used to declare and assign **x** in its own scope (defined by curly braces). It does not affect the outer scope.
 
-```javascript
+```javascript exampleGood
 var x = 99; // Here x is 99
 { 
   const x = 9;  // Here x is 9
@@ -142,7 +142,7 @@ console.log(x); //x is still 99
 
  This time we're using **const** instead of **let**, which make no difference in this case, unless...
 
-```javascript
+```javascript exampleBad
 var x = 99; // Here x is 99
 { 
   const x = 9;  // Here x is 9
