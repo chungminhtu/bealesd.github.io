@@ -37,7 +37,7 @@ console.log(index); // print 98
 ## Hoisting Var
  So **var** has no block scope, but does it do anything else exciting. Well, yes! It supports hoisting.
 
-```javascript null 2
+```javascript null
 function fooBar(){
 	foo = "bar";
 	console.log(foo);
@@ -142,7 +142,7 @@ console.log(x); //x is still 99
 
  This time we're using **const** instead of **let**, which make no difference in this case, unless...
 
-```javascript exampleBad
+```javascript exampleBad 4
 var x = 99; // Here x is 99
 { 
   const x = 9;  // Here x is 9

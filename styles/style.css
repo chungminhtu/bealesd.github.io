@@ -64,6 +64,11 @@ body {
     background-color: #fef7f7 !important;
 }
 
+.highlightedCode {
+    background-color: yellow!important;
+    ;
+}
+
 #pageContent {
     margin-top: calc(var(--search-bar-height) + var(--pageContent-margin-top));
 }

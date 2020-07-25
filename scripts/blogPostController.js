@@ -141,13 +141,13 @@ export class BlogPostController {
     }
 
     convertTextNodesToElementNodes(node) {
-        let nodeTypeEnum = { 'text': 3, 'element': 1 };
+        const nodeTypeEnum = { 'text': 3, 'element': 1 };
         if (node.nodeType === nodeTypeEnum.element && node.classList.contains('line-numbers-rows')) {
             return node;
         }
         if (node.nodeType == nodeTypeEnum.text) {
-            let nodeElementsInOrder = [];
-            let nodeValue = node.nodeValue;
+            const nodeElementsInOrder = [];
+            const nodeValue = node.nodeValue;
             for (let j = 0; j < nodeValue.length; j++) {
                 const char = nodeValue[j];
                 if (char === "\n") {
@@ -168,28 +168,62 @@ export class BlogPostController {
     }
 
     setCodeBlockHighlights(codeBlockHighlights, htmlString) {
-        let nodeTypeEnum = { 'text': 3, 'element': 1 };
         const div = document.createElement('div');
         div.innerHTML = htmlString;
 
+        //covert nodes into elements
         div.querySelectorAll('pre').forEach((pre, index) => {
-            let subDivs = [];
+            const subDivs = [];
             for (let j = 0; j < pre.querySelector('code').childNodes.length; j++) {
                 const n = pre.querySelector('code').childNodes[j];
-                let node = this.convertTextNodesToElementNodes(n);
+                const node = this.convertTextNodesToElementNodes(n);
                 if (node !== null) {
-                    if (node.children.length && !node.classList.contains('line-numbers-rows')) {
+                    // line number rows can have sub spans for css numbering
+                    const isNotlineNumberRows = !node.classList.contains('line-numbers-rows');
+                    // promote child nodes a level, create flat hierarchy of spans
+                    if (node.children.length && isNotlineNumberRows) {
                         for (let i = 0; i < node.children.length; i++) {
                             const child = node.children[i];
                             subDivs.push(child);
                         }
-                    } else
+                    }
+                    // do not promote, already flat
+                    else
                         subDivs.push(node);
                 }
             }
-
             pre.querySelector('code').innerHTML = ''
             pre.querySelector('code').append(...subDivs);
+        });
+
+        // add line numbers to elements
+        div.querySelectorAll('pre code').forEach((code, index) => {
+            let currentLineNumber = 1;
+            for (let j = 0; j < code.childNodes.length; j++) {
+                const node = code.childNodes[j];
+                const isNotlineNumberRows = !node.classList.contains('line-numbers-rows');
+                if (j === 0) {
+                    if (node.nodeName === 'BR')
+                        currentLineNumber++;
+                    node.dataset.line = `${currentLineNumber}`;
+                } else if (node.nodeName === 'BR') {
+                    node.dataset.line = `${++currentLineNumber}`;
+
+                } else if (isNotlineNumberRows) {
+                    node.dataset.line = currentLineNumber;
+                }
+            }
+        });
+
+        //highlight rows with codeBlockHighlights
+        div.querySelectorAll('pre code').forEach((code, index) => {
+            const row = codeBlockHighlights[index].rows;
+            if (row !== null) {
+                let matchingElems = code.querySelectorAll(`[data-line="${row}"]`);
+                matchingElems.forEach((elem) => {
+                    elem.classList.add('highlightedCode');
+                });
+            }
         });
 
         return div.innerHTML;
