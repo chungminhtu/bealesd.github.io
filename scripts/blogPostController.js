@@ -95,7 +95,7 @@ export class BlogPostController {
 
         htmlString = this.setCodeBlockExampleType(codeBlockExampleType, htmlString);
         htmlString = this.setCodeBlockLineNumbers(htmlString);
-        htmlString = this.setCodeBlockHighlights(codeBlockHiglights, htmlString);
+        // htmlString = this.setCodeBlockHighlights(codeBlockHiglights, htmlString);
 
         return htmlString;
     }
