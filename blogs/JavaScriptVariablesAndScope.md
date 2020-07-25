@@ -37,7 +37,7 @@ console.log(index); // print 98
 ## Hoisting Var
  So **var** has no block scope, but does it do anything else exciting. Well, yes! It supports hoisting.
 
-```javascript exampleGood
+```javascript null 2
 function fooBar(){
 	foo = "bar";
 	console.log(foo);

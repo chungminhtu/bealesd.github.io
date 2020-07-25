@@ -87,12 +87,15 @@ export class BlogPostController {
         const codeTokens = tokens.filter(token => { return token.type === 'code'; });
 
         const codeBlockExampleType = this.getCodeBlockExampleType(codeTokens);
+        const codeBlockHiglights = this.getCodeBlockHiglights(codeTokens);
+
         this.updateCodeBlockTokens(codeTokens);
 
         let htmlString = marked.parser(tokens);
 
         htmlString = this.setCodeBlockExampleType(codeBlockExampleType, htmlString);
         htmlString = this.setCodeBlockLineNumbers(htmlString);
+        htmlString = this.setCodeBlockHighlights(codeBlockHiglights, htmlString);
 
         return htmlString;
     }
@@ -106,17 +109,24 @@ export class BlogPostController {
     getCodeBlockExampleType(tokens) {
         let codeBlockExampleType = {};
         tokens.forEach((token, index) => {
-            let exampleType;
-            if (token['lang'].split(' ').length > 1)
+            let exampleType = 'example';
+            if (token['lang'].split(' ').length > 1 && token['lang'].split(' ')[1] !== null)
                 exampleType = token['lang'].split(' ')[1];
-            else
-                exampleType = 'example';
-
-            codeBlockExampleType[`${index}`] = {
-                'exampleType': exampleType
-            };
+            codeBlockExampleType[`${index}`] = { 'exampleType': exampleType };
         });
         return codeBlockExampleType;
+    }
+
+    getCodeBlockHiglights(tokens) {
+        let codeBlockHiglights = {};
+        //TODO defines rules for different row separators, i.e. 1-5; 1,2,3; 2-; 1-5 6,7; 5;
+        tokens.forEach((token, index) => {
+            let rows = null;
+            if (token['lang'].split(' ').length > 2 && token['lang'].split(' ')[2] !== null)
+                rows = token['lang'].split(' ')[2];
+            codeBlockHiglights[`${index}`] = { 'rows': rows };
+        });
+        return codeBlockHiglights;
     }
 
     setCodeBlockExampleType(codeBlockExampleType, htmlString) {
@@ -127,6 +137,61 @@ export class BlogPostController {
             const exampleType = codeBlockExampleType[`${index}`]['exampleType'];
             pre.classList.add(exampleType);
         });
+        return div.innerHTML;
+    }
+
+    convertTextNodesToElementNodes(node) {
+        let nodeTypeEnum = { 'text': 3, 'element': 1 };
+        if (node.nodeType === nodeTypeEnum.element && node.classList.contains('line-numbers-rows')) {
+            return node;
+        }
+        if (node.nodeType == nodeTypeEnum.text) {
+            let nodeElementsInOrder = [];
+            let nodeValue = node.nodeValue;
+            for (let j = 0; j < nodeValue.length; j++) {
+                const char = nodeValue[j];
+                if (char === "\n") {
+                    nodeElementsInOrder.push(document.createElement('br'));
+                } else {
+                    const textDiv = document.createElement('span');
+                    textDiv.innerHTML = char;
+                    textDiv.class = 'text';
+                    nodeElementsInOrder.push(textDiv);
+                }
+            }
+
+            const elementTextNode = document.createElement('span')
+            elementTextNode.append(...nodeElementsInOrder);
+            return elementTextNode;
+        }
+        return node;
+    }
+
+    setCodeBlockHighlights(codeBlockHighlights, htmlString) {
+        let nodeTypeEnum = { 'text': 3, 'element': 1 };
+        const div = document.createElement('div');
+        div.innerHTML = htmlString;
+
+        div.querySelectorAll('pre').forEach((pre, index) => {
+            let subDivs = [];
+            for (let j = 0; j < pre.querySelector('code').childNodes.length; j++) {
+                const n = pre.querySelector('code').childNodes[j];
+                let node = this.convertTextNodesToElementNodes(n);
+                if (node !== null) {
+                    if (node.children.length && !node.classList.contains('line-numbers-rows')) {
+                        for (let i = 0; i < node.children.length; i++) {
+                            const child = node.children[i];
+                            subDivs.push(child);
+                        }
+                    } else
+                        subDivs.push(node);
+                }
+            }
+
+            pre.querySelector('code').innerHTML = ''
+            pre.querySelector('code').append(...subDivs);
+        });
+
         return div.innerHTML;
     }
 
