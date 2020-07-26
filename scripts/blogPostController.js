@@ -95,7 +95,7 @@ export class BlogPostController {
 
         htmlString = this.setCodeBlockExampleType(codeBlockExampleType, htmlString);
         htmlString = this.setCodeBlockLineNumbers(htmlString);
-        // htmlString = this.setCodeBlockHighlights(codeBlockHiglights, htmlString);
+        htmlString = this.setCodeBlockHighlights(codeBlockHiglights, htmlString);
 
         return htmlString;
     }
@@ -140,79 +140,80 @@ export class BlogPostController {
         return div.innerHTML;
     }
 
-    convertTextNodesToElementNodes(node) {
-        const nodeTypeEnum = { 'text': 3, 'element': 1 };
-        if (node.nodeType === nodeTypeEnum.element && node.classList.contains('line-numbers-rows')) {
-            return node;
+    convertTextNodeToElementNode(node) {
+        const nodeElementsInOrder = [];
+        const nodeValue = node.nodeValue;
+        for (let j = 0; j < nodeValue.length; j++) {
+            const char = nodeValue[j];
+            if (char === "\n") {
+                nodeElementsInOrder.push(document.createElement('br'));
+            } else {
+                const textDiv = document.createElement('span');
+                textDiv.innerHTML = char;
+                textDiv.class = 'text';
+                nodeElementsInOrder.push(textDiv);
+            }
         }
-        if (node.nodeType == nodeTypeEnum.text) {
-            const nodeElementsInOrder = [];
-            const nodeValue = node.nodeValue;
-            for (let j = 0; j < nodeValue.length; j++) {
-                const char = nodeValue[j];
-                if (char === "\n") {
-                    nodeElementsInOrder.push(document.createElement('br'));
-                } else {
-                    const textDiv = document.createElement('span');
-                    textDiv.innerHTML = char;
-                    textDiv.class = 'text';
-                    nodeElementsInOrder.push(textDiv);
+
+        const elementTextNode = document.createElement('span')
+        elementTextNode.append(...nodeElementsInOrder);
+        return elementTextNode;
+    }
+
+    swapChildren(newParent, oldParent) {
+        while (oldParent.childNodes.length > 0) {
+            newParent.appendChild(oldParent.childNodes[0]);
+        }
+    }
+
+    replaceElement(oldElement, newElement) {
+        oldElement.parentNode.replaceChild(newElement, oldElement);
+    }
+
+    convertTextNodesToElementNodes(current) {
+        const nodeTypeEnum = { 'text': 3, 'element': 1 };
+
+        const children = current.childNodes;
+        for (let i = 0, len = children.length; i < len; i++) {
+            const childNode = children[i];
+            if (childNode.nodeType === nodeTypeEnum.text) {
+                let newNode = this.convertTextNodeToElementNode(childNode);
+                this.replaceElement(childNode, newNode);
+            }
+            if (childNode.nodeType === nodeTypeEnum.element && !childNode.classList.contains('line-numbers-rows'))
+                this.convertTextNodesToElementNodes(children[i]);
+        }
+    }
+
+    addLineNumbersToNodes(current, lineNumber) {
+        const nodeTypeEnum = { 'text': 3, 'element': 1 };
+        const children = current.childNodes;
+        for (let i = 0, len = children.length; i < len; i++) {
+            const childNode = children[i];
+            if (childNode.nodeType === nodeTypeEnum.element) {
+                const isNotlineNumberRows = !childNode.classList.contains('line-numbers-rows');
+                if (childNode.nodeName === 'BR')
+                    lineNumber.value++;
+                else if (isNotlineNumberRows) {
+                    childNode.dataset.line = lineNumber.value;
+                    this.addLineNumbersToNodes(childNode, lineNumber);
                 }
             }
-
-            const elementTextNode = document.createElement('span')
-            elementTextNode.append(...nodeElementsInOrder);
-            return elementTextNode;
         }
-        return node;
     }
 
     setCodeBlockHighlights(codeBlockHighlights, htmlString) {
         const div = document.createElement('div');
         div.innerHTML = htmlString;
 
-        //covert nodes into elements
         div.querySelectorAll('pre').forEach((pre, index) => {
-            const subDivs = [];
-            for (let j = 0; j < pre.querySelector('code').childNodes.length; j++) {
-                const n = pre.querySelector('code').childNodes[j];
-                const node = this.convertTextNodesToElementNodes(n);
-                if (node !== null) {
-                    // line number rows can have sub spans for css numbering
-                    const isNotlineNumberRows = !node.classList.contains('line-numbers-rows');
-                    // promote child nodes a level, create flat hierarchy of spans
-                    if (node.children.length && isNotlineNumberRows) {
-                        for (let i = 0; i < node.children.length; i++) {
-                            const child = node.children[i];
-                            subDivs.push(child);
-                        }
-                    }
-                    // do not promote, already flat
-                    else
-                        subDivs.push(node);
-                }
-            }
-            pre.querySelector('code').innerHTML = ''
-            pre.querySelector('code').append(...subDivs);
+            this.convertTextNodesToElementNodes(pre, 0);
         });
 
-        // add line numbers to elements
         div.querySelectorAll('pre code').forEach((code, index) => {
-            let currentLineNumber = 1;
-            for (let j = 0; j < code.childNodes.length; j++) {
-                const node = code.childNodes[j];
-                const isNotlineNumberRows = !node.classList.contains('line-numbers-rows');
-                if (j === 0) {
-                    if (node.nodeName === 'BR')
-                        currentLineNumber++;
-                    node.dataset.line = `${currentLineNumber}`;
-                } else if (node.nodeName === 'BR') {
-                    node.dataset.line = `${++currentLineNumber}`;
+            const lineNumber = { value: 1 };
+            this.addLineNumbersToNodes(code, lineNumber);
 
-                } else if (isNotlineNumberRows) {
-                    node.dataset.line = currentLineNumber;
-                }
-            }
         });
 
         //highlight rows with codeBlockHighlights
