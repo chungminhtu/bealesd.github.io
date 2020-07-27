@@ -65,6 +65,7 @@ export class LineParser {
     }
 
     lexer(rawText) {
+        this.resetLexemGroup();
         let lexemes = [];
 
         for (let i = 0; i < rawText.length; i++) {
@@ -90,6 +91,7 @@ export class LineParser {
     }
 
     syntaxer(lexemes) {
+        this.resetLexemGroup();
         let lexemeGroups = [];
 
         const lexemesCount = lexemes.length;
@@ -119,9 +121,9 @@ export class LineParser {
                     if (prevLexeme.type === this.tokenTypes.literal.value) {
                         this.operatorCount++;
 
-                        let currenToken = {}
+                        let currenToken = {};
                         currenToken[`${lexeme.type}`] = lexeme.value;
-                        this.lexemGroup.push(currenToken)
+                        this.lexemGroup.push(currenToken);
                     } else
                         throw ('Invalid row syntax.');
                 }
@@ -139,15 +141,15 @@ export class LineParser {
                             const previousNumber = this.lexemGroup[this.lexemGroup.length - 1][prevLexeme.type];
                             const newNumber = Number(`${previousNumber}${lexeme.value}`);
 
-                            let currenToken = {}
+                            let currenToken = {};
                             currenToken[`${lexeme.type}`] = newNumber;
-                            this.lexemGroup[this.lexemGroup.length - 1] = currenToken
+                            this.lexemGroup[this.lexemGroup.length - 1] = currenToken;
                         }
                     } else
                         throw ('Invalid row syntax.');
                 } else {
                     this.literalCount++;
-                    let currenToken = {}
+                    let currenToken = {};
                     currenToken[`${lexeme.type}`] = lexeme.value;
                     this.lexemGroup.push(currenToken);
                 }
@@ -164,7 +166,8 @@ export class LineParser {
     }
 
     codeGeneration(lexmeGroups, maxRows) {
-        let rows = [];
+        this.resetLexemGroup();
+        let rowNumbers = [];
 
         for (let i = 0; i < lexmeGroups.length; i++) {
             const lexmeGroup = lexmeGroups[i];
@@ -174,19 +177,23 @@ export class LineParser {
             this.operator = this.getOperator(lexmeGroup);
 
             if (this.isRangeGroup()) {
-                for (let j = lexmeGroup[0][this.tokenTypes.literal.value]; j <= lexmeGroup[2][this.tokenTypes.literal.value]; j++) {
-                    rows.push(j);
+                const minRowNumber = lexmeGroup[0][this.tokenTypes.literal.value];
+                const maxRowNumber = lexmeGroup[2][this.tokenTypes.literal.value];
+                for (let j = minRowNumber; j <= maxRowNumber; j++) {
+                    rowNumbers.push(j);
                 }
             } else if (this.isSingleGroup()) {
-                rows.push(lexmeGroup[0][this.tokenTypes.literal.value]);
+                const rowNumber = lexmeGroup[0][this.tokenTypes.literal.value];
+                rowNumbers.push(rowNumber);
             } else if (this.isRangeToEndGroup()) {
-                for (let j = lexmeGroup[0][this.tokenTypes.literal.value]; j <= maxRows; j++) {
-                    rows.push(j);
+                const minRowNumber = lexmeGroup[0][this.tokenTypes.literal.value];
+                for (let j = minRowNumber; j <= maxRows; j++) {
+                    rowNumbers.push(j);
                 }
             } else {
                 throw ('Invalid row syntax.');
             }
         }
-        return rows;
+        return rowNumbers;
     }
 }
