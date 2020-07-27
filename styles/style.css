@@ -102,6 +102,7 @@ body {
 }
 
 .sidebar {
+    z-index: 999;
     height: 100%;
     width: var(--sidebar-width);
     margin-top: calc(var(--pageContent-margin-top) * -1);

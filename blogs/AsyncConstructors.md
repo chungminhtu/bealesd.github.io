@@ -1,7 +1,7 @@
 # The Async Constructor
 
 ## The Problem
-You want to run some asynchronous code in your class constructor. You wisely believe that adding **async** beofre the word **constructor** will work, as shown below (figure 1).
+You want to run some asynchronous code in your class constructor. You wisely believe that adding **async** before the word **constructor** will work, as shown below (figure 1).
 
 #### Figure 1 - async constructor (not working)
 ```javascript exampleBad

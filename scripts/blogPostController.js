@@ -1,5 +1,6 @@
 import { Utilities } from './utilites.js';
 import { Toasts } from './toasts.js';
+import { LineParser } from './lineParser.js'
 
 export class BlogPostController {
     constructor(sidebar, router, blogPostIndex) {
@@ -8,6 +9,7 @@ export class BlogPostController {
             this.router = router;
             this.toasts = new Toasts();
             this.utilities = new Utilities();
+            this.lineParser = new LineParser();
 
             this.blogPostIndex = blogPostIndex;
 
@@ -119,11 +121,18 @@ export class BlogPostController {
 
     getCodeBlockHiglights(tokens) {
         let codeBlockHiglights = {};
-        //TODO defines rules for different row separators, i.e. 1-5; 1,2,3; 2-; 1-5 6,7; 5;
         tokens.forEach((token, index) => {
+            const rowCount = token.text.split('\n').length;
+            const options = token['lang'].split(' ');
+            const rawRows = options.length > 2 ? options[2] : null;
             let rows = null;
-            if (token['lang'].split(' ').length > 2 && token['lang'].split(' ')[2] !== null)
-                rows = token['lang'].split(' ')[2];
+            if (rawRows !== null) {
+                let lexemes = this.lineParser.lexer(rawRows);
+                let groups = this.lineParser.syntaxer(lexemes)
+                rows = this.lineParser.codeGeneration(groups, rowCount);
+                console.log(rows);
+            }
+
             codeBlockHiglights[`${index}`] = { 'rows': rows };
         });
         return codeBlockHiglights;
@@ -177,7 +186,7 @@ export class BlogPostController {
         for (let i = 0, len = children.length; i < len; i++) {
             const childNode = children[i];
             if (childNode.nodeType === nodeTypeEnum.text) {
-                let newNode = this.convertTextNodeToElementNode(childNode);
+                const newNode = this.convertTextNodeToElementNode(childNode);
                 this.replaceElement(childNode, newNode);
             }
             if (childNode.nodeType === nodeTypeEnum.element && !childNode.classList.contains('line-numbers-rows'))
@@ -190,13 +199,15 @@ export class BlogPostController {
         const children = current.childNodes;
         for (let i = 0, len = children.length; i < len; i++) {
             const childNode = children[i];
-            if (childNode.nodeType === nodeTypeEnum.element) {
-                const isNotlineNumberRows = !childNode.classList.contains('line-numbers-rows');
-                if (childNode.nodeName === 'BR')
-                    lineNumber.value++;
-                else if (isNotlineNumberRows) {
-                    childNode.dataset.line = lineNumber.value;
+            if (childNode.nodeType !== nodeTypeEnum.element) return;
+
+            if (childNode.nodeName === 'BR')
+                lineNumber.value++;
+            else if (!childNode.classList.contains('line-numbers-rows')) {
+                if (childNode.children.length > 0) {
                     this.addLineNumbersToNodes(childNode, lineNumber);
+                } else {
+                    childNode.dataset.line = lineNumber.value;
                 }
             }
         }
@@ -218,8 +229,11 @@ export class BlogPostController {
 
         //highlight rows with codeBlockHighlights
         div.querySelectorAll('pre code').forEach((code, index) => {
-            const row = codeBlockHighlights[index].rows;
-            if (row !== null) {
+            const rows = codeBlockHighlights[index].rows;
+            if (rows === null) return;
+
+            for (let i = 0; i < rows.length; i++) {
+                const row = rows[i];
                 let matchingElems = code.querySelectorAll(`[data-line="${row}"]`);
                 matchingElems.forEach((elem) => {
                     elem.classList.add('highlightedCode');
