@@ -1,24 +1,19 @@
 export class LineParser {
     constructor() {
-        if (!LineParser.instance) {
-            this.tokenTypes = {
-                'operator': {
-                    'value': 1,
-                    'regex': new RegExp('^[,-]{1}$'),
-                    'sanitize': (char) => char === ',' ? ',' : '-'
-                },
-                'literal': {
-                    'value': 2,
-                    'regex': new RegExp('^[0-9]+$'),
-                    'sanitize': (char) => Number(char)
-                }
-            };
+        this.tokenTypes = {
+            'operator': {
+                'value': 1,
+                'regex': new RegExp('^[,-]{1}$'),
+                'sanitize': (char) => char === ',' ? ',' : '-'
+            },
+            'literal': {
+                'value': 2,
+                'regex': new RegExp('^[0-9]+$'),
+                'sanitize': (char) => Number(char)
+            }
+        };
 
-            this.resetLexemGroup();
-
-            LineParser.instance = this;
-        }
-        return LineParser.instance;
+        this.resetLexemGroup();
     }
 
     resetLexemGroup() {

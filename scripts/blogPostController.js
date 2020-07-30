@@ -1,23 +1,39 @@
 import { Utilities } from './utilites.js';
 import { Toasts } from './toasts.js';
-import { LineParser } from './lineParser.js'
+
+import { CodeBlockUpdater } from './codeBlockUpdater.js';
+import { LineHighlighter } from './CodeBlockPlugins/lineHighlighter.js'
+import { BlockHighlighter } from './CodeBlockPlugins/blockHighlighter.js'
+import { LineNumberer } from './CodeBlockPlugins/lineNumberer.js'
 
 export class BlogPostController {
     constructor(sidebar, router, blogPostIndex) {
         if (!BlogPostController.instance) {
             this.sidebar = sidebar;
             this.router = router;
+
             this.toasts = new Toasts();
             this.utilities = new Utilities();
-            this.lineParser = new LineParser();
+            this.codeBlockUpdater = new CodeBlockUpdater;
 
             this.blogPostIndex = blogPostIndex;
 
+            this.registerPlugins();
             this.registerBlogPostLoadRoutes();
 
             BlogPostController.instance = this;
         }
         return BlogPostController.instance;
+    }
+
+    registerPlugins() {
+        let lineHighlighter = new LineHighlighter();
+        let blockHighlighter = new BlockHighlighter();
+        let lineNumberer = new LineNumberer();
+
+        this.codeBlockUpdater.registerClass(lineHighlighter);
+        this.codeBlockUpdater.registerClass(blockHighlighter);
+        this.codeBlockUpdater.registerClass(lineNumberer);
     }
 
     registerBlogPostLoadRoutes() {
@@ -46,6 +62,15 @@ export class BlogPostController {
     }
 
     async loadPostMarkdownHtml(pageName) {
+        (function () {
+            if (typeof self === 'undefined' || !self.Prism || !self.document || !document.querySelector) {
+                return;
+            }
+            Prism.hooks.add('before-highlight', function (env) {
+                console.log("Hello Prism");
+            });
+        })();
+
         const languageSelector = {
             'c': () => { return Prism.languages.c; },
             'csharp': () => { return Prism.languages.csharp; },
@@ -61,11 +86,7 @@ export class BlogPostController {
         }
 
         const response = await fetch(`/blogs/${pageName}.md`);
-        let rawMarkdown = '';
-        if (!response.ok)
-            rawMarkdown = '# Page not found!';
-        else
-            rawMarkdown = await response.text();
+        let rawMarkdown = response.ok ? await response.text() : '# Page not found!';
 
         marked.setOptions({
             renderer: new marked.Renderer(),
@@ -81,187 +102,16 @@ export class BlogPostController {
             xhtml: false
         });
 
-        document.querySelector('.postContent').innerHTML = this.parseMardown(rawMarkdown);
+        document.querySelector('.postContent').innerHTML = this.codeBlockUpdater.update(rawMarkdown);
     }
 
     parseMardown(rawMarkdown) {
-        const tokens = marked.lexer(rawMarkdown);
-        const codeTokens = tokens.filter(token => { return token.type === 'code'; });
-
-        const codeBlockExampleType = this.getCodeBlockExampleType(codeTokens);
-        const codeBlockHiglights = this.getCodeBlockHiglights(codeTokens);
-
-        this.updateCodeBlockTokens(codeTokens);
-
-        let htmlString = marked.parser(tokens);
-
-        htmlString = this.setCodeBlockExampleType(codeBlockExampleType, htmlString);
-        htmlString = this.setCodeBlockLineNumbers(htmlString);
-        htmlString = this.setCodeBlockHighlights(codeBlockHiglights, htmlString);
-
-        return htmlString;
-    }
-
-    updateCodeBlockTokens(tokens) {
-        tokens.forEach((token) => {
-            token['lang'] = token['lang'].split(' ')[0];
-        });
-    }
-
-    getCodeBlockExampleType(tokens) {
-        let codeBlockExampleType = {};
-        tokens.forEach((token, index) => {
-            let exampleType = 'example';
-            if (token['lang'].split(' ').length > 1 && token['lang'].split(' ')[1] !== null)
-                exampleType = token['lang'].split(' ')[1];
-            codeBlockExampleType[`${index}`] = { 'exampleType': exampleType };
-        });
-        return codeBlockExampleType;
-    }
-
-    getCodeBlockHiglights(tokens) {
-        let codeBlockHiglights = {};
-        tokens.forEach((token, index) => {
-            const rowCount = token.text.split('\n').length;
-            const options = token['lang'].split(' ');
-            const rawRows = options.length > 2 ? options[2] : null;
-            let rows = null;
-            if (rawRows !== null) {
-                let lexemes = this.lineParser.lexer(rawRows);
-                let groups = this.lineParser.syntaxer(lexemes)
-                rows = this.lineParser.codeGeneration(groups, rowCount);
-                console.log(rows);
-            }
-
-            codeBlockHiglights[`${index}`] = { 'rows': rows };
-        });
-        return codeBlockHiglights;
-    }
-
-    setCodeBlockExampleType(codeBlockExampleType, htmlString) {
-        const div = document.createElement('div');
-        div.innerHTML = htmlString;
-
-        div.querySelectorAll('pre').forEach((pre, index) => {
-            const exampleType = codeBlockExampleType[`${index}`]['exampleType'];
-            pre.classList.add(exampleType);
-        });
-        return div.innerHTML;
-    }
-
-    convertTextNodeToElementNode(node) {
-        const nodeElementsInOrder = [];
-        const nodeValue = node.nodeValue;
-        for (let j = 0; j < nodeValue.length; j++) {
-            const char = nodeValue[j];
-            if (char === "\n") {
-                nodeElementsInOrder.push(document.createElement('br'));
-            } else {
-                const textDiv = document.createElement('span');
-                textDiv.innerHTML = char;
-                textDiv.class = 'text';
-                nodeElementsInOrder.push(textDiv);
-            }
-        }
-
-        const elementTextNode = document.createElement('span')
-        elementTextNode.append(...nodeElementsInOrder);
-        return elementTextNode;
+        return this.codeBlockUpdater.update(rawMarkdown);
     }
 
     swapChildren(newParent, oldParent) {
         while (oldParent.childNodes.length > 0) {
             newParent.appendChild(oldParent.childNodes[0]);
         }
-    }
-
-    replaceElement(oldElement, newElement) {
-        oldElement.parentNode.replaceChild(newElement, oldElement);
-    }
-
-    convertTextNodesToElementNodes(current) {
-        const nodeTypeEnum = { 'text': 3, 'element': 1 };
-
-        const children = current.childNodes;
-        for (let i = 0, len = children.length; i < len; i++) {
-            const childNode = children[i];
-            if (childNode.nodeType === nodeTypeEnum.text) {
-                const newNode = this.convertTextNodeToElementNode(childNode);
-                this.replaceElement(childNode, newNode);
-            }
-            if (childNode.nodeType === nodeTypeEnum.element && !childNode.classList.contains('line-numbers-rows'))
-                this.convertTextNodesToElementNodes(children[i]);
-        }
-    }
-
-    addLineNumbersToNodes(current, lineNumber) {
-        const nodeTypeEnum = { 'text': 3, 'element': 1 };
-        const children = current.childNodes;
-        for (let i = 0, len = children.length; i < len; i++) {
-            const childNode = children[i];
-            if (childNode.nodeType !== nodeTypeEnum.element) return;
-
-            if (childNode.nodeName === 'BR')
-                lineNumber.value++;
-            else if (!childNode.classList.contains('line-numbers-rows')) {
-                if (childNode.children.length > 0) {
-                    this.addLineNumbersToNodes(childNode, lineNumber);
-                } else {
-                    childNode.dataset.line = lineNumber.value;
-                }
-            }
-        }
-    }
-
-    setCodeBlockHighlights(codeBlockHighlights, htmlString) {
-        const div = document.createElement('div');
-        div.innerHTML = htmlString;
-
-        div.querySelectorAll('pre').forEach((pre, index) => {
-            this.convertTextNodesToElementNodes(pre, 0);
-        });
-
-        div.querySelectorAll('pre code').forEach((code, index) => {
-            const lineNumber = { value: 1 };
-            this.addLineNumbersToNodes(code, lineNumber);
-
-        });
-
-        //highlight rows with codeBlockHighlights
-        div.querySelectorAll('pre code').forEach((code, index) => {
-            const rows = codeBlockHighlights[index].rows;
-            if (rows === null) return;
-
-            for (let i = 0; i < rows.length; i++) {
-                const row = rows[i];
-                let matchingElems = code.querySelectorAll(`[data-line="${row}"]`);
-                matchingElems.forEach((elem) => {
-                    elem.classList.add('highlightedCode');
-                });
-            }
-        });
-
-        return div.innerHTML;
-    }
-
-    setCodeBlockLineNumbers(htmlString) {
-        const div = document.createElement('div');
-        div.innerHTML = htmlString;
-
-        div.querySelectorAll('pre').forEach((pre) => {
-            const language = [...pre.querySelector('code[class*=language]').classList].find((className) => { if (className.includes('language')) { return className; } });
-            pre.classList.add(['line-numbers']);
-            pre.classList.add([`${language}`]);
-            const lineCount = pre.innerText.split('\n').length;
-
-            let linesHtml = '<span aria-hidden="true" class="line-numbers-rows">'
-            for (let i = 0; i < lineCount; i++)
-                linesHtml += '<span></span>';
-            linesHtml += '</span>';
-
-            pre.querySelector('code').lastElementChild.insertAdjacentHTML('afterEnd', linesHtml);
-        });
-
-        return div.innerHTML;
     }
 }
