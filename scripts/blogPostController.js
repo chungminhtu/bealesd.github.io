@@ -10,13 +10,13 @@ export class BlogPostController {
             this.toasts = new Toasts();
             this.utilities = new Utilities();
 
-            this.marked = marked;
             this.markdownCodeBlockStyler = MarkdownCodeBlockStyler;
             this.blockHighlighter = BlockHighlighter;
             this.lineHighlighter = LineHighlighter;
             this.lineNumberer = LineNumberer;
 
             this.blogPostIndex = blogPostIndex;
+            this.markedJsUrl = 'https://cdn.jsdelivr.net/npm/marked/marked.min.js';
 
             this.registerPlugins();
             this.registerBlogPostLoadRoutes();
@@ -75,9 +75,9 @@ export class BlogPostController {
         const response = await fetch(`/blogs/${pageName}.md`);
         let rawMarkdown = response.ok ? await response.text() : '# Page not found!';
 
-        await this.utilities.loadScript("https://cdn.jsdelivr.net/npm/marked/marked.min.js", () => {});
+        await this.utilities.loadScript(this.markedJsUrl, () => {});
 
-        this.marked.setOptions({
+        marked.setOptions({
             renderer: new marked.Renderer(),
             highlight: (code, language) => {
                 return Prism.highlight(code, languageSelector[language](), language);
