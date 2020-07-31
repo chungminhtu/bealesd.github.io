@@ -1,10 +1,10 @@
 import { Utilities } from './utilites.js';
 import { Toasts } from './toasts.js';
 
-import { CodeBlockUpdater } from './codeBlockUpdater.js';
-import { LineHighlighter } from './CodeBlockPlugins/lineHighlighter.js'
-import { BlockHighlighter } from './CodeBlockPlugins/blockHighlighter.js'
-import { LineNumberer } from './CodeBlockPlugins/lineNumberer.js'
+// import { CodeBlockUpdater } from './codeBlockUpdater.js';
+import { LineHighlighter } from './codeBlockPlugins/lineHighlighter/lineHighlighter.js'
+import { BlockHighlighter } from './codeBlockPlugins/higlighter/blockHighlighter.js'
+import { LineNumberer } from './codeBlockPlugins/numberer/lineNumberer.js'
 
 export class BlogPostController {
     constructor(sidebar, router, blogPostIndex) {
@@ -14,7 +14,8 @@ export class BlogPostController {
 
             this.toasts = new Toasts();
             this.utilities = new Utilities();
-            this.codeBlockUpdater = new CodeBlockUpdater;
+            // this.codeBlockUpdater = new CodeBlockUpdater;
+            this.codeBlockUpdater = CodeBlockUpdater;
 
             this.blogPostIndex = blogPostIndex;
 

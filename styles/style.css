@@ -46,29 +46,6 @@ body {
     font-family: 'Roboto', sans-serif;
 }
 
-.example {
-    border-left: 5px solid #3d7e9a;
-    border-radius: 0px;
-    background-color: #eee !important;
-}
-
-.exampleGood {
-    border-left: 5px solid #4d9f0c;
-    border-radius: 0px;
-    background-color: #f6faf3 !important;
-}
-
-.exampleBad {
-    border-left: 5px solid #e66465;
-    border-radius: 0px;
-    background-color: #fef7f7 !important;
-}
-
-.highlightedCode {
-    background-color: yellow!important;
-    ;
-}
-
 #pageContent {
     margin-top: calc(var(--search-bar-height) + var(--pageContent-margin-top));
 }
