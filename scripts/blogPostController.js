@@ -1,11 +1,6 @@
 import { Utilities } from './utilites.js';
 import { Toasts } from './toasts.js';
 
-// import { CodeBlockUpdater } from './codeBlockUpdater.js';
-import { LineHighlighter } from './codeBlockPlugins/lineHighlighter/lineHighlighter.js'
-import { BlockHighlighter } from './codeBlockPlugins/higlighter/blockHighlighter.js'
-import { LineNumberer } from './codeBlockPlugins/numberer/lineNumberer.js'
-
 export class BlogPostController {
     constructor(sidebar, router, blogPostIndex) {
         if (!BlogPostController.instance) {
@@ -14,8 +9,12 @@ export class BlogPostController {
 
             this.toasts = new Toasts();
             this.utilities = new Utilities();
-            // this.codeBlockUpdater = new CodeBlockUpdater;
-            this.codeBlockUpdater = CodeBlockUpdater;
+
+            this.marked = marked;
+            this.markdownCodeBlockStyler = MarkdownCodeBlockStyler;
+            this.blockHighlighter = BlockHighlighter;
+            this.lineHighlighter = LineHighlighter;
+            this.lineNumberer = LineNumberer;
 
             this.blogPostIndex = blogPostIndex;
 
@@ -28,13 +27,9 @@ export class BlogPostController {
     }
 
     registerPlugins() {
-        let lineHighlighter = new LineHighlighter();
-        let blockHighlighter = new BlockHighlighter();
-        let lineNumberer = new LineNumberer();
-
-        this.codeBlockUpdater.registerClass(lineHighlighter);
-        this.codeBlockUpdater.registerClass(blockHighlighter);
-        this.codeBlockUpdater.registerClass(lineNumberer);
+        this.markdownCodeBlockStyler.registerClass(this.lineHighlighter);
+        this.markdownCodeBlockStyler.registerClass(this.blockHighlighter);
+        this.markdownCodeBlockStyler.registerClass(this.lineNumberer);
     }
 
     registerBlogPostLoadRoutes() {
@@ -63,15 +58,6 @@ export class BlogPostController {
     }
 
     async loadPostMarkdownHtml(pageName) {
-        (function () {
-            if (typeof self === 'undefined' || !self.Prism || !self.document || !document.querySelector) {
-                return;
-            }
-            Prism.hooks.add('before-highlight', function (env) {
-                console.log("Hello Prism");
-            });
-        })();
-
         const languageSelector = {
             'c': () => { return Prism.languages.c; },
             'csharp': () => { return Prism.languages.csharp; },
@@ -89,7 +75,9 @@ export class BlogPostController {
         const response = await fetch(`/blogs/${pageName}.md`);
         let rawMarkdown = response.ok ? await response.text() : '# Page not found!';
 
-        marked.setOptions({
+        await this.utilities.loadScript("https://cdn.jsdelivr.net/npm/marked/marked.min.js", () => {});
+
+        this.marked.setOptions({
             renderer: new marked.Renderer(),
             highlight: (code, language) => {
                 return Prism.highlight(code, languageSelector[language](), language);
@@ -103,16 +91,6 @@ export class BlogPostController {
             xhtml: false
         });
 
-        document.querySelector('.postContent').innerHTML = this.codeBlockUpdater.update(rawMarkdown);
-    }
-
-    parseMardown(rawMarkdown) {
-        return this.codeBlockUpdater.update(rawMarkdown);
-    }
-
-    swapChildren(newParent, oldParent) {
-        while (oldParent.childNodes.length > 0) {
-            newParent.appendChild(oldParent.childNodes[0]);
-        }
+        document.querySelector('.postContent').innerHTML = await this.markdownCodeBlockStyler.update(rawMarkdown);
     }
 }

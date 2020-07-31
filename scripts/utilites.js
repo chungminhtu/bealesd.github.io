@@ -24,7 +24,7 @@ export class Utilities {
         let cb = () => {
             let resizeTimeout;
             if (!resizeTimeout) {
-                resizeTimeout = setTimeout(function () {
+                resizeTimeout = setTimeout(function() {
                     resizeTimeout = null;
                     callback();
                 }, 66);
@@ -72,7 +72,7 @@ export class Utilities {
     }
 
     addProtoypeMethods() {
-        Array.prototype.removeItem = function (indexToRemove) {
+        Array.prototype.removeItem = function(indexToRemove) {
             let newArray = [];
             for (let i = 0; i < this.length; i++) {
                 if (i !== indexToRemove) {
@@ -84,8 +84,9 @@ export class Utilities {
     }
 
     uuidv4() {
-        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-            var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+            var r = Math.random() * 16 | 0,
+                v = c == 'x' ? r : (r & 0x3 | 0x8);
             return v.toString(16);
         });
     }
@@ -109,6 +110,22 @@ export class Utilities {
     }
 
     dateInFuture(date) {
-        return date.setHours(0,0,0,0) > new Date().setHours(0,0,0,0)
+        return date.setHours(0, 0, 0, 0) > new Date().setHours(0, 0, 0, 0)
+    }
+
+    swapChildren(newParent, oldParent) {
+        while (oldParent.childNodes.length > 0) {
+            newParent.appendChild(oldParent.childNodes[0]);
+        }
+    }
+
+    async loadScript(url) {
+        return new Promise((resolve, reject) => {
+            const script = document.createElement('script');
+            script.type = 'text/javascript'
+            script.onload = () => { resolve(script); };
+            script.src = url;
+            document.querySelector('head').appendChild(script);
+        });
     }
 }

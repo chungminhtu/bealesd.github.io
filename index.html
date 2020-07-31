@@ -2,64 +2,63 @@
 <html>
 
 <head>
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-	<link rel="stylesheet" href="/styles/style.css" />
+    <link rel="stylesheet" href="/styles/style.css" />
 
-	<script src="/scripts/codeBlockUpdater.js"></script>
-	<link rel="stylesheet" href="/styles/codeBlockPlugins/lineNumberer.css" />
-	<link rel="stylesheet" href="/styles/codeBlockPlugins/lineHighlighter.css" />
-	<link rel="stylesheet" href="/styles/codeBlockPlugins/blockHighlighter.css" />
+    <script src="https://cdn.jsdelivr.net/gh/bealesd/MarkdownCodeBlockStyler/markdownCodeBlockStyler.js"></script>
 
-	<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/bealesd/MarkdownCodeBlockStyler/codeBlockPlugins/blockHighlighter/blockHighlighter.min.js"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/gh/bealesd/MarkdownCodeBlockStyler/codeBlockPlugins/lineHighlighter/lineHighlighter.min.js"></script> -->
+    <script src="https://cdn.jsdelivr.net/gh/bealesd/MarkdownCodeBlockStyler@9a7b9f6ba3586ebe2dc1390a5e3d0d56bbb76356/codeBlockPlugins/lineHighlighter/lineHighlighter.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/bealesd/MarkdownCodeBlockStyler/codeBlockPlugins/lineNumberer/lineNumberer.min.js"></script>
 
-	<script src="/scripts/prism.js"></script>
-	<link rel="stylesheet" href="/styles/prism.css">
+    <script src="/scripts/prism.js"></script>
+    <link rel="stylesheet" href="/styles/prism.css">
 
-	<link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
 
-	<title>David Beales Blog</title>
+    <title>David Beales Blog</title>
 </head>
 
 <body>
-	
-	<div id='search'>
-		<div class="hamburger">
-			<div class="bar1"></div>
-			<div class="bar2"></div>
-			<div class="bar3"></div>
-		</div>
 
-		<form>
-			<input id="searchInput" type="text" placeholder=" Search" maxlength="40" value='${window.VALUE}'>
-		</form>
+    <div id='search'>
+        <div class="hamburger">
+            <div class="bar1"></div>
+            <div class="bar2"></div>
+            <div class="bar3"></div>
+        </div>
 
-		<div id='blogPostSort'>
-			<div class='sort' id='sort-displayname'>Name<span class='down' hidden>&#8642;</span></div>
-			<div class='sort' id='sort-tag'>Tag<span class='down' hidden>&#8642;</span></div>
-			<div class='sort sortActive' id='sort-timestamp'>Date<span class='down'>&#8642;</span></div>
-		</div>
-	</div>
+        <form>
+            <input id="searchInput" type="text" placeholder=" Search" maxlength="40" value='${window.VALUE}'>
+        </form>
 
-	<p id="blogHeader">David Beales Blog</p>
-	</div>
+        <div id='blogPostSort'>
+            <div class='sort' id='sort-displayname'>Name<span class='down' hidden>&#8642;</span></div>
+            <div class='sort' id='sort-tag'>Tag<span class='down' hidden>&#8642;</span></div>
+            <div class='sort sortActive' id='sort-timestamp'>Date<span class='down'>&#8642;</span></div>
+        </div>
+    </div>
 
-	<div class="sidebar bar-block">
-	</div>
+    <p id="blogHeader">David Beales Blog</p>
+    </div>
 
-	<div id="pageContent">
-	</div>
+    <div class="sidebar bar-block">
+    </div>
 
-	<div id='toast' class="bs-example message-box">
-	</div>
+    <div id="pageContent">
+    </div>
 
-	<footer>&copy; David Beales 2020</footer>
+    <div id='toast' class="bs-example message-box">
+    </div>
+
+    <footer>&copy; David Beales 2020</footer>
 
 </body>
 
 <script type="module">
-	import { Startup } from '/scripts/startup.js';
-	new Startup();
+    import { Startup } from '/scripts/startup.js'; new Startup();
 </script>
 
 </html>
