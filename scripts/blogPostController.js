@@ -16,7 +16,8 @@ export class BlogPostController {
             this.lineNumberer = LineNumberer;
 
             this.blogPostIndex = blogPostIndex;
-            this.markedJsUrl = 'https://cdn.jsdelivr.net/npm/marked/marked.min.js';
+            // get 1.1.1 at github commit hash a9384eea7ae8bea6ef8a95470b315c73fdb3c189
+            this.markedJsUrl = 'https://cdn.jsdelivr.net/gh/markedjs/marked@a9384eea7ae8bea6ef8a95470b315c73fdb3c189/marked.min.js';
 
             this.registerPlugins();
             this.registerBlogPostLoadRoutes();
