@@ -86,11 +86,22 @@ export class BlogPostIndexRepo {
     }
 
     multiSort(postA, postB, key1, key2, key1Ascending, key2Ascending) {
-        const post_A_key_1 = postA[key1].toLowerCase();
-        const post_B_key_1 = postB[key1].toLowerCase();
+        let post_A_key_1 = postA[key1].toLowerCase();
+        let post_B_key_1 = postB[key1].toLowerCase();
 
-        const post_A_key_2 = postA[key2].toLowerCase();
-        const post_B_key_2 = postB[key2].toLowerCase();
+        let post_A_key_2 = postA[key2].toLowerCase();
+        let post_B_key_2 = postB[key2].toLowerCase();
+
+
+        if (key1 === 'timestamp') {
+            post_A_key_1 = new Date(post_A_key_1);
+            post_B_key_1 = new Date(post_B_key_1);
+        }
+
+        if (key2 === 'timestamp') {
+            post_A_key_2 = new Date(post_A_key_2);
+            post_B_key_2 = new Date(post_B_key_2);
+        }
 
         const post_A_before_post_B = -1;
         const post_B_before_post_A = 1;

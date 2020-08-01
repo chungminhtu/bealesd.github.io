@@ -81,11 +81,11 @@ export class BlogPostController {
         marked.setOptions({
             renderer: new marked.Renderer(),
             highlight: (code, language) => {
-                return Prism.highlight(code, languageSelector[language](), language);
+                return Prism.highlight(code, languageSelector[language]());
             },
             pedantic: false,
             gfm: true,
-            breaks: false,
+            breaks: true,
             sanitize: false,
             smartLists: true,
             smartypants: false,
