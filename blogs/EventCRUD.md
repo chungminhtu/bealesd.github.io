@@ -72,7 +72,7 @@ So what does the function addEvent do? It has 4 args, where
  - *callback* - the function to execute on the event firing
  - *callbackArgs* - the args that the callback requires
 
-It uses the global variable *window* as a store for adding a JSON object. This *id* is then added to the JSON object, if the id has not been taken. The value associated to the *id* is then an univoked annoymous function containing the callback and its' args. Only then is the *addEventListener* function invoked with the args.
+It uses the global variable *window* as a store for adding a JSON object. This *id* is then added to the JSON object, if the id has not been taken. The value associated to the *id* is then an univoked anoymous function containing the callback and its' args. Only then is the *addEventListener* function invoked with the args.
 
 N.B. This is a quick approach, which works, although if you are implementing this in live code, the *addEvent* function should be in a class. Also there is no need to use the global variable *window* as an events store. Instead use a class variable. In fact, if you used window.event, you would be overriding an in-built variable. So you can see the risk. Also *window* is often used by developers who may not understand scope and therfore always want access to their vairables.
 
@@ -94,9 +94,9 @@ Removing an event is now very easy. Just enter the event ID and the element and 
 
 # Conclusion
 
-Tracking events is very easy in JavaScript, with just a little work. I will provide one caveat, if your callback functions don't work properly, you most likely are encountering a scope issue. I tend to avoid this issue by passing in annoymous functions or using the **bind** keyword to bind the current scope to the function.
+Tracking events is very easy in JavaScript, with just a little work. I will provide one caveat, if your callback functions don't work properly, you most likely are encountering a scope issue. I tend to avoid this issue by passing in anoymous functions or using the **bind** keyword to bind the current scope to the function.
 
-#### Figure 5 - annoymous function
+#### Figure 5 - anoymous function
 ```javascript
 myFunction(arg1){
     ...some logic;

@@ -103,7 +103,7 @@ for (var i=0; i < 3; i++) {
 console.log(arr.map(x => x())); // prints [3,3,3]
 ```
 
- What happenned, why wasn't **i** incremented! This is because **i** is bound to the same value outside of the annoymous function, therefore it only takes the last value that **i** was assigned to. So what is the solution?
+ What happenned, why wasn't **i** incremented! This is because **i** is bound to the same value outside of the anoymous function, therefore it only takes the last value that **i** was assigned to. So what is the solution?
 
 ```javascript exampleType:Good
 let arr = [];

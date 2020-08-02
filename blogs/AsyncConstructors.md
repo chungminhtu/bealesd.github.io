@@ -19,7 +19,7 @@ Alas, your class fails to build, you get an error: **Uncaught SyntaxError: Class
 
 ## The Solution
 
-So there is a really simple solution, return a function in the constructor, i.e. a closure. In this case (figure 2), we create an annoymous async function, that we instantly return on newing up the class with the *new* operator.
+So there is a really simple solution, return a function in the constructor, i.e. a closure. In this case (figure 2), we create an anoymous async function, that we instantly return on newing up the class with the *new* operator.
 
 #### Figure 2 - async constructor (working)
 ```javascript exampleType:Good

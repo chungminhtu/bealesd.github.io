@@ -16,13 +16,13 @@ First we need a markdown renderer. My requirements:
 
 The choice [MarkedJs](https://marked.js.org/#/README.md#README.md), for matching all of the criteria.
 
-<span style=" font-size:11px;"><sup>1</sup> Mozilla use Prism for styling all of there code block examples on the [MDN](https://developer.mozilla.org/en-US/) website.</span>
+<span style=" font-size:11px;"><sup>1</sup> Mozilla use Prism for styling there code block examples on the [MDN](https://developer.mozilla.org/en-US/) website.</span>
 
 ---
 
 ## Basics
 
-*Marked* is staright-forward to use. Import marked into your html project, Figure 1, using a cdn<sup>2</sup>.
+*Marked* is straight-forward to use. Import marked into your html project, Figure 1, using a cdn<sup>2</sup>.
 
 
 
@@ -96,7 +96,7 @@ There is a *languageSelector* object, that when given a language from the code b
 
 There are other *marked* setting as well. We will look at some of them, but we won't go through all of them as you can go to the documentation for [marked](https://marked.js.org/#/USING_ADVANCED.md#options).
 
-Gfm (line 12), is GitHub markdown, so I want that on. Sanitize (line 14) is not safe for parsing raw markdown, so I've turned that off.
+GFM (line 12), is GitHub markdown, so I want that on. Sanitize (line 14) is not safe for parsing raw markdown, so I've turned that off.
 
 ---
 
@@ -146,8 +146,8 @@ Gfm (line 12), is GitHub markdown, so I want that on. Sanitize (line 14) is not 
 
 ## Conclusion
 
-  - Marked can be used quickly on it own.
-  - Prism can be used as a highlighter for code blocks in marked, with little effort
+  - Marked can be used quickly, and on its own.
+  - Prism can be used as a highlighter for code blocks in *marked*, with little effort
 
 
 <span style=" font-size:13px;">
