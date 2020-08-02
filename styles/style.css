@@ -159,32 +159,6 @@ body {
     padding-left: 10px;
 }
 
-.activated-link {
-    color: rgba(var(--alert-success-color), 1);
-    background-color: rgba(var(--alert-success-background-color), 1);
-    border-color: rgba(var(--alert-info-color), 1);
-}
-
-.pageNumber {
-    display: inline-block;
-    margin-top: 15px!important;
-}
-
-a[data-page] {
-    color: blue;
-    margin-right: var(--page-number-width-spacing);
-}
-
-a[data-page].active {
-    color: purple;
-}
-
-a[data-page]:hover {
-    color: red;
-    text-decoration: underline;
-    cursor: pointer;
-}
-
 @media (min-width: 700px) {
      :root {
         --space-available: calc(100% - var(--sidebar-width));
@@ -304,7 +278,26 @@ a[data-page]:hover {
 }
 
 #postsPerPageContainer>form>input {
-    width: 40px;
+    width: 160px;
+}
+
+#postsPerPageContainer>form .module-border-wrap {
+    display: inline-block;
+    max-width: 35px;
+    padding: 3px;
+    margin-left: auto;
+    margin-right: auto;
+    background: linear-gradient(to right, blue, rgb(196, 221, 230));
+}
+
+#postsPerPageContainer>form .module {
+    padding: 1px 0px;
+    background: #222;
+    background: var(--main-background-color);
+    width: 30px;
+    max-width: 30px;
+    font-size: 20px;
+    color: blue;
 }
 
 .postsHeader {
@@ -314,6 +307,36 @@ a[data-page]:hover {
     text-align: center;
     letter-spacing: 1px;
     font-size: var(--post-header-font-size);
+}
+
+.activated-link {
+    color: rgba(var(--alert-success-color), 1);
+    background-color: rgba(var(--alert-success-background-color), 1);
+    border-color: rgba(var(--alert-info-color), 1);
+}
+
+.pageNumber {
+    display: inline-block;
+    margin-top: 15px!important;
+}
+
+a[data-page] {
+    color: blue;
+    margin-right: var(--page-number-width-spacing);
+    border-bottom: 1px solid rgba(192, 192, 192, 0);
+    padding-bottom: 5px;
+    transition: border 1s ease;
+}
+
+a[data-page].active {
+    color: purple;
+}
+
+a[data-page]:hover {
+    color: red;
+    cursor: pointer;
+    text-decoration: none;
+    border-bottom: 2px solid rgba(192, 192, 192, 1);
 }
 
 .paginate>a {
@@ -326,6 +349,16 @@ a[data-page]:hover {
     transition: border 1s ease;
 }
 
+.postsHeader:hover {
+    cursor: help;
+}
+
+.paginate>a:hover {
+    cursor: pointer;
+    text-decoration: none;
+    border-bottom: 2px solid rgba(192, 192, 192, 1);
+}
+
 .postContent {
     width: var(--post-content-width);
     margin-left: auto;
@@ -336,16 +369,6 @@ a[data-page]:hover {
     color: black;
     text-align: left;
     font-size: 16px;
-}
-
-.postsHeader:hover {
-    cursor: help;
-}
-
-.paginate>a:hover {
-    cursor: pointer;
-    text-decoration: none;
-    border-bottom: 2px solid rgba(192, 192, 192, 1);
 }
 
 .postLink {

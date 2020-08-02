@@ -25,7 +25,9 @@ export class BlogPostIndexController {
                 this.tag = "";
 
                 this.pageNumber = 1;
-                this.postsPerPage = 4;
+                this.postPerPageSteps = [1, 3, 5, 10, 25, 50];
+                this.postsPerPageStep = 1;
+                this.postsPerPage = 3;
 
                 this.router = router;
                 this.router.routes[''] = () => { this.onListPostsLoad(); };
@@ -164,9 +166,23 @@ export class BlogPostIndexController {
 
     registerChangeNumberOfPostsPerPageEvent() {
         const input = document.querySelector(`${this.postsPerPageContainerElement}>form>input`);
-        this.utilities.removeEvent(input, input.id);
-        this.utilities.addEvent(input.id, 'input', input, (event) => {
-            this.postsPerPage = parseInt(event.srcElement.value);
+        const label = document.querySelector(`${this.postsPerPageElement} label`);
+        this.utilities.removeEvent(input, `${input.id}-label`);
+        this.utilities.removeEvent(input, `${input.id}-value`);
+
+        // input.addEventListener("input", event => {
+        //     const value = Number(input.value) / 100;
+        //     input.style.setProperty("--thumb-rotate", `${value * 720}deg`);
+        //     label.innerHTML = Math.round(value * 50);
+        //   });
+
+        this.utilities.addEvent(`${input.id}-label`, 'input', input, (event) => {
+            label.innerHTML = this.postPerPageSteps[input.value];
+        });
+
+        this.utilities.addEvent(`${input.id}-value`, 'change', input, (event) => {
+            this.postsPerPageStep = input.value;
+            this.postsPerPage = this.postPerPageSteps[this.postsPerPageStep];
             this.onChangeNumberOfPostsPerPageClick();
         });
     }
@@ -191,7 +207,7 @@ export class BlogPostIndexController {
     }
 
     onChangeNumberOfPostsPerPageClick() {
-        this.postsPerPage = parseInt(event.srcElement.value);
+        // this.postsPerPage = parseInt(event.srcElement.value);
         this.reloadPageContent();
     }
 
@@ -294,7 +310,12 @@ export class BlogPostIndexController {
                 <div id='pageControls'>
                     <div id='${this.postsPerPageContainerElement.slice(1)}'>
                         <form id="${this.postsPerPageElement.slice(1)}">
-                            <input id="postPerPageInput" type="number" min="1" max="100" value='2'>
+                            <input id="${this.postPerPageInputElement.slice(1)}" type="range" min="0" max="${this.postPerPageSteps.length - 1}" value='2'>
+                            
+                            <div class="module-border-wrap"><div class="module">
+                                <label for="${this.postPerPageInputElement.slice(1)}">0</label>
+                            </div></div>
+
                         </form>
                     </div>
                     
@@ -305,8 +326,16 @@ export class BlogPostIndexController {
                     </div>
                     
                 </div>
-			`;
+            `;
+
+
+
             this.utilities.appendPageContent(paginateHtml);
+
+            const label = document.querySelector(`${this.postsPerPageElement} label`);
+
+            label.innerHTML = this.postPerPageSteps[this.postsPerPageStep];
+
             this.registerChangePageClick();
         }
     }
@@ -326,7 +355,7 @@ export class BlogPostIndexController {
         const input = document.querySelector(this.postPerPageInputElement);
         input.hidden = false;
         input.value = '';
-        input.value = this.postsPerPage;
+        input.value = this.postsPerPageStep;
     }
 
     updateSearchInput() {
