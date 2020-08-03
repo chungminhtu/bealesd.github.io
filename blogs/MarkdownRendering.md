@@ -50,7 +50,7 @@ We now have access to a global variable, *marked*. Figure 2 shows how to use *ma
 
 ---
 
-## Prism Code Block Highlighting
+## Prism Code Block Styling
 
 We have covered the basics, now lets look at using *Prism* with *marked*.
 
