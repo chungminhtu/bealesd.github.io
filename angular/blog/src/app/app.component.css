@@ -1,0 +1,9 @@
+.main-container{
+    margin-top: calc(50px + 20px);
+}
+
+app-menu-bar{
+    position: fixed;
+    top: 0;
+    width: 100%;
+}

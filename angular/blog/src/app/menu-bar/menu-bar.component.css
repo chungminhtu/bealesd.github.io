@@ -1,0 +1,69 @@
+:host {
+    --menu-bar-container-mergin-left: 20px;
+}
+
+@media screen and (max-width: 800px) and (min-width: 600px) {
+    :host {
+        --menu-bar-container-mergin-left: 10px;
+   }
+}
+
+@media screen and (max-width: 600px) {
+    :host {
+        --menu-bar-container-mergin-left: 5px;
+   }
+}
+
+.menu-bar-container{
+    z-index: 9999;
+    position: relative;
+    display: flex;
+    align-items: center;
+    height: 50px;
+    background-color: rgba(var(--alert-info-color), 0.9);
+    color: white;
+}
+
+.menu-bar-container > div {
+    margin: var(--menu-bar-container-mergin-left);
+  }
+
+
+.hamburger {
+    display: inline-block;
+}
+.bar1 {
+    margin-top: 5px!important;
+}
+.bar1,
+.bar2,
+.bar3 {
+    width: 20px;
+    height: 5px;
+    background-color: #333;
+    margin: 3px 5px;
+    transition: 0.4s;
+}
+.change .bar1 {
+    -webkit-transform: rotate(-45deg) translate(-5px, 5px);
+    transform: rotate(-45deg) translate(-5px, 5px);
+}
+.change .bar2 {
+    opacity: 0;
+}
+.change .bar3 {
+    -webkit-transform: rotate(45deg) translate(-6px, -6px);
+    transform: rotate(45deg) translate(-6px, -6px);
+}
+
+.sidebar {
+    z-index: 999;
+    min-height: calc(100% - 50px);
+    width: 200px;
+    /* margin-top: 50px; */
+    background-color: rgba(var(--alert-info-color), 0.8);
+    color: white;
+    /* border: var(--main-border); */
+    position: fixed!important;
+    overflow: auto;
+}

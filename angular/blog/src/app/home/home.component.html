@@ -1,6 +1,21 @@
-<ng-container *ngFor="let blog of blogs; let i = index">
-    <div>
-        {{blog.displayname}}
-    </div>
+<div class="container">
 
-</ng-container>
+    <ng-container *ngFor="let blog of blogs; let i = index">
+
+        <div class="blog-container">
+            <div class="blog-timestamp">
+                <div><div class="item">{{blog.timestamp}}</div></div>
+            </div>
+            <div class="blog-link">
+                <div><div class="item">{{blog.displayname}}</div></div>
+            </div>
+
+            <div class="blog-tag">
+                <div><div class="item">#{{blog.tag}}</div></div>
+            </div>
+
+        </div>
+
+    </ng-container>
+
+</div>
