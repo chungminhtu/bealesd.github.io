@@ -21,5 +21,21 @@
 </div>
 
 <div *ngIf="sidebarOpen === true" class="sidebar">
-    hello
+    <ng-container *ngFor="let tag of tags; let i = index">
+
+        <div class="sidebar-header">
+            <div class="sidebar-header-tag" (click)="toggleSubMenu($event)">{{tag}}</div>
+            <div class="sidebar-sub-headers sidebar-sub-headers-hidden">
+                <ng-container *ngFor="let blogLink of getBlogsByTag(tag); let j = index">
+
+                    <div class="sidebar-sub-header">
+                        {{blogLink.displayname}}
+                    </div>
+
+                </ng-container>
+            </div>
+        </div>
+
+    </ng-container>
+
 </div>

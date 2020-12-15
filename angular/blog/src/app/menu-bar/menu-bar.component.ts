@@ -10,18 +10,34 @@ export class MenuBarComponent implements OnInit {
 
   sidebarOpen: boolean = false;
 
+  blogsByTag = {};
+  tags = [];
+
   constructor(private blogService: BlogService) {
-    this.getBlogs();
+    this.getBlogsByTags();
   }
 
-  ngOnInit(): void {  }
+  ngOnInit(): void { }
 
-  async getBlogs(){
-    await this.blogService.sortByDisplayName(true);
+  async getBlogsByTags() {
+    this.blogsByTag = await this.blogService.getPostByTags();
+    this.tags = Object.keys(this.blogsByTag);
   }
 
-  toggleSidebar(){
+  getBlogsByTag(tag: string) {
+    return this.blogsByTag[tag];
+  }
+
+  toggleSidebar() {
     this.sidebarOpen = !this.sidebarOpen;
+  }
+
+  toggleSubMenu(evt: MouseEvent) {
+    const subHeaders = (<HTMLDivElement>evt.target).parentElement.querySelector('.sidebar-sub-headers');
+    if (subHeaders.classList.contains('sidebar-sub-headers-hidden'))
+      subHeaders.classList.remove('sidebar-sub-headers-hidden');
+    else
+      subHeaders.classList.add('sidebar-sub-headers-hidden');
   }
 
 }

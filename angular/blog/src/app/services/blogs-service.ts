@@ -10,7 +10,7 @@ import { Utilities } from '../helpers/utilites'
 })
 export class BlogService {
     utilities: any;
-    blogs = [];
+    blogs: any[] = [];
 
     constructor() {
         this.utilities = new Utilities();
@@ -26,19 +26,19 @@ export class BlogService {
     async sortByDisplayName(ascending: boolean) {
         const blogs = await this.getBlogInfo();
         const blogByName = this.sortPostsByProperty(blogs, 'displayname', 'timestamp', ascending);
-        this.blogs = blogByName;
+        return blogByName;
     }
 
     async sortByDate(ascending: boolean) {
         const blogs = await this.getBlogInfo();
         const blogByName = this.sortPostsByProperty(blogs, 'timestamp', 'timestamp', ascending);
-        this.blogs = blogByName;
+        return blogByName;
     }
 
     async sortByTag(ascending: boolean) {
         const blogs = await this.getBlogInfo();
         const blogByName = this.sortPostsByProperty(blogs, 'tag', 'timestamp', ascending);
-        this.blogs = blogByName;
+        return blogByName;
     }
 
     sortPostsByProperty(posts, propertyOne = 'timestamp', propertyTwo = 'displayname', propertyOneAscending = true) {
@@ -111,5 +111,33 @@ export class BlogService {
         });
 
         return blogPostIndexArray;
+    }
+
+    async getPostByTags() {
+        const blogs = await this.getBlogInfo();
+        const postsByDisplayName = await this.sortByDisplayName(true);
+
+        let postsByTag = {};
+        for (let i = 0; i < blogs.length; i++) {
+            const post = postsByDisplayName[i];
+            if (post['tag'] in postsByTag) {
+                postsByTag[post['tag']].push(post)
+            } else {
+                postsByTag[post['tag']] = [post];
+            }
+        }
+        //group by tag
+        const orderedTags = Object.keys(postsByTag).sort((a, b) => {
+            let x = a.toLowerCase();
+            let y = b.toLowerCase();
+            return x < y ? -1 : x > y ? 1 : 0;
+        })
+        let orderedPostsByTag = {};
+        for (let i = 0; i < orderedTags.length; i++) {
+            const orderedTag = orderedTags[i];
+            orderedPostsByTag[orderedTag] = postsByTag[orderedTag];
+        }
+        console.log(orderedPostsByTag);
+        return orderedPostsByTag;
     }
 }

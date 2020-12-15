@@ -19,7 +19,8 @@ export class HomeComponent implements OnInit {
   ngOnInit(): void { }
 
   async getBlogs(){
-    await this.blogService.sortByDisplayName(true);
+    const blogs = await this.blogService.sortByDisplayName(true);
+    this.blogService.blogs = blogs;
   }
 
 }
