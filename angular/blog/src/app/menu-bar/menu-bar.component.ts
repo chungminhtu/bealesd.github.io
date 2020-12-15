@@ -12,8 +12,9 @@ export class MenuBarComponent implements OnInit {
 
   blogsByTag = {};
   tags = [];
+  tagsShown = {};
 
-  constructor(private blogService: BlogService) {
+  constructor(public blogService: BlogService) {
     this.getBlogsByTags();
   }
 
@@ -22,6 +23,11 @@ export class MenuBarComponent implements OnInit {
   async getBlogsByTags() {
     this.blogsByTag = await this.blogService.getPostByTags();
     this.tags = Object.keys(this.blogsByTag);
+
+    for (let i = 0; i < this.tags.length; i++) {
+      const tag = this.tags[i];
+      this.tagsShown[tag] = false;
+    }
   }
 
   getBlogsByTag(tag: string) {
@@ -33,11 +39,31 @@ export class MenuBarComponent implements OnInit {
   }
 
   toggleSubMenu(evt: MouseEvent) {
-    const subHeaders = (<HTMLDivElement>evt.target).parentElement.querySelector('.sidebar-sub-headers');
-    if (subHeaders.classList.contains('sidebar-sub-headers-hidden'))
-      subHeaders.classList.remove('sidebar-sub-headers-hidden');
-    else
-      subHeaders.classList.add('sidebar-sub-headers-hidden');
+    let tag = (<HTMLDivElement>evt.target).innerText.trim();
+    this.tagsShown[tag] = !this.tagsShown[tag];
+  }
+
+  async filterBlogsBySearch(word) {
+    this.blogService.filters.words = word;
+    this.blogService.blogs = await this.blogService.getCurrentBlogs();
+  }
+
+  async toggleNameSort() {
+    this.blogService.sort.current = 'name';
+    this.blogService.sort.name = !this.blogService.sort.name;
+    this.blogService.blogs = await this.blogService.getCurrentBlogs();
+  }
+
+  async toggleTagSort() {
+    this.blogService.sort.current = 'tag';
+    this.blogService.sort.tag = !this.blogService.sort.tag;
+    this.blogService.blogs = await this.blogService.getCurrentBlogs();
+  }
+
+  async toggleTimestampSort() {
+    this.blogService.sort.current = 'timestamp';
+    this.blogService.sort.timestamp = !this.blogService.sort.timestamp;
+    this.blogService.blogs = await this.blogService.getCurrentBlogs();
   }
 
 }

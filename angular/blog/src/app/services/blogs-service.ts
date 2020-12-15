@@ -11,6 +11,13 @@ import { Utilities } from '../helpers/utilites'
 export class BlogService {
     utilities: any;
     blogs: any[] = [];
+    filters = { tag: '', words: '' };
+    sort = {
+        current: 'name',
+        name: true,
+        tag: false,
+        timestamp: false,
+    }
 
     constructor() {
         this.utilities = new Utilities();
@@ -23,21 +30,18 @@ export class BlogService {
     // timestamp: "13 Jun 2020"
     // updated: ""
 
-    async sortByDisplayName(ascending: boolean) {
-        const blogs = await this.getBlogInfo();
+    sortByDisplayName(blogs, ascending: boolean) {
         const blogByName = this.sortPostsByProperty(blogs, 'displayname', 'timestamp', ascending);
         return blogByName;
     }
 
-    async sortByDate(ascending: boolean) {
-        const blogs = await this.getBlogInfo();
+    sortByDate(blogs, ascending: boolean) {
         const blogByName = this.sortPostsByProperty(blogs, 'timestamp', 'timestamp', ascending);
         return blogByName;
     }
 
-    async sortByTag(ascending: boolean) {
-        const blogs = await this.getBlogInfo();
-        const blogByName = this.sortPostsByProperty(blogs, 'tag', 'timestamp', ascending);
+    sortByTag(blogs, ascending: boolean) {
+        const blogByName = this.sortPostsByProperty(blogs, 'tag', 'displayname', ascending);
         return blogByName;
     }
 
@@ -91,6 +95,24 @@ export class BlogService {
         return 0;
     }
 
+    async getCurrentBlogs() {
+        let blogs = await this.getBlogInfo();
+
+        // filter blogs
+        blogs = this.filterPostsByWord(blogs, this.filters.words);
+        blogs = this.filterPostsByTag(blogs, this.filters.tag);
+
+        // sort blogs
+        if (this.sort.current === 'name')
+            blogs = this.sortByDisplayName(blogs, this.sort.name);
+        else if (this.sort.current === 'tag')
+            blogs = this.sortByTag(blogs, this.sort.tag);
+        else if (this.sort.current === 'timestamp')
+            blogs = this.sortByDate(blogs, this.sort.timestamp);
+
+        return blogs;
+    }
+
     async getBlogInfo() {
         const response = await fetch(`/assets/blogs/blogPostsIndex.json`);
         let json = {};
@@ -115,7 +137,7 @@ export class BlogService {
 
     async getPostByTags() {
         const blogs = await this.getBlogInfo();
-        const postsByDisplayName = await this.sortByDisplayName(true);
+        const postsByDisplayName = await this.sortByDisplayName(blogs, true);
 
         let postsByTag = {};
         for (let i = 0; i < blogs.length; i++) {
@@ -140,4 +162,34 @@ export class BlogService {
         console.log(orderedPostsByTag);
         return orderedPostsByTag;
     }
+
+    filterPostsByWord(blogs, word: string): any[] {
+        if (word === null || word === undefined || word === '')
+            return blogs;
+
+        let postsByWord = [];
+        for (let i = 0; i < blogs.length; i++) {
+            const post = blogs[i];
+            if (post['displayname'].toLocaleLowerCase().includes(word.toLocaleLowerCase()))
+                postsByWord.push(post);
+        }
+        return postsByWord;
+    }
+
+    filterPostsByTag(blogs, tag: string): any[] {
+        if (tag === null || tag === undefined || tag === '')
+            return blogs;
+
+        let postsByTag = [];
+        for (let i = 0; i < blogs.length; i++) {
+            const post = blogs[i];
+            if (post['tag'].toLocaleLowerCase() === tag.toLocaleLowerCase())
+                postsByTag.push(post);
+        }
+        return postsByTag;
+    }
+
+    //blog checks for the search filter, tags filter and any other filter.THen return results, so when asking for blogs, filters auto applied.
+    //filter is updated on search input and tag changes
+
 }

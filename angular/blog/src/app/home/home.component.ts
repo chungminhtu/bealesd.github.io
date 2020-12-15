@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { BlogService } from '../services/blogs-service';
+import { ToastEvents } from '../services/toast-events-service';
 
 @Component({
   selector: 'app-home',
@@ -12,15 +13,33 @@ export class HomeComponent implements OnInit {
     return this.blogService.blogs;
   }
 
-  constructor(private blogService: BlogService) {
+  constructor(
+    private blogService: BlogService,
+    public toastEvents: ToastEvents
+  ) {
     this.getBlogs();
   }
 
   ngOnInit(): void { }
 
-  async getBlogs(){
-    const blogs = await this.blogService.sortByDisplayName(true);
+  async getBlogs() {
+    const blogs = await this.blogService.getCurrentBlogs();
     this.blogService.blogs = blogs;
+  }
+
+  async filterBlogsByTag(tag) {
+    this.toastEvents.add(
+      {
+        message: tag,
+        callback: async () => {
+          this.blogService.filters.tag = '';
+          const blogs = await this.blogService.getCurrentBlogs();
+          this.blogService.blogs = blogs;
+        }
+      }
+    )
+    this.blogService.filters.tag = tag;
+    this.blogService.blogs = await this.blogService.getCurrentBlogs();
   }
 
 }

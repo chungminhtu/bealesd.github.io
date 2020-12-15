@@ -28,6 +28,27 @@
     margin: var(--menu-bar-container-mergin-left);
   }
 
+  .sort-name,
+  .sort-tag,
+  .sort-timestamp{
+      font-size: 16px;
+      padding: 3px 5px;
+      border-radius: 5px;
+      transition: 500ms ease-in-out;
+  }
+
+  .sort-name:hover,
+  .sort-tag:hover,
+  .sort-timestamp:hover{
+    cursor: pointer;
+    color: rgb(var(--alert-info-color));
+    background-color: white;
+}
+
+.sidebar-header-tag [class^="icon-"]{
+    font-size: 10px;
+}
+
 
 .hamburger {
     display: inline-block;
@@ -97,6 +118,6 @@
 }
 
 .sidebar-sub-header{
-    padding: 8px 16px;
+    padding: 8px 26px;
     font-size: 16px;
 }
