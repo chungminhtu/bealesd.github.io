@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { NavigationEnd, Router } from '@angular/router';
 import { BlogService } from '../services/blogs-service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-menu-bar',
@@ -8,14 +10,30 @@ import { BlogService } from '../services/blogs-service';
 })
 export class MenuBarComponent implements OnInit {
 
+  isHomePage = false;
+
   sidebarOpen: boolean = false;
 
   blogsByTag = {};
   tags = [];
   tagsShown = {};
 
-  constructor(public blogService: BlogService) {
+  constructor(
+    public blogService: BlogService,
+    private router: Router,
+  ) {
     this.getBlogsByTags();
+
+    this.router.events.subscribe((route) => {
+      if (route instanceof NavigationEnd) {
+        if (window.location.pathname === '/blog')
+          this.isHomePage = false;
+        else if (window.location.pathname === '/home')
+          this.isHomePage = true;
+        else
+          this.isHomePage = true;
+      }
+    });
   }
 
   ngOnInit(): void { }

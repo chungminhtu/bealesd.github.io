@@ -1,58 +1,95 @@
 :host {
     --menu-bar-container-mergin-left: 20px;
+    --search-width: 200px;
 }
 
 @media screen and (max-width: 800px) and (min-width: 600px) {
     :host {
         --menu-bar-container-mergin-left: 10px;
+        --search-width: 150px;
    }
 }
 
 @media screen and (max-width: 600px) {
     :host {
         --menu-bar-container-mergin-left: 5px;
+        --search-width: 100px;
    }
 }
 
 .menu-bar-container{
     z-index: 9999;
     position: relative;
-    display: flex;
+    /* display: flex; */
     align-items: center;
     height: 50px;
     background-color: rgba(var(--alert-info-color), 0.9);
     color: white;
+
+    display: grid;
+    grid-template-columns: repeat(6, auto);
 }
 
 .menu-bar-container > div {
-    margin: var(--menu-bar-container-mergin-left);
+    margin-left: var(--menu-bar-container-mergin-left);
+  }
+
+  #searchInput{
+      max-width: var(--search-width);
   }
 
   .sort-name,
   .sort-tag,
   .sort-timestamp{
       font-size: 16px;
-      padding: 3px 5px;
+  }
+
+  .sort-name>div,
+  .sort-tag>div,
+  .sort-timestamp>div,
+  .home>span{
+      width: fit-content;
+      padding: 4px 10px;
       border-radius: 5px;
       transition: 500ms ease-in-out;
   }
 
-  .sort-name:hover,
-  .sort-tag:hover,
-  .sort-timestamp:hover{
+  .sort-name>div:hover,
+  .sort-tag>div:hover,
+  .sort-timestamp>div:hover,
+  .home>span:hover{
     cursor: pointer;
     color: rgb(var(--alert-info-color));
     background-color: white;
+}
+
+.home{
+    font-size: 30px;
+    transition: 500ms ease-in-out;
+}
+
+.home>span.active-link{
+    /* background-color: blue; */
+}
+
+.home>span:focus,
+.home>span:active{
+    outline: 0;
+    border: none;
 }
 
 .sidebar-header-tag [class^="icon-"]{
     font-size: 10px;
 }
 
-
 .hamburger {
     display: inline-block;
 }
+
+.hamburger:hover {
+    cursor: pointer;
+}
+
 .bar1 {
     margin-top: 5px!important;
 }

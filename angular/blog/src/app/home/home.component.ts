@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { BlogService } from '../services/blogs-service';
 import { ToastEvents } from '../services/toast-events-service';
+import { Utilities } from '../helpers/utilites'
 
 @Component({
   selector: 'app-home',
@@ -8,6 +9,7 @@ import { ToastEvents } from '../services/toast-events-service';
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit {
+  utilities: any;
 
   get blogs() {
     return this.blogService.blogs;
@@ -17,6 +19,8 @@ export class HomeComponent implements OnInit {
     private blogService: BlogService,
     public toastEvents: ToastEvents
   ) {
+    this.utilities = new Utilities;
+
     this.getBlogs();
   }
 
@@ -28,8 +32,13 @@ export class HomeComponent implements OnInit {
   }
 
   async filterBlogsByTag(tag) {
+    const toast = this.toastEvents.toasts.find((toast)=> toast.message === tag);
+    if (toast !== undefined)
+      return window.alert('Tag already applied!');
+    
     this.toastEvents.add(
       {
+        id: this.utilities.uuidv4(),
         message: tag,
         callback: async () => {
           this.blogService.filters.tag = '';

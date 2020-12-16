@@ -5,24 +5,43 @@
         <div class="bar3"></div>
     </div>
 
-    <div class="search">
+    <div *ngIf="isHomePage" class="search">
         <input id="searchInput" type="text" placeholder="Search" maxlength="40" value='' #searchInput
             (keyup)="filterBlogsBySearch(searchInput.value)">
     </div>
 
-    <div class='sort-name' (click)="toggleNameSort()">Name
-        <span *ngIf="blogService.sort.name && this.blogService.sort.current === 'name'" class="icon-sort-alpha-asc"></span>
-        <span *ngIf="!blogService.sort.name && this.blogService.sort.current === 'name'" class="icon-sort-alpha-desc"></span>
+    <div *ngIf="isHomePage" class='sort-name' (click)="toggleNameSort()">
+        <div>
+            Name
+            <span *ngIf="blogService.sort.name && this.blogService.sort.current === 'name'"
+                class="icon-sort-alpha-asc"></span>
+            <span *ngIf="!blogService.sort.name && this.blogService.sort.current === 'name'"
+                class="icon-sort-alpha-desc"></span>
+        </div>
     </div>
 
-    <div class='sort-tag' (click)="toggleTagSort()">Tag
-        <span *ngIf="blogService.sort.tag && this.blogService.sort.current === 'tag'" class="icon-sort-alpha-asc"></span>
-        <span *ngIf="!blogService.sort.tag && this.blogService.sort.current === 'tag'" class="icon-sort-alpha-desc"></span>
+    <div *ngIf="isHomePage" class='sort-tag' (click)="toggleTagSort()">
+        <div>
+            Tag
+            <span *ngIf="blogService.sort.tag && this.blogService.sort.current === 'tag'"
+                class="icon-sort-alpha-asc"></span>
+            <span *ngIf="!blogService.sort.tag && this.blogService.sort.current === 'tag'"
+                class="icon-sort-alpha-desc"></span>
+        </div>
     </div>
 
-    <div class='sort-timestamp' (click)="toggleTimestampSort()">Date
-        <span *ngIf="blogService.sort.timestamp && this.blogService.sort.current === 'timestamp'" class="icon-sort-alpha-asc"></span>
-        <span *ngIf="!blogService.sort.timestamp && this.blogService.sort.current === 'timestamp'" class="icon-sort-alpha-desc"></span>
+    <div *ngIf="isHomePage" class='sort-timestamp' (click)="toggleTimestampSort()">
+        <div>
+            Date
+            <span *ngIf="blogService.sort.timestamp && this.blogService.sort.current === 'timestamp'"
+                class="icon-sort-alpha-asc"></span>
+            <span *ngIf="!blogService.sort.timestamp && this.blogService.sort.current === 'timestamp'"
+                class="icon-sort-alpha-desc"></span>
+        </div>
+    </div>
+
+    <div class="home">
+        <span class="icon-home" routerLink="/home" routerLinkActive="active-link"></span>
     </div>
 
 </div>
