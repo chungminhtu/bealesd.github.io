@@ -1,0 +1,22 @@
+<style>
+  :host {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  }
+
+  @media screen and (max-width: 575px) {
+    svg#rocket-smoke {
+      display: none;
+      visibility: hidden;
+    }
+  }
+</style>
+
+<app-menu-bar></app-menu-bar>
+
+<div class="main-container">
+  <!-- <app-home></app-home> -->
+  <router-outlet></router-outlet>
+</div>
+
+
+<app-message-box></app-message-box>

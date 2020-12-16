@@ -1,0 +1,29 @@
+<div class="container">
+
+    <ng-container *ngFor="let blog of blogs; let i = index">
+
+        <div class="blog-container">
+            <div class="blog-timestamp">
+                <div>
+                    <div class="item">{{blog.timestamp}}</div>
+                </div>
+            </div>
+            <div class="blog-link">
+                <div>
+                    <div class="item" routerLink="/blog/{{blog.id}}" routerLinkActive="active-link">
+                        {{blog.displayname}}
+                    </div>
+                </div>
+            </div>
+
+            <div class="blog-tag">
+                <div>
+                    <div class="item" (click)="filterBlogsByTag(blog.tag)">#{{blog.tag}}</div>
+                </div>
+            </div>
+
+        </div>
+
+    </ng-container>
+
+</div>

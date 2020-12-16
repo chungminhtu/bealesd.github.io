@@ -1,0 +1,17 @@
+<div class="message">
+
+    <ng-container *ngFor="let toast of toastEvents.toasts.reverse(); let j = index">
+
+        <div *ngIf="toast.type === 'interactive'" class="alert-interactive alert" (click)="toastEvents.activateToast(toast)">
+            <div >{{toast.message}} <span class="icon-cross"></span></div>
+        </div>
+
+        <div *ngIf="toast.type === 'info'" class="alert-info alert" (click)="toastEvents.activateToast(toast)">
+            <div >{{toast.message}}</div>
+        </div>
+
+    
+    </ng-container>
+
+</div>
+
