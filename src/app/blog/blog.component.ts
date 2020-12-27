@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterContentChecked, AfterViewChecked, Component, OnChanges, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
@@ -6,7 +6,7 @@ import { ActivatedRoute } from '@angular/router';
   templateUrl: './blog.component.html',
   styleUrls: ['./blog.component.css']
 })
-export class BlogComponent implements OnInit {
+export class BlogComponent implements OnInit, AfterViewChecked {
   markdownCodeBlockStyler: any;
   lineNumberer: any;
   blockHighlighter: any;
@@ -26,14 +26,23 @@ export class BlogComponent implements OnInit {
     this.prism = window['Prism'];
     this.marked = window['marked'];
 
-    this.registerPlugins();
-
     this.route.paramMap.subscribe(params => {
       this.loadPostContent(params.get('blogName'));
     });
   }
 
   ngOnInit(): void { }
+
+  ngAfterViewChecked() {
+    const id = this.route.snapshot.params.blogName;
+    if (id === 'AngularAndGitHubPages') {
+      // this.prism.highlightAll();
+
+      // document.querySelectorAll('pre').forEach((item, index) => {
+      //   this.prism.highlight(item);
+      // });
+    }
+  }
 
   registerPlugins() {
     this.markdownCodeBlockStyler.registerClass(this.lineHighlighter);
@@ -42,7 +51,29 @@ export class BlogComponent implements OnInit {
   }
 
   async loadPostContent(id) {
-    this.html = await this.loadPostMarkdownHtml(id);
+    this.registerPlugins();
+
+    if (id === 'AngularAndGitHubPages') {
+      const div = document.createElement('div');
+      let html = await this.loadPostHtml(id);
+      div.innerHTML = html;
+
+      html = await this.markdownCodeBlockStyler.runUpdateHooks2(div);
+      // html = this.lineNumberer.setCodeBlockLineNumbers2(html);
+      // html = this.lineHighlighter.setCodeBlockHighlights2(html);
+
+      this.html = html;
+    }
+
+    else {
+      this.html = await this.loadPostMarkdownHtml(id);
+    }
+  }
+
+  async loadPostHtml(pageName) {
+    const response = await fetch(`/assets/blogs/${pageName}.html`);
+    let html = response.ok ? await response.text() : '# Page not found!';
+    return html;
   }
 
   async loadPostMarkdownHtml(pageName) {
@@ -66,7 +97,10 @@ export class BlogComponent implements OnInit {
     this.marked.setOptions({
       renderer: new this.marked.Renderer(),
       highlight: (code, language) => {
-        return this.prism.highlight(code, languageSelector[language]());
+        if (language)
+          return this.prism.highlight(code, languageSelector[language]());
+        else
+          return this.prism.highlight(code, languageSelector['html']);
       },
       pedantic: false,
       gfm: true,

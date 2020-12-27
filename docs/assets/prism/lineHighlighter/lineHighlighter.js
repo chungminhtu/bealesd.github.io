@@ -1,4 +1,4 @@
-LineHighlighter = function() {
+LineHighlighter = function () {
     class LineHighlighter {
         constructor() {
 
@@ -55,7 +55,7 @@ LineHighlighter = function() {
                 const rowCount = token.text.split('\n').length;
 
                 const pluginOptions = token['lang'];
-                const rowString = pluginOptions.split(' ').filter(opt => opt.includes('row:'))[0];
+                const rowString = pluginOptions?.split(' ')?.filter(opt => opt.includes('row:'))[0];
                 const rawRows = rowString !== undefined ? rowString.split(':')[1].toLocaleLowerCase() : null;
 
                 let rows = null;
@@ -70,6 +70,61 @@ LineHighlighter = function() {
             return codeBlockHiglights;
         }
 
+        addLineNumbersToNodes2(codeBlock) {
+            codeBlock.querySelectorAll(".line-container").forEach((line, row) => {
+                const children = line.childNodes;
+                for (let i = 0, len = children.length; i < len; i++) {
+                    this.getChildren(children[i], row+1);
+                }
+            })
+        }
+
+        getChildren(child, row) {
+            const children = child.childNodes;
+            for (let i = 0, len = children.length; i < len; i++) {
+                const childNode = children[i];
+                if (childNode.nodeType !== this.nodeTypeEnum.element) return;
+
+                if (childNode.children.length > 0) {
+                    this.getChildren(childNode, row);
+                } else {
+                    childNode.dataset.line = row;
+                }
+            }
+        }
+
+        setCodeBlockHighlights2(htmlString) {
+            const div = document.createElement('div');
+            div.innerHTML = htmlString;
+
+            div.querySelectorAll('pre').forEach((pre, index) => {
+                this.convertTextNodesToElementNodes(pre, 0);
+            });
+
+            div.querySelectorAll('pre code').forEach((code, index) => {
+                this.addLineNumbersToNodes2(code);
+            });
+
+            div.querySelectorAll('pre code').forEach((code, index) => {
+                let pre = code.parentElement;
+                const rows = [];
+                if (pre.dataset.line)
+                    rows.push(parseInt(pre.dataset.line))
+
+                if (rows === []) return;
+
+                for (let i = 0; i < rows.length; i++) {
+                    const row = rows[i];
+                    let matchingElems = code.querySelectorAll(`[data-line="${row}"]`);
+                    matchingElems.forEach((elem) => {
+                        elem.classList.add('highlightedCode');
+                    });
+                }
+            });
+
+            return div.innerHTML;
+        }
+
         setCodeBlockHighlights(codeBlockHighlights, htmlString) {
             const div = document.createElement('div');
             div.innerHTML = htmlString;
@@ -81,7 +136,6 @@ LineHighlighter = function() {
             div.querySelectorAll('pre code').forEach((code, index) => {
                 const lineNumber = { value: 1 };
                 this.addLineNumbersToNodes(code, lineNumber);
-
             });
 
             div.querySelectorAll('pre code').forEach((code, index) => {

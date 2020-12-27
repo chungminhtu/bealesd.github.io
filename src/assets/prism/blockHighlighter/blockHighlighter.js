@@ -42,7 +42,7 @@ BlockHighlighter = function() {
             let codeBlockExampleType = {};
             tokens.forEach((token, index) => {
                 const pluginOptions = token['lang'];
-                const exampleTypeString = pluginOptions.split(' ').filter(opt => opt.includes('exampleType:'))[0];
+                const exampleTypeString = pluginOptions?.split(' ')?.filter(opt => opt.includes('exampleType:'))[0];
                 let exampleType = exampleTypeString !== undefined ? `example-${exampleTypeString.split(':')[1].toLocaleLowerCase()}` : null;
 
                 if (!this.exampleType.includes(exampleType))
@@ -63,6 +63,19 @@ BlockHighlighter = function() {
             });
             return div.innerHTML;
         }
+
+        setCodeBlockExampleType2(htmlString) {
+            const div = document.createElement('div');
+            div.innerHTML = htmlString;
+    
+            div.querySelectorAll('.example-type-good').forEach((item) => {
+                item.classList.add('example-good');
+            });
+    
+            return div.innerHTML;
+        }
+
+
     }
     return new BlockHighlighter();
 }()

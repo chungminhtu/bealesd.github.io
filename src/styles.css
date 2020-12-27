@@ -1,4 +1,33 @@
 
+pre {
+  background-color: #f5f2f0;
+  font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+  font-size: 1em;
+  line-height: 1.5;
+  font-size: 16px;
+  padding: 16px 16px 16px 16px;
+  overflow-y: hidden;
+  overflow-x: auto;
+}
+
+.blog-image{
+  max-width: 100%;
+}
+
+.line{
+  color:black;
+}
+
+.black-block{
+  background-color: rgb(37, 37, 37);
+  color: rgb(220,220,220);
+  padding: 16px 16px 16px 16px;
+  margin: 8px 0px;
+  line-height: 1.5;
+  font-size: 16px;
+  font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+}
+
 @font-face {
     font-family: 'icomoon';
     src: url('assets/fonts/icomoon.woff?h3jxio') format('woff');

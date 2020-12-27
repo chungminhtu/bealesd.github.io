@@ -1,4 +1,4 @@
-MarkdownCodeBlockStyler = function() {
+MarkdownCodeBlockStyler = function () {
     class MarkdownCodeBlockStyler {
         // dependencies; Marked.js must be loaded before using. https://github.com/markedjs/marked
         // 
@@ -70,8 +70,18 @@ MarkdownCodeBlockStyler = function() {
 
         resetCodeBlockLanguage(tokens) {
             tokens.forEach((token) => {
-                token['lang'] = token['lang'].split(' ')[0];
+                if (token['lang']?.split(' ')[0])
+                    token['lang'] = token['lang'].split(' ')[0]
             });
+        }
+
+        runUpdateHooks2(html) {
+            html.querySelectorAll('pre code').forEach((item) => {
+                let prismHtml = Prism.highlight(item.innerHTML, Prism.languages.powershell);
+                item.innerHTML = prismHtml;
+            });
+
+           return html.outerHTML;
         }
 
         runUpdateHooks(tokens) {

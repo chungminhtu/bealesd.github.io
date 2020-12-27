@@ -38,5 +38,13 @@
         "timestamp": "01 Aug 2020",
         "updated": "",
         "id": "MarkdownRendering"
+    },
+    "AngularAndGitHubPages":{
+        "displayname": "Angular GitHub Pages",
+        "tag": "JavaScript",
+        "subtags": "",
+        "timestamp": "26 Dec 2020",
+        "updated": "",
+        "id": "AngularAndGitHubPages"
     }
 }

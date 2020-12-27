@@ -1,7 +1,3 @@
-// ordering by fields of blogs
-// return list of blogs
-// allow filtering of blogs
-
 import { Injectable } from '@angular/core';
 import { Utilities } from '../helpers/utilites'
 
@@ -22,13 +18,6 @@ export class BlogService {
     constructor() {
         this.utilities = new Utilities();
     }
-
-    // displayname: "Variables And Scope"Metadata_Dataset_Keywords_Arr_Rel_Insert_Input
-    // id: "JavaScriptVariablesAndScope"
-    // subtags: ""
-    // tag: "JavaScript"
-    // timestamp: "13 Jun 2020"
-    // updated: ""
 
     sortByDisplayName(blogs, ascending: boolean) {
         const blogByName = this.sortPostsByProperty(blogs, 'displayname', 'timestamp', ascending);
