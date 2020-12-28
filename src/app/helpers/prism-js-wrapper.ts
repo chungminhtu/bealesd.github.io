@@ -45,21 +45,55 @@ export class PrismWrapper {
     }
 
     highlightSyntax(html: string): string {
-        // TODO - bug when highlighting html syntax
-        // div auto parses html- we don't want html inside <code> to be parsed
-        // fixing this could break other processes.
-
         const div = document.createElement('div');
         div.innerHTML = html;
 
-        div.querySelectorAll('pre code').forEach((item) => {
-            const languaugeKey = [...(<any>item.classList)].find(val => val.startsWith('language-'))?.split('-')[1]?.toLocaleLowerCase();
+        div.querySelectorAll('pre code').forEach((code: HTMLPreElement) => {
+            const languaugeKey = [...(<any>code.classList)].find(val => val.startsWith('language-'))?.split('-')[1]?.toLocaleLowerCase();
             let language = this.prism.languages[languaugeKey];
 
             if (language === undefined) language = this.prism.languages.javascript;
 
-            item.innerHTML = this.prism.highlight(item.innerHTML, language);
+            //fix the html syntx
+            let a = code.innerHTML;
+            let b = a.split('&lt;')
+            let c = b.join('<');
+            let d = c.split('&gt;');
+            let e = d.join('>');
+            // e = item.innerHTML;
+
+            //add sytax hihglighting
+            let sytaxHighlighted = this.prism.highlight(e, language);
+
+            code.innerHTML = sytaxHighlighted;
+
+            // create the toolbar - doing this makes the code blocks overlap menus!!!
+            // let pre = code.parentElement;
+            // var parent = pre.parentNode;
+            // var wrapper = document.createElement('div');
+            // wrapper.classList.add('code-toolbar');
+            // wrapper.innerHTML = `<div class="toolbar">
+            //                         <div class="toolbar-item">
+            //                             <span>${languaugeKey}</span>
+            //                         </div>
+            //                     </div>`
+
+            // // set the wrapper as child, or parent, remove pre
+            // parent.replaceChild(wrapper, pre);
+            // // set pre as child of wrapper
+            // wrapper.appendChild(pre);
+
         });
+
+        // div.querySelectorAll('pre').forEach((item: HTMLPreElement) => {
+        //     //todo - add code toolbar, won't work as need to wrap pre
+        //     let codeToolbar = `<div class="code-toolbar">
+        //     ${sytaxHighlighted}
+        //         <div class="toolbar-item">
+        //             <span>${languaugeKey}</span>
+        //         </div>
+        //     </div>`
+        // });
 
         return div.outerHTML;
     }

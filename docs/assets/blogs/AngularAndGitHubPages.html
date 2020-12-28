@@ -2,8 +2,7 @@
 
 <h2> Overview </h2>
 <p>
-  Want to host your Angular website? Thanks to GitHub it's super easy. By the end of this guide you will know how to
-  how to host your own Angular website, for free!
+    Want to host your Angular website? Thanks to GitHub it's super easy. By the end of this guide you will know how to how to host your own Angular website, for free!
 </p>
 
 <hr>
@@ -12,7 +11,7 @@
 
 <h2> Pre requesties</h2>
 <p>
-  An Angular website, that is in being stored in a GitHub repository.
+    An Angular website, that is being stored in a GitHub repository.
 </p>
 
 <hr>
@@ -21,94 +20,87 @@
 
 <h2> Building the Angular Project</h2>
 <p>
-  We need to create a *docs* folder that contains:
+    We need to create a <i>docs</i> folder that contains:
 </p>
 <ul>
-  <li>index.html</li>
-  <li>404.html</li>
+    <li>index.html</li>
+    <li>404.html</li>
 </ul>
 <p>
-  Run this command in the root of your angular project
+    Run this command in the root of your angular project
 </p>
 
-<pre class="line-numbers " data-line="1">
-<code class="language-powershell">ng build --prod --output-path docs --base-href "/{{repoName}}/"
-ng build --prod --output-path docs --base-href "/{{repoName}}/"</code></pre>
+<pre class="example-neutral">
+<code class="language-powershell">ng build --prod --output-path docs --base-href "/{{repoName}}/"</code></pre>
 
 
 <h3> Example</h3>
 
-<p>My gitHub repo is named *myBlog* at:</p>
+<p>My gitHub repo is named <i>myBlog</i>:</p>
 
 
 <div class="black-block">
-  https://github.com/bealesd/myBlog
+    https://github.com/{{username}}/myBlog
 </div>
 
 
 <p>The angular command would be:</p>
 
-<pre>
+<pre class="example-neutral">
 <code class="language-powershell">ng build --prod --output-path docs --base-href "/myBlog/"</code></pre>
 
 <p>
-  After running this command you should have a docs folder at the root of your Angular project. The index.html
-  should
-  have a base tag in the head with an href as shown.
+    After running this command you should have a docs folder at the root of your Angular project. The index.html should have a base tag in the head with an href as shown.
 </p>
 
-<pre>
-<code class="language-html"><head><base href="/myBlog/">...</head></code></pre>
+
+<pre data-line="2" class="example-neutral"><code class="language-markup">&lt;head&gt;
+    &lt;base href=&quot;/myBlog/&quot;&gt;
+&lt;/head&gt;</code></pre>
 
 <p>
-  Now you need to copy the index.html and name it 404.html. This allows Angular routing to work when the site is
-  live. All unknown GitHub routes for your site will go to your 404 page when they are sent, and be Angular with
-  serve the correct pages.
+    Now you need to copy the index.html and name it 404.html. This allows Angular routing to work when the site is live. All unknown GitHub routes for your site will go to your 404 page when they are sent, and be Angular with serve the correct pages.
 </p>
 
 <p>
-  Your docs folder should look like roughly like this:
+    Your docs folder should look like roughly like this:
 </p>
 
 <img class="blog-image" src="/assets/blogs/images/angular-docs-folder.jpg" title="GitHub Pages Settings">
 
 <p>
-  N.B. You will see 404 errors in the developers console when navigating directly to an uknown route. The website
-  will be fine.
+    N.B. You will see 404 errors in the developers console when navigating directly to an uknown route. The website will be fine.
 </p>
 
 <p>
-  To check the website works you can serve the *docs* folder locally. I use *web server for chrome*, which
-  automatically chooses the index.html as the start file.
+    To check the website works you can serve the <i>docs</i> folder locally. I use <i>web server for chrome</i>, which automatically chooses the index.html as the start file.
 </p>
 
----
+<hr>
 
 <h2> Enable GitHub Pages </h2>
 <p>
-  To use GitHub pages with your Angular repo we need to enable it. Go to your repo, and then the settings tab.
+    To use GitHub pages with your Angular repo we need to enable it. Go to your repo, and then the settings tab.
 </p>
 
 <img class="blog-image" src="/assets/blogs/images/angular-repo-github-code-page.jpg" title="A GitHub Repo">
 
 <p>
-  In the settings tab, scroll down to the section, *GitHub Pages*
+    In the settings tab, scroll down to the section, <i>GitHub Pages</i>
 </p>
 
 <img class="blog-image" src="/assets/blogs/images/angular-repo-github-pages-settings-turn-on.jpg" title="GitHub Pages Settings">
 
 <p>
-  In the source section we need to pick choose the folder that we published our site to locally, the */docs* folder.
-  Click save and GitHub actions will try to publish your website from this folder.
+    In the source section we need to pick choose the folder that we published our site to locally, the <i>/docs</i> folder. Click save and GitHub actions will try to publish your website from this folder.
 </p>
 
 <p>
-  N.B. If you don't have a *docs* folder yet, or the index.html file is missing, the website will not deploy.
+    N.B. If you don't have a <i>docs</i> folder yet, or the index.html file is missing, the website will not deploy.
 </p>
 
 <p>
-  Your website should now be deployed, and a link shown to you. I would recommend enforcing https, to ensure you get
-  given a padlock by Chrome, otherwise it will be shown as insecure.
+    Your website should now be deployed, and a link shown to you. I would recommend enforcing https, to ensure you get given a padlock by Chrome, otherwise it will be shown as insecure.
 </p>
 
 <img class="blog-image" src="/assets/blogs/images/angular-repo-github-pages-settings.jpg" title="GitHub Pages Settings Turned on">
@@ -119,28 +111,26 @@ ng build --prod --output-path docs --base-href "/{{repoName}}/"</code></pre>
 
 <h2> Knowing your website address</h2>
 
-The repo name you choose in GitHub will determine your websites name. So if you had a repo names *myBlog*, and you
-username was *bealesd*, your repo url would like this
+The repo name you choose in GitHub will determine your websites name. So if you had a repo named <i>myBlog</i>, and you username was <i>bealesd</i>, your repo url would like this
 
 <div class="black-block"> https://github.com/bealesd/myBlog</div>
 
 <p>
-  Your deployed website url is then generated automatically from this. It would be
+    Your deployed website url is then generated automatically from this. It would be
 </p>
 
-  <div class="black-block">https://github.com/bealesd/myBlog</div>
+<div class="black-block">https://bealesd.github.io/myBlog</div>
 
 
 <h3> Naming conventions</h3>
 
 <p>
-  This summarizes how your repo url is linked to your website url.
+    This summarizes how your repo url is linked to your website url.
 </p>
 
 <div class="black-block">
-https://github.com/{{username}}/{{repoName}}
-<br>
-https://{{username}}.github.io/{{repoName}}/
+    https://github.com/{{username}}/{{repoName}}
+    <br> https://{{username}}.github.io/{{repoName}}/
 </div>
 
 <hr>
@@ -152,40 +142,36 @@ https://{{username}}.github.io/{{repoName}}/
 What if you want your website to not have a deafult relative path.
 
 <div class="black-block">
-https://{{username}}.github.io/
-<br>
-i.e.
-<br>
-https://bealesd.github.io/  
+    https://{{username}}.github.io/
+    <br> i.e.
+    <br> https://bealesd.github.io/
 </div>
 
 
 <p>
-  Well this is quite easy.
+    Well this is quite easy.
 </p>
 
 <p>
-  Create a repo in gitHub
+    Create a repo in gitHub
 </p>
 
 
 <div class="black-block">
-{{username}}.github.io
-<br>
-i.e.
-<br>
-beales.github.io
+    {{username}}.github.io
+    <br> i.e.
+    <br> beales.github.io
 </div>
 
 <p>
-  Then when you build your project use the following command
+    Then when you build your project use the following command
 </p>
 
-<pre>
+<pre class="example-neutral">
 <code class="language-powershell">ng build --prod --output-path docs --base-href "/"</code></pre>
 
 <p>
-  Test and push your code up and you're done!!
+    Test and push your code up and you're done!!
 </p>
 
 <hr>
@@ -194,30 +180,27 @@ beales.github.io
 
 <h2>Overview</h2>
 <p>
-  Using GitHub Pages is surpirsingly easy. Just build your code locally with a few flags to quicken the porcess and
-  enable pages on your repo.
+    Using GitHub Pages is surpirsingly easy. Just build your code locally with a few flags to quicken the porcess and enable pages on your repo.
 </p>
 
 <p>
-  You may find things don't always work, but there usually there are easy to fixes. Here are some common issues for
-  me:
+    You may find things don't always work, but there usually there are easy to fixes. Here are some common issues for me:
 </p>
 
 
 <ul>
-  <li> routing won't work </li>
-  <ul>
-  <li> check for 404.html</li>
-  <li> did the href update as expected, you might have missed the base-href flag</li>
-  <li> you are using dns. This can take extra work, getting the base-href correct</li>
-</ul>
-  <li> it wont load at all</li>
-  <ul>
-  <li> there is no *docs* folder, you probably got a *dist* folder, just rename it to docs. The *dist* folder is the
-    default build folder</li>
-  <li> you using a dns. Check for CNAME in *dist*, add GitHub A records to dns.</li>
-</ul>
-  <li> don't forget to test your routes! The url may update as you navigate around the site, but what if you copy
-    one
-    of those links to a new winodw, will it work?</li>
+    <li> routing isn't workwing </li>
+    <ul>
+        <li> check for 404.html</li>
+        <li> did the href update as expected, you might have missed the base-href flag</li>
+        <li> you are using dns. This can take extra work, getting the base-href correct</li>
+    </ul>
+    <br>
+    <li> website won't load</li>
+    <ul>
+        <li> there is no <i>docs</i> folder, you probably got a <i>dist</i> folder, just rename it to docs. The <i>dist</i> folder is the default build folder</li>
+        <li> you using a dns. Check for CNAME in <i>dist</i>, add GitHub A records to dns.</li>
+    </ul>
+    <br>
+    <li> don't forget to test your routes! The url may update as you navigate around the site, but what if you copy one of those links to a new winodw, will it work?</li>
 </ul>

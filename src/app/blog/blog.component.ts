@@ -37,13 +37,6 @@ export class BlogComponent implements OnInit, AfterViewChecked {
 
   ngAfterViewChecked() {
     const id = this.route.snapshot.params.blogName;
-    if (id === 'AngularAndGitHubPages') {
-      // this.prism.highlightAll();
-
-      // document.querySelectorAll('pre').forEach((item, index) => {
-      //   this.prism.highlight(item);
-      // });
-    }
   }
 
   registerPlugins() {
@@ -58,6 +51,7 @@ export class BlogComponent implements OnInit, AfterViewChecked {
     if (id === 'AngularAndGitHubPages' || id === 'AzureDeveloper204ExamNotes') {
       const div = document.createElement('div');
       let html = await this.loadPostHtml(id);
+
       div.innerHTML = html;
 
       html = await this.prismWrapper.highlightSyntax(html);
