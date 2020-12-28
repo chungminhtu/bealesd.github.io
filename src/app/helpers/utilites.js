@@ -36,33 +36,9 @@ export class Utilities {
         });
     }
 
-    // updatePageContent(html) {
-    //     // destroys all events
-    //     document.querySelector('#pageContent').innerHTML = html;
-    // }
-
-    // appendPageContent(html) {
-    //     // keep exisiting event
-    //     const div = document.createElement('div');
-    //     div.innerHTML = html;
-    //     document.querySelector('#pageContent').lastElementChild.insertAdjacentElement('afterEnd', div)
-    //     div.replaceWith(...div.childNodes)
-    // }
-
-    // clearPageContent() {
-    //     // destroy all events
-    //     document.querySelector('#pageContent').innerHTML = '';
-    // }
-
     dateInFuture(date) {
         return date.setHours(0, 0, 0, 0) > new Date().setHours(0, 0, 0, 0)
     }
-
-    // swapChildren(newParent, oldParent) {
-    //     while (oldParent.childNodes.length > 0) {
-    //         newParent.appendChild(oldParent.childNodes[0]);
-    //     }
-    // }
 
     // async loadScript(url) {
     //     return new Promise((resolve, reject) => {

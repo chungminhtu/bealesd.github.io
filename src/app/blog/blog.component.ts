@@ -1,5 +1,6 @@
 import { AfterContentChecked, AfterViewChecked, Component, OnChanges, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { PrismWrapper } from '../helpers/prism-js-wrapper';
 
 @Component({
   selector: 'app-blog',
@@ -17,7 +18,8 @@ export class BlogComponent implements OnInit, AfterViewChecked {
   html: any
 
   constructor(
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private prismWrapper: PrismWrapper
   ) {
     this.markdownCodeBlockStyler = window['MarkdownCodeBlockStyler'];
     this.lineHighlighter = window['LineHighlighter'];
@@ -53,14 +55,14 @@ export class BlogComponent implements OnInit, AfterViewChecked {
   async loadPostContent(id) {
     this.registerPlugins();
 
-    if (id === 'AngularAndGitHubPages') {
+    if (id === 'AngularAndGitHubPages' || id === 'AzureDeveloper204ExamNotes') {
       const div = document.createElement('div');
       let html = await this.loadPostHtml(id);
       div.innerHTML = html;
 
-      html = await this.markdownCodeBlockStyler.runUpdateHooks2(div);
-      // html = this.lineNumberer.setCodeBlockLineNumbers2(html);
-      // html = this.lineHighlighter.setCodeBlockHighlights2(html);
+      html = await this.prismWrapper.highlightSyntax(html);
+      html = this.prismWrapper.addLineNumbers(html);
+      html = this.prismWrapper.highlightLine(html);
 
       this.html = html;
     }
