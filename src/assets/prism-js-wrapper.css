@@ -18,3 +18,24 @@
     background-color: #fef7f7 !important;
     overflow: auto;
 }
+
+.highlightedCode {
+    background-color: yellow!important;
+}
+
+pre {
+    counter-reset: line;
+}
+
+pre[class*="language-"] {
+    counter-reset: line-number;
+}
+
+.line-container::before {
+    counter-increment: line-number;
+    content: counter(line-number);
+    border-right: 1px solid #ddd;
+    padding: 0 .5em;
+    margin-right: .5em;
+    color: #888
+}

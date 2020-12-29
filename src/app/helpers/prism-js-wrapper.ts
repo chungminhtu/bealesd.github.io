@@ -16,12 +16,12 @@ export class PrismWrapper {
     constructor() {
         this.utilities = new Utilities();
 
-        // check prism is imported, if not import it
         this.prism = window['Prism'];
 
         if (this.prism === undefined) {
             this.loadScriptBrowser('../assets/prism/core/prism.js');
             this.loadCss('../assets/prism/core/prism.css');
+            this.prism = window['Prism'];
         }
         this.loadCss('../assets/prism-js-wrapper.css');
     }
@@ -44,6 +44,25 @@ export class PrismWrapper {
         document.querySelector("head").appendChild(link);
     }
 
+    highlightAll(html, options) {
+        const args = options || {};
+        const linesNumbers = args.linesNumbers || false;
+        const lineHighlighter = args.lineHighlighter || false;
+
+        html = this.highlightSyntax(html);
+
+        if(linesNumbers || lineHighlighter)
+            html = this.addLineNumbersMetadata(html);
+
+        if(linesNumbers)
+            html = this.addLineNumbers(html);
+
+        if(lineHighlighter)
+            html = this.highlightLine(html);
+
+        return html;
+    }
+
     highlightSyntax(html: string): string {
         const div = document.createElement('div');
         div.innerHTML = html;
@@ -51,146 +70,114 @@ export class PrismWrapper {
         div.querySelectorAll('pre code').forEach((code: HTMLPreElement) => {
             const languaugeKey = [...(<any>code.classList)].find(val => val.startsWith('language-'))?.split('-')[1]?.toLocaleLowerCase();
             let language = this.prism.languages[languaugeKey];
-
             if (language === undefined) language = this.prism.languages.javascript;
 
-            //fix the html syntx
-            let a = code.innerHTML;
-            let b = a.split('&lt;')
-            let c = b.join('<');
-            let d = c.split('&gt;');
-            let e = d.join('>');
-            // e = item.innerHTML;
+            let codeInnerHtml;
 
-            //add sytax hihglighting
-            let sytaxHighlighted = this.prism.highlight(e, language);
+            codeInnerHtml = this.htmlDecode(code.innerHTML);
 
+            const sytaxHighlighted = this.prism.highlight(codeInnerHtml, language);
             code.innerHTML = sytaxHighlighted;
 
-            // create the toolbar - doing this makes the code blocks overlap menus!!!
-            // let pre = code.parentElement;
-            // var parent = pre.parentNode;
-            // var wrapper = document.createElement('div');
-            // wrapper.classList.add('code-toolbar');
-            // wrapper.innerHTML = `<div class="toolbar">
-            //                         <div class="toolbar-item">
-            //                             <span>${languaugeKey}</span>
-            //                         </div>
-            //                     </div>`
+            this.addCodeToolbar((code.parentElement as HTMLPreElement), languaugeKey);
+        });
+        return div.outerHTML;
+    }
 
-            // // set the wrapper as child, or parent, remove pre
-            // parent.replaceChild(wrapper, pre);
-            // // set pre as child of wrapper
-            // wrapper.appendChild(pre);
+    htmlDecode(value: string): string {
+        const div = document.createElement('div');
+        div.innerHTML = value;
+        return div.childNodes[0].nodeValue;
+    }
 
+    addCodeToolbar(pre: HTMLPreElement, language: string) {
+        const codeToolbar = document.createElement('div');
+        codeToolbar.classList.add('code-toolbar');
+        codeToolbar.innerHTML = `<div class="toolbar">
+                                    <div class="toolbar-item">
+                                        <span>${language}</span>
+                                    </div>
+                                </div>`;
+
+        this.replaceElement(pre, codeToolbar);
+        codeToolbar.appendChild(pre);
+    }
+
+    addLineNumbersMetadata(htmlString) {
+        const div = document.createElement('div');
+        div.innerHTML = htmlString;
+
+        div.querySelectorAll('pre').forEach((pre: HTMLPreElement) => {
+            const language = [...(<any>pre.querySelector('code[class*=language]').classList)].find((className) => { return className.includes('language'); });
+            pre.classList.add(`${language}`);
+
+            let linesHtml = '';
+            let lines = pre.querySelector('code').innerHTML.split('\n');
+            for (const i in lines) {
+                const line = lines[i];
+                const lineDiv = document.createElement('div');
+                lineDiv.dataset.lineNumber = `${i}`;
+
+                lineDiv.innerHTML = line;
+                linesHtml += lineDiv.outerHTML;
+            }
+            pre.querySelector('code').innerHTML = linesHtml;
         });
 
-        // div.querySelectorAll('pre').forEach((item: HTMLPreElement) => {
-        //     //todo - add code toolbar, won't work as need to wrap pre
-        //     let codeToolbar = `<div class="code-toolbar">
-        //     ${sytaxHighlighted}
-        //         <div class="toolbar-item">
-        //             <span>${languaugeKey}</span>
-        //         </div>
-        //     </div>`
-        // });
-
-        return div.outerHTML;
+        return div.innerHTML;
     }
 
     addLineNumbers(htmlString) {
         const div = document.createElement('div');
         div.innerHTML = htmlString;
 
-        div.querySelectorAll('pre').forEach((pre: HTMLPreElement) => {
-            const language = [...(<any>pre.querySelector('code[class*=language]').classList)].find((className) => { return className.includes('language'); });
-            pre.classList.add('line-numbers');
-            pre.classList.add(`${language}`);
-
-            let lines = pre.querySelector('code').innerHTML.split('\n');
-
-            let linesHtml = ''
-            for (let i = 0; i < lines.length; i++) {
-                const line = lines[i];
-
-                const lineDiv = document.createElement('div');
-                lineDiv.classList.add('line-container');
-
-                lineDiv.innerHTML = line;
-                linesHtml += lineDiv.outerHTML;
-            }
-
-            pre.querySelector('code').innerHTML = linesHtml;
-
+        div.querySelectorAll("pre>code div[data-line-number]").forEach((div) => {
+            div.classList.add('line-container');
         });
         return div.innerHTML;
     }
 
-    highlightLine(htmlString: string): string {
+    highlightLine(htmlString: string) {
         const div = document.createElement('div');
         div.innerHTML = htmlString;
 
-        div.querySelectorAll('pre').forEach((pre, index) => {
+        div.querySelectorAll('pre').forEach((pre) => {
             this.convertTextNodesToElementNodes(pre);
-        });
 
-        div.querySelectorAll('pre code').forEach((code, index) => {
-            this.addLineNumbersToNodes(code);
-        });
+            pre.querySelectorAll("code [data-line-number]>span").forEach((span) => {
+                const rawRowNumbers = pre.dataset.line;
+                if (rawRowNumbers === undefined) return;
 
-        div.querySelectorAll('pre code').forEach((code, index) => {
-            let pre = code.parentElement;
-            const rows = [];
-            if (pre.dataset.line)
-                rows.push(parseInt(pre.dataset.line))
+                const nestedRows = rawRowNumbers.split(',').map(val => val.split('-'));
+                const rowsToHighlight = [];
+                for (const nestedRow of nestedRows) {
+                    if (nestedRow.length === 1)
+                        rowsToHighlight.push(parseInt(nestedRow[0]));
+                    else if (nestedRow.length === 2)
+                        this.range(parseInt(nestedRow[0]), parseInt(nestedRow[1])).forEach(r => rowsToHighlight.push(r));
+                }
 
-            if (rows === []) return;
-
-            for (let i = 0; i < rows.length; i++) {
-                const row = rows[i];
-                let matchingElems = code.querySelectorAll(`[data-line="${row}"]`);
-                matchingElems.forEach((elem) => {
-                    elem.classList.add('highlightedCode');
-                });
-            }
+                const rowNumber = parseInt(span.parentElement.dataset.lineNumber);
+                if (rowsToHighlight.includes(rowNumber)) span.classList.add('highlightedCode');
+            });
         });
 
         return div.innerHTML;
     }
 
-    addLineNumbersToNodes(codeBlock) {
-        codeBlock.querySelectorAll(".line-container").forEach((line, row) => {
-            const children = line.childNodes;
-            for (let i = 0, len = children.length; i < len; i++) {
-                this.getChildren(children[i], row + 1);
-            }
-        })
-    }
-
-    getChildren(child, row) {
-        const children = child.childNodes;
-        for (let i = 0, len = children.length; i < len; i++) {
-            const childNode = children[i];
-            if (childNode.nodeType !== NodeType.element) return;
-
-            if (childNode.children.length > 0) {
-                this.getChildren(childNode, row);
-            } else {
-                childNode.dataset.line = row;
-            }
-        }
+    range(start: number, end: number): number[] {
+        length = end - start
+        return Array.from({ length }, (_, i) => start + i);
     }
 
     convertTextNodesToElementNodes(current) {
-        const children = current.childNodes;
-        for (let i = 0, len = children.length; i < len; i++) {
-            const childNode = children[i];
+        for (const childNode of current.childNodes) {
             if (childNode.nodeType === NodeType.text) {
                 const newNode = this.convertTextNodeToElementNode(childNode);
                 this.replaceElement(childNode, newNode);
             }
-            if (childNode.nodeType === NodeType.element && !childNode.classList.contains('line-numbers-rows'))
-                this.convertTextNodesToElementNodes(children[i]);
+            else if (childNode.nodeType === NodeType.element && !childNode.classList.contains('line-numbers-rows'))
+                this.convertTextNodesToElementNodes(childNode);
         }
     }
 
@@ -201,8 +188,7 @@ export class PrismWrapper {
     convertTextNodeToElementNode(node) {
         const nodeElementsInOrder = [];
         const nodeValue = node.nodeValue;
-        for (let j = 0; j < nodeValue.length; j++) {
-            const char = nodeValue[j];
+        for (const char of nodeValue) {
             if (char === "\n") {
                 nodeElementsInOrder.push(document.createElement('br'));
             } else {
@@ -217,6 +203,4 @@ export class PrismWrapper {
         elementTextNode.append(...nodeElementsInOrder);
         return elementTextNode;
     }
-
-
 }

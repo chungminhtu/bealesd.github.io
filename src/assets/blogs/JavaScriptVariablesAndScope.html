@@ -1,0 +1,180 @@
+<h1> Variables and Scope</h1>
+
+<p>
+    Like any language JavaScript has scopes and variables.
+</p>
+
+<p>
+    Variables are pretty self explanatory, they store information. However what syntax you use to declare variables will make a massive difference to how your code behaves. Lets look at <i>var</i>.
+</p>
+
+<hr>
+
+<h2>Var</h2>
+
+<p>
+    <i>Var</i> is commonly is used to delcare a variables (commonly in older code bases, but sometimes in new ones). The function below declares a variable <i>foo</i> and assigns <i>bar</i> to it
+</p>
+
+<pre class="example-neutral"><code class="language-javascript">function fooBar(){
+  var foo = "bar"; 
+  console.log(foo); 
+}
+
+fooBar(); print bar</code></pre>
+
+<p>
+    This behaviour seems completely reasonable, the variable <i>foo</i> is declared in the function <i>fooBar</i>. It exists only in the function scope of <i>fooBar</i> and cannot be accessed outside of that scope. So what is the issue with <i>var</i>?
+</p>
+
+<pre class="example-neutral"><code class="language-javascript">for (var index = 0; index <99; index++){
+    doSomeWork(index);
+}
+
+console.log(index); // print 98</code></pre>
+
+<p>
+    Thats odd, you would expect an error when calling <i>index</i> outside of the for loop. Well not with <i>var</i>, it has no block scope. The same would apply with a <i>while, switch, if</i>, etc.
+</p>
+
+<hr>
+
+<h2> Hoisting Var</h2>
+
+<p>
+    So <i>var</i> has no block scope, but does it do anything else exciting. Well, yes! It supports hoisting.
+</p>
+
+<pre class="example-neutral"><code class="language-javascript">function fooBar(){
+	foo = "bar";
+	console.log(foo);
+	var foo;
+}
+
+fooBar(); //prints bar</code></pre>
+
+<p>
+    I forgot to declare <i>foo</i> using <i>var</i> before I assigned a value to it. Guess what <i>var</i> doesn't care, as long as <i>foo</i> is declared somewhere in the function, you can assign to it. If your wondering, this is called hoisting. So
+    declarations are hostied, but what about declaration and assignment in one. Lets try it out.
+</p>
+
+<pre class="example-bad"><code class="language-javascript">function fooBar(){	
+	console.log(foo);
+	var foo = "bar";
+}
+
+fooBar(); //prints undefined</code></pre>
+
+<p>
+    So what happenned. The varaible <i>foo</i> was hoisted (it was declared), but the assignment happened after the <i>foo</i> was printed, at which point <i>foo</i> was undefined, i.e. it had no data.
+</p>
+
+<p>
+    Hositing can be quite annoying. You might want to improve runtime efficiency in your application by not creating objects that aren't required.
+</p>
+
+<pre class="example-good"><code class="language-javascript">var stopMyCode = true;
+if (stopMyCode) {
+  return;
+}
+  
+var myObjectThatShouldExist = 'iExist';</code></pre>
+
+<p>
+    As you know <i>myObjectThatShouldExist</i> does exist due to hoisting, even though the return statement is called in the <i>if</i> block!
+</p>
+
+<hr>
+
+<h2>Global Var</h2>
+
+<p>
+    Variables can be declared globally so they're available anywhere.
+</p>
+
+<pre class="example-neutral"><code class="language-javascript">var globalFoo = "bar";
+console.log(globalFoo);//print bar
+console.log(window.globalFoo);//print bar
+window.console.log(window.globalFoo);//print bar
+console.log(this.globalFoo);//print bar</code></pre>
+
+<p>
+    When using <i>var</i> it gets added to the global object (<i>window</i> in browser), which is also the same as <i>this</i>! As a side note, <i>window</i> is also where most browser functionality sits, hence the confusing <i>window.console.log</i>!
+</p>
+
+<hr>
+
+<h2>Var Idiosyncrasies</h2>
+
+<p>
+    There are plenty of examples of unexpected <i>var</i> behaviour, commonly encountered in <i>for</i> loops.
+</p>
+
+<pre class="example-bad"><code class="language-javascript">var arr = [];
+for (var i=0; i < 3; i++) {
+  arr.push(() => i);
+}
+  
+console.log(arr.map(x => x())); // prints [3,3,3]</code></pre>
+
+<p>
+    What happenned, why wasn't <i>i</i> incremented! This is because <i>i</i> is bound to the same value outside of the anoymous function, therefore it only takes the last value that <i>i</i> was assigned to. So what is the solution?
+</p>
+
+<pre class="example-good"><code class="language-javascript">let arr = [];
+for (let i=0; i < 3; i++) {
+  arr.push(() => i);
+}
+  
+console.log(arr.map(x => x())); // [0,1,2]</code></pre>
+
+<p>
+    That seemed easy, lets have a quick peek at <i>let</i>.
+</p>
+
+<hr>
+
+<h2> Let and Const</h2>
+
+<p>
+    In 2015 ECMA6 was released (JavaScript 6). It introduced <i>let</i> and <i>const</i>, amongst other things. You may have guessed but <i>let</i> and <i>const</i> are the alternative to <i>var</i>. As we know <i>var</i> has no block scope. Get ready
+    for this, <i>let</i> allows you to declare a variable with block scope. <i>Const</i> also allows you to do the same, but the value assigned is a constant.
+</p>
+
+<pre class="example-good"><code class="language-javascript">var x = 99; // x is 99
+{ 
+  let x = 9;  // x is 9
+}
+console.log(x); //x is 99</code></pre>
+
+<p>
+    <i>Let</i> is used to declare and assign <i>x</i> in its own scope (defined by curly braces). It does not affect the outer scope.
+</p>
+
+<pre class="example-good"><code class="language-javascript">var x = 99; // Here x is 99
+{ 
+  const x = 9;  // Here x is 9
+}
+console.log(x); //x is still 99</code></pre>
+
+<p>
+    This time we're using <i>const</i> instead of <i>let</i>, which make no difference in this case, unless...
+</p>
+
+<pre class="example-bad" data-line="3"><code class="language-javascript">var x = 99; // Here x is 99
+{ 
+  const x = 9;  // Here x is 9
+  x += 1; // TypeError: Assignment to constant variable.
+}</code></pre>
+
+<p>
+    <i>Const</i> <i>x</i> is declared and assigned in the inner scope. It is then incremented by 1, but this fails. As a <i>const</i> is a constant value, trying to change it will throw an error.
+</p>
+
+<hr>
+
+<h2> Conclusion</h2>
+
+<p>
+    If you want block scope for the variables you declare and assign to, which you probably would, use <i>let</i> or <i>const</i>. If you work with Javascript, you will come accross <i>var</i>, so make sure you understand it.
+</p>
