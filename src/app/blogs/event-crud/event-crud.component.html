@@ -1,0 +1,141 @@
+<h1> Event CRUD</h1>
+
+<h2> Overview </h2>
+
+<p>Events can be added to HTML content, which is handled by JavaScript.
+
+    <br>
+
+    <br> For example a button can have a <i>click</i> event (figure 1).
+</p>
+
+<h4> Figure 1 - inline click event on DOM element of type button</h4>
+
+<pre class="example-neutral"><code ngNonBindable class="language-markup">&lt;button onclick="myFunction()">&gt;Click Me&lt;/button&gt;</code></pre>
+
+
+<p>When the button <i>Click Me</i> is clicked, a function called <i>myFunction</i> is called.</p>
+
+<p>Generally, when dealing with applications, you would not want to assign functions to the DOM inline, as your scripts would become unmaintainable and probably not very modular. Instead you would reference the DOM element in JavaScript and add a callback
+    function, (figure 2).</p>
+
+<h4> Figure 2 - add an event listener to the 1st button found</h4>
+
+<pre class="example-neutral"><code ngNonBindable class="language-javascript">document.querySelector('button').addEventListener('click', myFunction, null);
+
+function myFunction()&#123;
+    console.log('hello world');
+&#125;</code></pre>
+
+<p>Figure 3 shows the contract used by figure 2 for adding an event to an HTML element.</p>
+
+<h4> Figure 3 - <i>contract</i> - add an event listener </h4>
+
+<pre class="example-neutral"><code ngNonBindable class="language-javascript">element.addEventListener(eventType, callback, callbackArgs);</code></pre>
+
+<hr>
+
+<h2> Why</h2>
+
+<p>
+    A challenging part of any single page web application (SPA) can be managing events. As you navigate through a SPA, it is common for elements to be removed or hidden and new elements to be added or shown. If an elemnt is removed you will lose all of its
+    event listeners, and need to re-add them. Alternatively if an element is hidden, you might accidentally add new event listeners to them.
+    <br>
+    <br> As you can see in figure 3, there is no protection from adding the same event<sup>1</sup> to an element, which wil cause the event to fire multiple times. This can be very bad, i.e. logic to add or remove a class on an element depending on if
+    that class is on the element or not. If you have an even number of duplicate events added, then your logic will fail, not to mention being inefficient.
+    <br>
+    <br> This is where I believe event CRUD can be very useful. The idea is to have an event repository that manages all you SPA events. If a duplicate event is added, the repo will either remove the existing event and add the new one, or keep the old
+    one. If you want to ensure an event is removed, but don't want to delete that element the repo can find that event by id and remove it.
+    <br>
+    <br>
+    <i><sup>1</sup> no event is really the same, but if you've added the same code to an element, then I will consider it the same event.</i>
+</p>
+
+<hr>
+
+<h2>Create</h2>
+
+<p>
+    Create is the obvious place to start. If we are going to track events in our SPA we will need 2 things;
+</p>
+<ul>
+    <li> an ID for each event </li>
+    <li> a key value store for storing the event and its ID. </li>
+</ul>
+
+<h4> Figure 4 - addEvent function</h4>
+
+<pre class="example-neutral"><code ngNonBindable class="language-javascript">addEvent(id, eventType, element, callback, callbackArgs) &#123;
+    if (window.events[id] === undefined) &#123;
+        const events = &#123;&#125;;
+        events[`$&#123;eventType&#125;`] = () => &#123; callback(callbackArgs) &#125;;
+        window.events[id] = events;
+        element.addEventListener(eventType, callback, callbackArgs)
+    &#125;
+&#125;</code></pre>
+
+<p>
+    So what does the function addEvent do? It has 4 args, where
+</p>
+
+<ul>
+    <li> id - unique id</li>
+    <li> eventType - click, mouseover, focus, etc</li>
+    <li> element - the DOM element</li>
+    <li> callback - the function to execute on the event firing</li>
+    <li> callbackArgs - the args that the callback requires</li>
+</ul>
+
+<p>
+    It uses the global variable <i>window</i> as a store for adding a JSON object. This <i>id</i> is then added to the JSON object, if the id has not been taken. The value associated to the <i>id</i> is then an univoked anoymous function containing the
+    callback and its' args. Only then is the <i>addEventListener</i> function invoked with the args.
+</p>
+
+<p>
+    N.B. This is a quick approach, which works, although if you are implementing this in live code, the <i>addEvent</i> function should be in a class. Also there is no need to use the global variable <i>window</i> as an events store. Instead use a class
+    variable. In fact, if you used window.event, you would be overriding an in-built variable. So you can see the risk. Also <i>window</i> is often used by developers who may not understand scope and therfore always want access to their vairables.
+</p>
+
+<hr>
+
+<h2> Delete</h2>
+
+<p>
+    Removing an event is now very easy. Just enter the event ID and the element and poof, the event is gone! Figure 4 shows an implementation of this. If the event is found in the global JSON dicitonary, remove it from the both the dictionary and the event
+    from the element.
+</p>
+
+<h4>Figure 4 - removeEvent function</h4>
+<pre class="example-neutral"><code ngNonBindable class="language-javascript">removeEvent(element, id) &#123;
+    if (window.events[id] !== undefined) &#123;
+        const eventType = Object.keys(window.events[id])[0];
+        const callback = window.events[id][eventType]
+        element.removeEventListener(eventType, callback);
+        window.events[id] = undefined;
+    &#125;
+&#125;</code></pre>
+
+<hr>
+
+<h2> Conclusion</h2>
+
+<p>
+    Tracking events is very easy in JavaScript, with just a little work. I will provide one caveat, if your callback functions don't work properly, you most likely are encountering a scope issue. I tend to avoid this issue by passing in anoymous functions
+    or using the <i>bind</i> keyword to bind the current scope to the function.
+</p>
+
+<h4> Figure 5 - anonymous function</h4>
+
+<pre class="example-neutral"><code ngNonBindable class="language-javascript">myFunction(arg1)&#123;
+    ...some logic;
+&#125;
+
+() => &#123;
+    myFunction(arg1);
+&#125;</code></pre>
+
+
+<p>
+    N.B. you may feel cheated, I have not added a read or update event method (yet the post is called event CRUD). To be honest, these would be trivial to implement, and would add little value, so I have left them out. It could be useful to add a <i>remove
+    all events</i> method, for an element as well.
+</p>

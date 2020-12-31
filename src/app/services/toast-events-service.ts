@@ -12,6 +12,10 @@ export class ToastEvents {
     this.utilities = new Utilities;
    }
 
+   clear(){
+    this.toasts = [];
+   }
+
   private add(toastObject) {
     const toast = this.toasts.find(m => m.id === toastObject.id);
     const isNewToast = toast === undefined;

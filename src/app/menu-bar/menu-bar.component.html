@@ -10,37 +10,30 @@
     </div>
 
     <div *ngIf="isHomePage" class="search">
-        <input id="searchInput" type="text" placeholder="Search" maxlength="20" value='' #searchInput
-            (keyup)="filterBlogsBySearch(searchInput.value)">
+        <input id="searchInput" type="text" placeholder="Search" maxlength="20" value='' #searchInput (keyup)="filterBlogsBySearch(searchInput.value)">
     </div>
 
     <div *ngIf="isHomePage" class='sort-name' (click)="toggleNameSort()">
         <div>
             Name
-            <span *ngIf="blogService.sort.name && this.blogService.sort.current === 'name'"
-                class="icon-sort-alpha-asc"></span>
-            <span *ngIf="!blogService.sort.name && this.blogService.sort.current === 'name'"
-                class="icon-sort-alpha-desc"></span>
+            <span *ngIf="blogService.sort.name && this.blogService.sort.current === 'name'" class="icon-sort-alpha-asc"></span>
+            <span *ngIf="!blogService.sort.name && this.blogService.sort.current === 'name'" class="icon-sort-alpha-desc"></span>
         </div>
     </div>
 
     <div *ngIf="isHomePage" class='sort-tag' (click)="toggleTagSort()">
         <div>
             Tag
-            <span *ngIf="blogService.sort.tag && this.blogService.sort.current === 'tag'"
-                class="icon-sort-alpha-asc"></span>
-            <span *ngIf="!blogService.sort.tag && this.blogService.sort.current === 'tag'"
-                class="icon-sort-alpha-desc"></span>
+            <span *ngIf="blogService.sort.tag && this.blogService.sort.current === 'tag'" class="icon-sort-alpha-asc"></span>
+            <span *ngIf="!blogService.sort.tag && this.blogService.sort.current === 'tag'" class="icon-sort-alpha-desc"></span>
         </div>
     </div>
 
     <div *ngIf="isHomePage" class='sort-timestamp' (click)="toggleTimestampSort()">
         <div>
             Date
-            <span *ngIf="blogService.sort.timestamp && this.blogService.sort.current === 'timestamp'"
-                class="icon-sort-alpha-asc"></span>
-            <span *ngIf="!blogService.sort.timestamp && this.blogService.sort.current === 'timestamp'"
-                class="icon-sort-alpha-desc"></span>
+            <span *ngIf="blogService.sort.timestamp && this.blogService.sort.current === 'timestamp'" class="icon-sort-alpha-asc"></span>
+            <span *ngIf="!blogService.sort.timestamp && this.blogService.sort.current === 'timestamp'" class="icon-sort-alpha-desc"></span>
         </div>
     </div>
 
@@ -52,11 +45,11 @@
         <div class="sidebar-header">
             <div class="sidebar-header-tag" (click)="toggleSubMenu($event)">
                 {{tag}}
-                <span class="{{tagsShown[tag] ? 'icon-arrow-down2' : 'icon-arrow-up2'}}"></span>
+                <span class="{{tagsShown[tag] ? 'icon-minus' : 'icon-plus'}}"></span>
             </div>
 
             <div class="sidebar-sub-headers {{tagsShown[tag] ? '': 'sidebar-sub-headers-hidden'}}">
-                <!--<span class="icon-arrow-up2"></span>-->
+
                 <ng-container *ngFor="let blogLink of getBlogsByTag(tag); let j = index">
 
                     <div class="sidebar-sub-header" routerLink="/blog/{{blogLink.id}}" routerLinkActive="active-link">

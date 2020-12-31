@@ -18,7 +18,17 @@
 
             <div class="blog-tag">
                 <div>
-                    <div class="item" (click)="filterBlogsByTag(blog.tag)">#{{blog.tag}}</div>
+                    <div class="tag" (click)="filterBlogsByTag(blog.tag)">
+                        {{blog.tag}}
+                    </div>
+
+                    <ng-container *ngFor="let subtag of blog.subtags">
+                        <div class="sub-tag" (click)="filterBlogsByTag(subtag)">
+                            {{subtag}}
+                        </div>
+                    </ng-container>
+
+
                 </div>
             </div>
 

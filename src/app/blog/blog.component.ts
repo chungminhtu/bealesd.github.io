@@ -1,38 +1,41 @@
-import { Component, OnInit } from '@angular/core';
+import { Component,  } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { PrismWrapper } from '../helpers/prism-js-wrapper';
 
 @Component({
   selector: 'app-blog',
   templateUrl: './blog.component.html',
   styleUrls: ['./blog.component.css']
 })
-export class BlogComponent implements OnInit {
+export class BlogComponent {
   html: any
+  isModalOpen = false;
+  imgSrc: string;
+  blogName: string;
 
   constructor(
     private route: ActivatedRoute,
-    private prismWrapper: PrismWrapper
   ) {
     this.route.paramMap.subscribe(params => {
-      this.loadPostContent(params.get('blogName'));
+      this.blogName = params.get('blogName');
     });
   }
 
-  ngOnInit(): void { }
 
-  async loadPostContent(id) {
-    const div = document.createElement('div');
-    let html = await this.loadPostHtml(id);
-    div.innerHTML = html;
-
-    html = await this.prismWrapper.highlightAll(html, { 'linesNumbers': true, 'lineHighlighter': true });
-    this.html = html;
+  expandImage(evt: Event) {
+    let elem = (evt.target as HTMLElement);
+    
+    if (elem.nodeName === 'IMG') {
+      const img = elem as HTMLImageElement;
+      this.imgSrc = img.src;
+      this.isModalOpen = true;
+    }
+    else if (elem.nodeName === 'A'){
+      const a = elem as HTMLAnchorElement
+      a.target = "_blank";
+    }
   }
 
-  async loadPostHtml(pageName) {
-    const response = await fetch(`/assets/blogs/${pageName}.html`);
-    let html = response.ok ? await response.text() : '# Page not found!';
-    return html;
+  closeModal(){
+    this.isModalOpen = false;
   }
 }

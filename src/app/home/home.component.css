@@ -4,82 +4,70 @@
 }
 
 @media screen and (max-width: 800px) and (min-width: 600px) {
-    :host {
+     :host {
         --blog-main-content-margin-left: 20px;
         --blog-container-width: 450px;
-   }
+    }
 }
 
 @media screen and (max-width: 600px) {
-    :host {
+     :host {
         --blog-main-content-margin-left: 10px;
         --blog-container-width: 300px;
-   }
+    }
 }
 
-.container{
+.container {
     /* margin: 0 auto; */
 }
 
-.blog-container{
+.blog-container {
     margin: 20px auto 20px auto;
     display: grid;
     grid-template-rows: 50px 50px 30px 50px;
     width: var(--blog-container-width);
 }
 
-.blog-container:nth-of-type(odd){
+.blog-container:nth-of-type(odd) {
     background-color: rgb(var(--alert-danger-background-color));
     border: 1px solid rgb(var(--alert-danger-color));
 }
 
-.blog-container:nth-of-type(even){
+.blog-container:nth-of-type(even) {
     background-color: rgb(var(--alert-success-background-color));
     border: 1px solid rgb(var(--alert-success-color));
 }
 
-
-.blog-timestamp{
+.blog-timestamp {
     grid-row: 1;
 }
 
-.blog-link{
+.blog-link {
     grid-row: 2;
 }
 
-.blog-tag{
-    grid-row: 4;
-}
-
 .blog-timestamp>div,
-.blog-link>div{
+.blog-link>div {
     margin-left: var(--blog-main-content-margin-left);
     margin-right: 10px;
 }
 
-.blog-tag>div{
-    margin-left: 10px
-}
-
 .blog-link>div,
-.blog-timestamp>div,
-.blog-tag>div
-{
-    height:100%;
+.blog-timestamp>div {
+    height: 100%;
     display: grid;
     align-items: center;
 }
 
-.blog-container:nth-of-type(odd)>.blog-tag{
+.blog-container:nth-of-type(odd)>.blog-tag {
     background-color: rgb(var(--alert-danger-color));
     color: rgb(var(--alert-danger-background-color));
 }
 
-.blog-container:nth-of-type(even)>.blog-tag{
+.blog-container:nth-of-type(even)>.blog-tag {
     background-color: rgb(var(--alert-success-color));
     color: rgb(var(--alert-success-background-color));
 }
-
 
 .blog-container:nth-of-type(odd)>.blog-link,
 .blog-container:nth-of-type(odd)>.blog-timestamp {
@@ -91,48 +79,70 @@
     color: rgb(var(--alert-success-color));
 }
 
-.item {
-    width:fit-content;
-    padding: 5px 7px;
-}
-
-.blog-timestamp .item{
+.blog-timestamp .item {
     font-size: 14px;
 }
 
-.blog-link .item{
-    font-family: 'ps-regular';
+.blog-link .item {
     font-size: 22px;
     border-radius: 5px;
     transition: 0.2s ease-in-out;
 }
 
-.blog-tag .item{
-    font-size: 12px;
+.blog-container:nth-of-type(odd) .blog-link .item:hover {
+    background-color: rgb(var(--alert-danger-color));
+    color: rgb(var(--alert-danger-background-color));
+    cursor: pointer;
+}
+
+.blog-container:nth-of-type(even) .blog-link .item:hover {
+    background-color: rgb(var(--alert-success-color));
+    color: rgb(var(--alert-success-background-color));
+    cursor: pointer;
+}
+
+.blog-tag {
+    grid-row: 4;
+}
+
+.blog-tag>div {
+    margin-left: 10px;
+    height: 100%;
+    display: grid;
+    grid-auto-flow: column;
+    justify-content: left;
+    width: calc(100% - 10px);
+    align-items: center;
+}
+
+.blog-tag .tag,
+.blog-tag .sub-tag {
+    width: fit-content;
+}
+
+.blog-tag .tag {
+    font-size: 14px;
+    padding: 5px 7px;
     border-radius: 5px;
     transition: 0.2s ease-in-out;
 }
 
-.blog-container:nth-of-type(odd) .blog-link .item:hover{
-    background-color: rgb(var(--alert-danger-color));
-    color:rgb(var(--alert-danger-background-color));
-    cursor: pointer;
+.blog-tag .sub-tag {
+    font-size: 12px;
+    padding: 4px 6px;
+    border-radius: 4px;
+    transition: 0.2s ease-in-out;
 }
 
-.blog-container:nth-of-type(even) .blog-link .item:hover{
-    background-color: rgb(var(--alert-success-color));
-    color:rgb(var(--alert-success-background-color));
-    cursor: pointer;
-}
-
-
-.blog-container:nth-of-type(odd) .blog-tag .item:hover{
+.blog-container:nth-of-type(odd) .blog-tag .tag:hover,
+.blog-container:nth-of-type(odd) .blog-tag .sub-tag:hover {
     background-color: rgb(var(--alert-danger-background-color));
     color: rgb(var(--alert-danger-color));
     cursor: pointer;
 }
 
-.blog-container:nth-of-type(even) .blog-tag .item:hover{
+.blog-container:nth-of-type(even) .blog-tag .tag:hover,
+.blog-container:nth-of-type(even) .blog-tag .sub-tag:hover {
     background-color: rgb(var(--alert-success-background-color));
     color: rgb(var(--alert-success-color));
     cursor: pointer;

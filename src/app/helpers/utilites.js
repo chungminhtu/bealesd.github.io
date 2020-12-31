@@ -3,18 +3,19 @@ import { Injectable } from '@angular/core';
 // @Injectable({
 //     providedIn: 'root',
 //   })
-export class Utilities {
-    constructor() {  }
 
-    // invertJsonKeyValues(json) {
-    //     // one layer deep
-    //     var key, invertedJson = {};
-    //     for (key in json) {
-    //         if (json.hasOwnProperty(key))
-    //             invertedJson[json[key]] = key;
-    //     }
-    //     return invertedJson;
-    // }
+//TODO - convert to ts
+export class Utilities {
+    constructor() {}
+        // invertJsonKeyValues(json) {
+        //     // one layer deep
+        //     var key, invertedJson = {};
+        //     for (key in json) {
+        //         if (json.hasOwnProperty(key))
+        //             invertedJson[json[key]] = key;
+        //     }
+        //     return invertedJson;
+        // }
 
     // addProtoypeMethods() {
     //     Array.prototype.removeItem = function(indexToRemove) {

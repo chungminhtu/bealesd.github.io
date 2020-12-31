@@ -42,18 +42,21 @@ export class MenuBarComponent implements OnInit {
 
   ngOnInit(): void { }
 
-  async getBlogsByTags() {
-    this.blogsByTag = await this.blogService.getPostByTags();
-    this.tags = Object.keys(this.blogsByTag);
+  getBlogsByTags() {
+    // this.blogsByTag = this.blogService.blogRepo.getAllUniqueTags();
+    this.tags = this.blogService.blogRepo.getAllUniqueTags();
 
-    for (let i = 0; i < this.tags.length; i++) {
-      const tag = this.tags[i];
+    // this.blogService.getPostByTags();
+    // this.tags = Object.keys(this.blogsByTag);
+
+    for (const tag of this.tags) {
       this.tagsShown[tag] = false;
     }
   }
 
   getBlogsByTag(tag: string) {
-    return this.blogsByTag[tag];
+    // todo - unsorted
+    return this.blogService.blogRepo.getBlogsByTags([tag]);
   }
 
   toggleSidebar() {
@@ -65,13 +68,13 @@ export class MenuBarComponent implements OnInit {
     this.tagsShown[tag] = !this.tagsShown[tag];
   }
 
-  async filterBlogsBySearch(word) {
+  filterBlogsBySearch(word) {
     // todo: move toast adding to blogService
     if(word.trim().length > 0){
       if(this.searchId === null){
-        const cb = async () => {
+        const cb = () => {
           this.blogService.filters.words = '';
-          const blogs = await this.blogService.getCurrentBlogs();
+          const blogs = this.blogService.getCurrentBlogs();
           this.blogService.blogs = blogs;
           this.searchId = null;
           (document.querySelector('#searchInput') as HTMLInputElement).value = '';
@@ -88,25 +91,25 @@ export class MenuBarComponent implements OnInit {
     }
 
     this.blogService.filters.words = word;
-    this.blogService.blogs = await this.blogService.getCurrentBlogs();
+    this.blogService.blogs = this.blogService.getCurrentBlogs();
   }
 
-  async toggleNameSort() {
+  toggleNameSort() {
     this.blogService.sort.current = 'name';
     this.blogService.sort.name = !this.blogService.sort.name;
-    this.blogService.blogs = await this.blogService.getCurrentBlogs();
+    this.blogService.blogs = this.blogService.getCurrentBlogs();
   }
 
-  async toggleTagSort() {
+  toggleTagSort() {
     this.blogService.sort.current = 'tag';
     this.blogService.sort.tag = !this.blogService.sort.tag;
-    this.blogService.blogs = await this.blogService.getCurrentBlogs();
+    this.blogService.blogs = this.blogService.getCurrentBlogs();
   }
 
-  async toggleTimestampSort() {
+  toggleTimestampSort() {
     this.blogService.sort.current = 'timestamp';
     this.blogService.sort.timestamp = !this.blogService.sort.timestamp;
-    this.blogService.blogs = await this.blogService.getCurrentBlogs();
+    this.blogService.blogs = this.blogService.getCurrentBlogs();
   }
 
 }

@@ -1,0 +1,181 @@
+<h1> Rendering Markdown in the Browser</h1>
+
+<h2> Overview </h2>
+
+<p>
+    Right now your viewing <i>Markdown</i> in the browser. This article explains how.
+</p>
+
+<hr>
+
+<h2> Approach </h2>
+
+<p>
+    First we need a markdown renderer. My requirements:
+</p>
+<ul>
+    <li>Lightweight renderer.</li>
+    <li> <a href="https://github.github.com/gfm/ ">GFM</a> (Github Flavored Markup) support.</li>
+    <li> Prism for the code blocks highlighting<sup>1</sup>.</li>
+    <li> Easy to use.</li>
+</ul>
+
+<p>
+    The choice <a href="https://marked.js.org/">MarkedJs</a> for matching all of the criteria.
+</p>
+
+<span style=" font-size:11px;"><sup>1</sup> Mozilla use Prism for styling there code block examples on the <a
+    href="https://developer.mozilla.org/en-US/">MDN</a> website.</span>
+
+<hr>
+
+<h2> Basics </h2>
+
+<p><i>Marked</i> is straight-forward to use. Import marked into your html project, Figure 1, using a cdn<sup>2</sup>.
+
+    <h4>Figure 1 - index.html - Getting marked </h4>
+
+    <pre class="example-neutral"><code ngNonBindable class="language-html">&lt;head&gt;
+  &lt;script src="https://cdn.jsdelivr.net/gh/markedjs/marked@a9384eea7ae8bea6ef8a95470b315c73fdb3c189/marked.min.js"&gt;&lt;/script&gt;
+&lt;/head&gt;</code></pre>
+
+    <p>
+        We now have access to a global variable, <i>marked</i>. Figure 2 shows how to use <i>marked</i> to parse raw markdown into actual markdown.
+    </p>
+
+    <h4> Figure 2 - Parsing markdown into html </h4>
+
+
+    <pre class="example-neutral"><code ngNonBindable class="language-javascript">const rawMarkdown = await getRawMarkdown();
+const tokens = marked.lexer(rawMarkdown);
+const htmlString = marked.parser(tokens);
+document.querySelector('body').innerHTML = htmlString; </code></pre>
+
+
+
+    <span style=" font-size:11px;"><sup>2</sup> This cdn is dynamically created from the <i>marked</i> github repository
+  using <i>jsdelivr</i>. The hash after the ampersand, sets the version of *marked*, so any breaking changes will not
+  affect you.</span>
+
+    <hr>
+
+    <h2> Prism Code Block Styling</h2>
+
+    <p>
+        We have covered the basics, now lets look at using <i>Prism</i> with <i>marked</i>.
+    </p>
+
+    <p>
+        To remind you, Prism is used for code styling. You select the language for the code block in markdown, and Prism will apply code styling to that language.
+    </p>
+
+    <p>
+        Before we use it we need to download the <i>js</i> and <i>css</i> from <a href="https://prismjs.com/download.html#themes=prism&languages=markup+css+clike+javascript">here</a>. Stick with default settings if unsure. Simply import
+        <i>Prism</i> inside your html head tag (Figure 3), once you have it locally.
+    </p>
+
+    <h4> Figure 3 - index.html - Getting Prism </h4>
+
+    <pre class="example-neutral"><code ngNonBindable class="language-html">&lt;head&gt;
+  &lt;script src="/scripts/prism.js"&gt;&lt;/script&gt;
+  &lt;link rel="stylesheet" href="/styles/prism.css"&gt;
+&lt;/head&gt;</code></pre>
+
+    <p>
+        Now we have access to the *Prism* global object. Using the <i>marked</i> <i>setOptions</i> function, we can add Prism as the code highlighter (figure 4).
+    </p>
+
+    <h4> Figure 4 - Using Prism with marked</h4>
+
+    <pre class="example-neutral"><code ngNonBindable class="language-javascript match-braces">const languageSelector = &#123;
+  'html': () => &#123; return Prism.languages.html; &#125;,
+  'javascript': () => &#123; return Prism.languages.javascript; &#125;,
+&#125;;
+  
+marked.setOptions(&#123;
+  renderer: new marked.Renderer(),
+  highlight: (code, language) => &#123;
+      return Prism.highlight(code, languageSelector[language]());
+  &#125;,
+  pedantic: false,
+  gfm: true,
+  breaks: false,
+  sanitize: false,
+  smartLists: true,
+  smartypants: false,
+  xhtml: false
+&#125;);</code></pre>
+
+    <p>
+        There is a lot going on here. When you create a code block in markdown, you select a language, i.e. 'javascript'.
+    </p>
+
+    <p>
+        There is a <i>languageSelector</i> object, that when given a language from the code block (i.e. 'javascript'), it will return the a Prism object for javascript. This object is used by <i>Prism.highlight</i> to determine the highlighting syntax
+        for marked.
+    </p>
+
+    <p>
+        There are other <i>marked</i> setting as well. We will look at some of them, but we won't go through all of them as you can go to the documentation for <a href="https://marked.js.org/#/USING_ADVANCED.md#options">marked</a>
+    </p>
+
+    <p>
+        GFM (line 12), is GitHub markdown, so I want that on. Sanitize (line 14) is not safe for parsing raw markdown, so I've turned that off.
+    </p>
+
+    <hr>
+
+    <h2>Complete example of Prism with marked</h2>
+
+    <h4> Figure 5 - index.html - Imports</h4>
+
+
+    <pre class="example-neutral"><code ngNonBindable class="language-html">&lt;head&gt;
+  &lt;script src="https://cdn.jsdelivr.net/gh/markedjs/marked/marked.min.js"&gt;&lt;/script&gt;;
+
+  &lt;script src="/scripts/prism.js"&gt;&lt;/script&gt;
+  &lt;link rel="stylesheet" href="/styles/prism.css"&gt;
+&lt;/head&gt;</code></pre>
+
+    <h4> Figure 6 - main.js - Script</h4>
+
+    <pre class="example-neutral"><code ngNonBindable class="language-javascript match-braces">const languageSelector = &#123;
+  'html': () => &#123; return Prism.languages.html; &#125;,
+  'javascript': () => &#123; return Prism.languages.javascript; &#125;,
+&#125;;
+  
+marked.setOptions(&#123;
+  renderer: new marked.Renderer(),
+  highlight: (code, language) => &#123;
+    return Prism.highlight(code, languageSelector[language]());
+  &#125;,
+  pedantic: false,
+  gfm: true,
+  breaks: false,
+  sanitize: false,
+  smartLists: true,
+  smartypants: false,
+  xhtml: false
+&#125;);
+  
+const rawMarkdown = await getRawMarkdown();
+  
+const tokens = marked.lexer(rawMarkdown);
+const htmlString = marked.parser(tokens);
+  
+document.querySelector('body').innerHTML = htmlString;</code></pre>
+
+    <hr>
+
+    <h2>Conclusion</h2>
+
+    <ul>
+        <li> Marked can be used quickly, and on its own. </li>
+        <li> Prism can be used as a highlighter for code blocks in <i>marked</i>, with little effort</li>
+    </ul>
+
+
+    <span style=" font-size:13px;">
+  Note, I will be writing a follow up on creating custom styling for marked, in-conjunction with Prism, which I have
+  done on this site, but haven't had the time to write up yet!
+</span>

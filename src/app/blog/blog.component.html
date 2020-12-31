@@ -1,3 +1,24 @@
 <div class="blog-container">
-    <div class="blog" [innerHTML]="html"></div>
+
+    <div class="blog">
+
+        <div class="blog-post" (click)="expandImage($event)">
+
+            <app-angular-and-github-pages *ngIf="blogName === 'AngularAndGitHubPages'"></app-angular-and-github-pages>
+            <app-async-constructors class="line-numbers" *ngIf="blogName === 'AsyncConstructors'"></app-async-constructors>
+            <app-azure-developer-exam-notes *ngIf="blogName === 'AzureDeveloper204ExamNotes'"></app-azure-developer-exam-notes>
+            <app-event-crud class="match-braces line-numbers" *ngIf="blogName === 'EventCRUD'"></app-event-crud>
+            <app-javascript-variables-and-scope *ngIf="blogName === 'JavaScriptVariablesAndScope'"></app-javascript-variables-and-scope>
+            <app-markdown-rendering class="line-numbers" *ngIf="blogName === 'MarkdownRendering'"></app-markdown-rendering>
+
+        </div>
+
+    </div>
+
+
+
+</div>
+
+<div *ngIf="isModalOpen === true" class="modal" (click)="closeModal()">
+    <img src="{{imgSrc}}" id="modal-image">
 </div>

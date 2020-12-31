@@ -51,13 +51,13 @@ export class PrismWrapper {
 
         html = this.highlightSyntax(html);
 
-        if(linesNumbers || lineHighlighter)
+        if (linesNumbers || lineHighlighter)
             html = this.addLineNumbersMetadata(html);
 
-        if(linesNumbers)
+        if (linesNumbers)
             html = this.addLineNumbers(html);
 
-        if(lineHighlighter)
+        if (lineHighlighter)
             html = this.highlightLine(html);
 
         return html;
@@ -68,8 +68,8 @@ export class PrismWrapper {
         div.innerHTML = html;
 
         div.querySelectorAll('pre code').forEach((code: HTMLPreElement) => {
-            const languaugeKey = [...(<any>code.classList)].find(val => val.startsWith('language-'))?.split('-')[1]?.toLocaleLowerCase();
-            let language = this.prism.languages[languaugeKey];
+            const languageKey = [...(<any>code.classList)].find(val => val.startsWith('language-'))?.split('-')[1]?.toLocaleLowerCase();
+            let language = this.prism.languages[languageKey];
             if (language === undefined) language = this.prism.languages.javascript;
 
             let codeInnerHtml;
@@ -79,7 +79,7 @@ export class PrismWrapper {
             const sytaxHighlighted = this.prism.highlight(codeInnerHtml, language);
             code.innerHTML = sytaxHighlighted;
 
-            this.addCodeToolbar((code.parentElement as HTMLPreElement), languaugeKey);
+            this.addCodeToolbar((code.parentElement as HTMLPreElement), languageKey);
         });
         return div.outerHTML;
     }
