@@ -2,7 +2,6 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { BlogService } from '../services/blogs-service';
 import { ToastEvents } from '../services/toast-events-service';
 import { Utilities } from '../helpers/utilites'
-import { TagContentType } from '@angular/compiler';
 
 @Component({
   selector: 'app-home',

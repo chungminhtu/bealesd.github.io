@@ -5,15 +5,22 @@
         <div class="bar3"></div>
     </div>
 
-    <div class="home">
+    <div class="menu-link">
         <span class="icon-home" routerLink="/home" routerLinkActive="active-link"></span>
     </div>
+    <div class="menu-link">
+        <span class="icon-profile" routerLink="/about" routerLinkActive="active-link"></span>
+    </div>
 
-    <div *ngIf="isHomePage" class="search">
+</div>
+
+<div *ngIf="isHomePage" class="menu-bar-container2">
+
+    <div class="search">
         <input id="searchInput" type="text" placeholder="Search" maxlength="20" value='' #searchInput (keyup)="filterBlogsBySearch(searchInput.value)">
     </div>
 
-    <div *ngIf="isHomePage" class='sort-name' (click)="toggleNameSort()">
+    <div class="sort-name {{this.blogService.sort.current === 'name' ? 'active' : ''}}" (click)="toggleNameSort()">
         <div>
             Name
             <span *ngIf="blogService.sort.name && this.blogService.sort.current === 'name'" class="icon-sort-alpha-asc"></span>
@@ -21,7 +28,7 @@
         </div>
     </div>
 
-    <div *ngIf="isHomePage" class='sort-tag' (click)="toggleTagSort()">
+    <div class="sort-tag {{this.blogService.sort.current === 'tag' ? 'active' : ''}}" (click)="toggleTagSort()">
         <div>
             Tag
             <span *ngIf="blogService.sort.tag && this.blogService.sort.current === 'tag'" class="icon-sort-alpha-asc"></span>
@@ -29,7 +36,7 @@
         </div>
     </div>
 
-    <div *ngIf="isHomePage" class='sort-timestamp' (click)="toggleTimestampSort()">
+    <div class="sort-timestamp {{this.blogService.sort.current === 'timestamp' ? 'active' : ''}} " (click)="toggleTimestampSort()">
         <div>
             Date
             <span *ngIf="blogService.sort.timestamp && this.blogService.sort.current === 'timestamp'" class="icon-sort-alpha-asc"></span>
@@ -39,27 +46,40 @@
 
 </div>
 
-<div *ngIf="sidebarOpen === true" class="sidebar">
-    <ng-container *ngFor="let tag of tags; let i = index">
+<div *ngIf="sidebarOpen" class="sidebar">
+    <div class="sidebar-header" routerLink="/home" routerLinkActive="active-link">
+        Home
+    </div>
 
-        <div class="sidebar-header">
-            <div class="sidebar-header-tag" (click)="toggleSubMenu($event)">
-                {{tag}}
-                <span class="{{tagsShown[tag] ? 'icon-minus' : 'icon-plus'}}"></span>
+    <div class="sidebar-header" routerLink="/about" routerLinkActive="active-link">
+        About
+    </div>
+
+    <div class="sidebar-header" (click)="toggleSideMenuHeading(blogsHeading)">
+        <span #blogsHeading>Blogs </span>
+        <div *ngIf="sideMenuHeadingsShown['blogs'];then opened else closed"></div>
+        <ng-template #opened>
+            <span class="icon-minus"></span>
+        </ng-template>
+        <ng-template #closed>
+            <span class="icon-plus"></span>
+        </ng-template>
+
+    </div>
+    <div *ngIf="sideMenuHeadingsShown['blogs']">
+        <ng-container *ngFor="let tag of tags;">
+            <div class="sidebar-header-tag" (click)="toggleSideMenuBlogTag(tagHeading)">
+                <span #tagHeading>{{tag}} </span>
+                <span class="{{sideMenuHeadingsShown.blogTagsShown[tag] ? 'icon-minus' : 'icon-plus'}}"></span>
             </div>
 
-            <div class="sidebar-sub-headers {{tagsShown[tag] ? '': 'sidebar-sub-headers-hidden'}}">
-
-                <ng-container *ngFor="let blogLink of getBlogsByTag(tag); let j = index">
-
+            <div class="sidebar-sub-headers {{sideMenuHeadingsShown.blogTagsShown[tag] ? '': 'sidebar-sub-headers-hidden'}}">
+                <ng-container *ngFor="let blogLink of getBlogsByTag(tag);">
                     <div class="sidebar-sub-header" routerLink="/blog/{{blogLink.id}}" routerLinkActive="active-link">
                         {{blogLink.displayname}}
                     </div>
-
                 </ng-container>
             </div>
-        </div>
-
-    </ng-container>
-
+        </ng-container>
+    </div>
 </div>

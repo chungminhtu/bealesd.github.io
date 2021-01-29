@@ -1,5 +1,5 @@
 .main-container {
-    margin-top: calc(50px + 20px);
+    margin-top: calc(var(--menu-bar-total-height) + 20px);
 }
 
 app-menu-bar {

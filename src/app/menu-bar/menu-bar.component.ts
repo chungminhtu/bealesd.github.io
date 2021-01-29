@@ -16,46 +16,52 @@ export class MenuBarComponent implements OnInit {
 
   blogsByTag = {};
   tags = [];
-  tagsShown = {};
+
+  sideMenuHeadingsShown = {
+    blogs: false,
+    blogTagsShown: {}
+  };
 
   searchId = null;
+
+  searchBarHeight = '50px';
 
   constructor(
     public blogService: BlogService,
     private router: Router,
-    public toastEvents: ToastEvents
-  ) {
+    public toastEvents: ToastEvents,
+  ) { }
+
+  ngOnInit(): void {
     this.getBlogsByTags();
 
     this.router.events.subscribe((route) => {
       if (route instanceof NavigationEnd) {
-        const rootPath = window.location.pathname.split('/')[1]
-        if (rootPath=== 'blog')
+        document.documentElement.style.setProperty('--search-bar-menu-bar-height', '0px');
+
+        const rootPath = window.location.pathname.split('/')[1];
+        if (rootPath === 'blog') {
           this.isHomePage = false;
-        else if (rootPath=== '/home')
+        }
+        else if (rootPath === 'home') {
+          document.documentElement.style.setProperty('--search-bar-menu-bar-height', this.searchBarHeight);
           this.isHomePage = true;
-        else
+        }
+        else {
           this.isHomePage = true;
+        }
       }
     });
   }
 
-  ngOnInit(): void { }
-
   getBlogsByTags() {
-    // this.blogsByTag = this.blogService.blogRepo.getAllUniqueTags();
     this.tags = this.blogService.blogRepo.getAllUniqueTags();
 
-    // this.blogService.getPostByTags();
-    // this.tags = Object.keys(this.blogsByTag);
-
-    for (const tag of this.tags) {
-      this.tagsShown[tag] = false;
-    }
+    for (const tag of this.tags)
+      this.sideMenuHeadingsShown.blogTagsShown[tag] = false;
   }
 
   getBlogsByTag(tag: string) {
-    // todo - unsorted
     return this.blogService.blogRepo.getBlogsByTags([tag]);
   }
 
@@ -63,15 +69,20 @@ export class MenuBarComponent implements OnInit {
     this.sidebarOpen = !this.sidebarOpen;
   }
 
-  toggleSubMenu(evt: MouseEvent) {
-    let tag = (<HTMLDivElement>evt.target).innerText.trim();
-    this.tagsShown[tag] = !this.tagsShown[tag];
+  toggleSideMenuHeading(val: HTMLSpanElement) {
+    const sideMenuHeading = val.innerText.trim().toLocaleLowerCase();
+    this.sideMenuHeadingsShown[sideMenuHeading] = !this.sideMenuHeadingsShown[sideMenuHeading];
+  }
+
+  toggleSideMenuBlogTag(val: HTMLSpanElement) {
+    const tag = val.innerText.trim();
+    this.sideMenuHeadingsShown.blogTagsShown[tag] = !this.sideMenuHeadingsShown.blogTagsShown[tag];
   }
 
   filterBlogsBySearch(word) {
-    // todo: move toast adding to blogService
-    if(word.trim().length > 0){
-      if(this.searchId === null){
+    // TODO: move toast adding to blogService
+    if (word.trim().length > 0) {
+      if (this.searchId === null) {
         const cb = () => {
           this.blogService.filters.words = '';
           const blogs = this.blogService.getCurrentBlogs();
@@ -81,7 +92,7 @@ export class MenuBarComponent implements OnInit {
         }
         this.searchId = this.toastEvents.addToastMessageInteractive(`Search: ${word}`, cb);
       }
-      else{
+      else {
         this.toastEvents.updateToastMessage(this.searchId, `Search: ${word}`);
       }
     }
