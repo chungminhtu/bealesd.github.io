@@ -48,7 +48,7 @@ export class MenuBarComponent implements OnInit {
           this.isHomePage = true;
         }
         else {
-          this.isHomePage = true;
+          this.isHomePage = false;
         }
       }
     });

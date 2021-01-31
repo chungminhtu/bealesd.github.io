@@ -13,6 +13,7 @@ import { MarkdownRenderingComponent } from './blogs/markdown-rendering/markdown-
 import { JavascriptVariablesAndScopeComponent } from './blogs/javascript-variables-and-scope/javascript-variables-and-scope.component';
 import { AzureDeveloperExamNotesComponent } from './blogs/azure-developer-exam-notes/azure-developer-exam-notes.component';
 import { AsyncConstructorsComponent } from './blogs/async-constructors/async-constructors.component';
+import { AboutComponent } from './about/about.component';
 
 @NgModule({
   declarations: [
@@ -26,7 +27,8 @@ import { AsyncConstructorsComponent } from './blogs/async-constructors/async-con
     MarkdownRenderingComponent,
     JavascriptVariablesAndScopeComponent,
     AzureDeveloperExamNotesComponent,
-    AsyncConstructorsComponent
+    AsyncConstructorsComponent,
+    AboutComponent
   ],
   imports: [
     BrowserModule,
