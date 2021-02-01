@@ -24,7 +24,7 @@ export class MenuBarComponent implements OnInit {
 
   searchId = null;
 
-  searchBarHeight = '50px';
+  searchBarHeight = '36px';
 
   constructor(
     public blogService: BlogService,
@@ -50,6 +50,7 @@ export class MenuBarComponent implements OnInit {
         else {
           this.isHomePage = false;
         }
+
       }
     });
   }

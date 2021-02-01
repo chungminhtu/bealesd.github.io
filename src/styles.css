@@ -1125,7 +1125,7 @@
     --alert-danger-color: 114, 28, 36;
     --alert-danger-background-color: 248, 215, 218;
     --alert-danger-border-color: 245, 198, 203;
-    --menu-bar-height: 50px;
+    --menu-bar-height: 51px;
     --search-bar-menu-bar-height: 0px;
     --menu-bar-total-height: calc(var(--menu-bar-height) + var(--search-bar-menu-bar-height));
 }

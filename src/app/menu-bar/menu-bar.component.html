@@ -73,7 +73,7 @@
                 <span class="{{sideMenuHeadingsShown.blogTagsShown[tag] ? 'icon-minus' : 'icon-plus'}}"></span>
             </div>
 
-            <div class="sidebar-sub-headers {{sideMenuHeadingsShown.blogTagsShown[tag] ? '': 'sidebar-sub-headers-hidden'}}">
+            <div class="{{sideMenuHeadingsShown.blogTagsShown[tag] ? '': 'sidebar-sub-headers-hidden'}}">
                 <ng-container *ngFor="let blogLink of getBlogsByTag(tag);">
                     <div class="sidebar-sub-header" routerLink="/blog/{{blogLink.id}}" routerLinkActive="active-link">
                         {{blogLink.displayname}}

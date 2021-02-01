@@ -22,10 +22,11 @@
 .menu-bar-container2 {
     position: relative;
     align-items: center;
-    height: 50px;
+    height: 35px;
     width: 100%;
-    background-color: rgba(var(--alert-info-color), 0.9);
-    color: white;
+    background-color: rgba(238,238,238,1);
+    color: black;
+    border-bottom: 1px solid lightgray;
     display: grid;
     grid-template-columns: repeat(1, min-content) auto auto auto;
     column-gap: var(--menu-bar-item-margin);
@@ -37,8 +38,9 @@
     align-items: center;
     height: 50px;
     width: 100%;
-    background-color: rgba(var(--alert-info-color), 0.9);
-    color: white;
+    background-color: rgba(238,238,238,1);
+    color: black;
+    border-bottom: 1px solid lightgray;
     display: grid;
     grid-template-columns: repeat(3, min-content);
     column-gap: var(--menu-bar-item-margin);
@@ -51,6 +53,8 @@
 
 #searchInput {
     max-width: var(--search-width);
+    padding:none;
+    margin:none;
 }
 
 .sort-name,
@@ -63,7 +67,7 @@
 .sort-tag>div,
 .sort-timestamp>div,
 .menu-link>span {
-    padding: 4px 10px;
+    padding: 4px 4px;
     border-radius: 5px;
     transition: 200ms ease-in-out;
     display: inline;
@@ -74,11 +78,11 @@
 .sort-timestamp>div:hover,
 .menu-link>span:hover {
     cursor: pointer;
-    color: rgb(var(--alert-info-color));
-    background-color: white;
+    color: lime;
 }
 
-[class*='sort-'].active {
+[class*='sort-'].active,
+.menu-link>span.active-link  {
     color: lime;
 }
 
@@ -91,17 +95,8 @@
 .menu-link>span:active {
     outline: 0;
     border: none;
-    color: lime;
 }
 
-.menu-link>span.active-link {
-    color: rgb(var(--alert-info-color));
-    background-color: white;
-}
-
-.sidebar-header-tag [class^="icon-"] {
-    font-size: 10px;
-}
 
 .hamburger {
     display: inline-block;
@@ -141,56 +136,49 @@
 
 .sidebar {
     top: var(--menu-bar-total-height);
-    background-color: rgba(var(--alert-info-color), 0.9);
-    color: white;
+    background-color: rgba(238,238,238,1);
+    color: black;
+    border-right: 1px solid lightgray;
     font-size: 16px;
     width: 250px;
     position: fixed;
     overflow-y: auto;
     bottom: 0;
-    /* height: calc(100vh - var(--menu-bar-total-height)); */
-}
-
-.sidebar:before {
-    content: "";
-    position: absolute;
-    height: 20px;
-    background: #fff;
-    z-index: 999;
-    top: -20px;
-    width: 100%;
-    left: 0;
 }
 
 .sidebar-sub-headers-hidden {
     display: none;
 }
 
+.sidebar-header, .sidebar-header-tag, .sidebar-sub-headers{
+    border-bottom: 1px solid lightgray;
+}
+
 .sidebar-header {
-    font-size: 16px;
     padding: 8px 8px;
-    border-bottom: 1px solid white;
-}
-
-.sidebar-header:hover {
-    color: rgba(var(--alert-warning-color), 1);
-    background-color: rgba(var(--alert-warning-background-color), 1);
-    cursor: pointer;
-}
-
-.sidebar-header:nth-of-type(1) {
-    border-top: 1px solid white;
 }
 
 .sidebar-header-tag {
     padding: 8px 16px;
-    border-bottom: 1px solid white;
 }
 
-.sidebar-header-tag:hover {
-    color: rgba(var(--alert-info-color), 1);
-    background-color: rgba(var(--alert-info-background-color), 1);
+.sidebar-sub-header {
+    padding: 8px 26px;
+}
+
+.sidebar-header-tag [class^="icon-"] {
+    font-size: 10px;
+}
+
+[class*="sidebar-"]:hover {
+    color:lime;
     cursor: pointer;
+}
+
+[class*="sidebar-"]:focus,
+[class*="sidebar-"]:active{
+    outline: 0;
+    border: none;
 }
 
 .sidebar [class*="icon"] {
@@ -205,33 +193,7 @@
     color: lime;
 }
 
-.sidebar-sub-header:hover {
-    color: rgba(var(--alert-success-color), 1);
-    background-color: rgba(var(--alert-success-background-color), 1);
-    cursor: pointer;
-}
-
-.sidebar-sub-header.active-link {
-    color: rgba(var(--alert-success-color), 1);
-    background-color: rgba(var(--alert-success-background-color), 1);
-}
-
-.sidebar-header.active-link {
-    color: rgba(var(--alert-success-color), 1);
-    background-color: rgba(var(--alert-success-background-color), 1);
-}
-
-.active-link:focus,
-.active-link:active {
-    outline: 0;
-    border: none;
-}
-
-.sidebar-sub-headers {
-    border-bottom: 1px solid white;
-}
-
-.sidebar-sub-header {
-    padding: 8px 26px;
-    font-size: 16px;
+.sidebar-sub-header.active-link,
+.sidebar-header.active-link  {
+    color:lime;
 }
