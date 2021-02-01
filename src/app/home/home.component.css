@@ -25,10 +25,15 @@
     margin: 20px auto 20px auto;
     display: grid;
     grid-template-rows: 50px 50px 30px 50px;
+    grid-template-columns: 360px calc(var(--blog-container-width) - 360px);
     width: var(--blog-container-width);
+
+    background-color: white;
+    border: 1px solid black;
 }
 
-.blog-container:nth-of-type(odd) {
+
+/* .blog-container:nth-of-type(odd) {
     background-color: rgb(var(--alert-danger-background-color));
     border: 1px solid rgb(var(--alert-danger-color));
 }
@@ -36,14 +41,32 @@
 .blog-container:nth-of-type(even) {
     background-color: rgb(var(--alert-success-background-color));
     border: 1px solid rgb(var(--alert-success-color));
-}
+} */
 
 .blog-timestamp {
     grid-row: 1;
+    grid-column: 1/3;
 }
 
 .blog-link {
     grid-row: 2;
+    grid-column: 1/2;
+    width: fit-content;
+}
+
+.blog-image{
+    grid-row: 1/4;
+    grid-column: 2;
+}
+
+.blog-image > img{
+    padding: 10px 10px;
+    width: 220px;
+    height: 110px;
+}
+
+.blog-image > img:hover{
+    cursor: pointer;
 }
 
 .blog-timestamp>div,
@@ -59,7 +82,12 @@
     align-items: center;
 }
 
-.blog-container:nth-of-type(odd)>.blog-tag {
+.blog-container > .blog-tag {
+    background-color: black;
+    color: white;
+}
+
+/* .blog-container:nth-of-type(odd)>.blog-tag {
     background-color: rgb(var(--alert-danger-color));
     color: rgb(var(--alert-danger-background-color));
 }
@@ -77,7 +105,7 @@
 .blog-container:nth-of-type(even)>.blog-link,
 .blog-container:nth-of-type(even)>.blog-timestamp {
     color: rgb(var(--alert-success-color));
-}
+} */
 
 .blog-timestamp .item {
     font-size: 14px;
@@ -86,10 +114,18 @@
 .blog-link .item {
     font-size: 22px;
     border-radius: 5px;
+    padding: 3px 10px;
+    background-color: #2fcf11;
+    color:white;
     transition: 0.2s ease-in-out;
 }
 
-.blog-container:nth-of-type(odd) .blog-link .item:hover {
+.blog-container .blog-link .item:hover {
+    background-color: #258f13;
+    color: white;
+    cursor: pointer;
+}
+/* .blog-container:nth-of-type(odd) .blog-link .item:hover {
     background-color: rgb(var(--alert-danger-color));
     color: rgb(var(--alert-danger-background-color));
     cursor: pointer;
@@ -99,10 +135,11 @@
     background-color: rgb(var(--alert-success-color));
     color: rgb(var(--alert-success-background-color));
     cursor: pointer;
-}
+} */
 
 .blog-tag {
     grid-row: 4;
+    grid-column: 1/3;
 }
 
 .blog-tag>div {
@@ -134,7 +171,7 @@
     transition: 0.2s ease-in-out;
 }
 
-.blog-container:nth-of-type(odd) .blog-tag .tag:hover,
+/* .blog-container:nth-of-type(odd) .blog-tag .tag:hover,
 .blog-container:nth-of-type(odd) .blog-tag .sub-tag:hover {
     background-color: rgb(var(--alert-danger-background-color));
     color: rgb(var(--alert-danger-color));
@@ -146,4 +183,11 @@
     background-color: rgb(var(--alert-success-background-color));
     color: rgb(var(--alert-success-color));
     cursor: pointer;
-}
+} */
+
+.blog-container .blog-tag .tag:hover,
+.blog-container .blog-tag .sub-tag:hover {
+    background-color: white;
+    color: black;
+    cursor: pointer;
+} 

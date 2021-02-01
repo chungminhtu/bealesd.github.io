@@ -16,7 +16,8 @@ export class BlogRepo {
                 subtags: [],
                 timestamp: '13 Jun 2020',
                 updated: '',
-                id: 'JavaScriptVariablesAndScope'
+                id: 'JavaScriptVariablesAndScope',
+                thumbnail: ''
             }),
             new BlogModel({
                 displayname: 'Azure 204 Notes',
@@ -24,7 +25,8 @@ export class BlogRepo {
                 subtags: [],
                 timestamp: '22 Jul 2020',
                 updated: '',
-                id: 'AzureDeveloper204ExamNotes'
+                id: 'AzureDeveloper204ExamNotes',
+                thumbnail: ''
             }),
             new BlogModel({
                 displayname: 'Events CRUD',
@@ -32,7 +34,8 @@ export class BlogRepo {
                 subtags: ['HTML', 'DOM'],
                 timestamp: '21 Jul 2020',
                 updated: '22 Jul 2020',
-                id: 'EventCRUD'
+                id: 'EventCRUD',
+                thumbnail: ''
             }),
             new BlogModel({
                 displayname: 'Async Constructors',
@@ -40,7 +43,8 @@ export class BlogRepo {
                 subtags: [],
                 timestamp: '27 Jul 2020',
                 updated: '',
-                id: 'AsyncConstructors'
+                id: 'AsyncConstructors',
+                thumbnail: ''
             }),
             new BlogModel({
                 displayname: 'Markdown Rendering',
@@ -48,7 +52,8 @@ export class BlogRepo {
                 subtags: ['PrismJs', 'MarkedJs'],
                 timestamp: '01 Aug 2020',
                 updated: '',
-                id: 'MarkdownRendering'
+                id: 'MarkdownRendering',
+                thumbnail: ''
             }),
             new BlogModel({
                 displayname: 'Angular GitHub Pages',
@@ -56,7 +61,8 @@ export class BlogRepo {
                 subtags: ['GitHub'],
                 timestamp: '26 Dec 2020',
                 updated: '',
-                id: 'AngularAndGitHubPages'
+                id: 'AngularAndGitHubPages',
+                thumbnail: '/assets/blogs/images/angularAndGitHubPages/github-pages-settings.jpg'
             })
         ];
 
@@ -129,6 +135,7 @@ class BlogModel {
     timestamp: string
     updated: string
     id: string
+    thumbnail: string
 
     constructor(args) {
         this.displayname = args.displayname || '';
@@ -137,6 +144,7 @@ class BlogModel {
         this.timestamp = args.timestamp || '';
         this.updated = args.updated || '';
         this.id = args.id || '';
+        this.thumbnail = args.thumbnail || '';
     }
 
     get allTags() {
