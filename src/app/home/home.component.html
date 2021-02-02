@@ -3,11 +3,24 @@
     <ng-container *ngFor="let blog of blogs; let i = index">
 
         <div class="blog-container">
-            <div class="blog-timestamp">
+
+            <div class="blog-thumbnail">
+                <img src="{{blog.thumbnail}}">
+            </div>
+
+            <div class="blog-tag">
                 <div>
-                    <div class="item">{{blog.timestamp}}</div>
+                    <div class="tag {{blog.tag.toLowerCase()}}" (click)="filterBlogsByTag(blog.tag)">
+                        {{blog.tag.toUpperCase()}}
+                    </div>
+                    <ng-container *ngFor="let subtag of blog.subtags">
+                        <div class="sub-tag" (click)="filterBlogsByTag(subtag)">
+                            {{subtag.toUpperCase()}}
+                        </div>
+                    </ng-container>
                 </div>
             </div>
+      
             <div class="blog-link">
                 <div>
                     <div class="item" routerLink="/blog/{{blog.id}}" routerLinkActive="active-link">
@@ -16,24 +29,17 @@
                 </div>
             </div>
 
-            <div class="blog-image">
-                <img class="blog-image" src='{{blog.thumbnail}}' title="GitHub Pages Settings">
+
+            <div class="blog-summary">
+                <div>{{blog.summary}}</div>
             </div>
 
-            <div class="blog-tag">
-                <div>
-                    <div class="tag" (click)="filterBlogsByTag(blog.tag)">
-                        {{blog.tag}}
-                    </div>
-
-                    <ng-container *ngFor="let subtag of blog.subtags">
-                        <div class="sub-tag" (click)="filterBlogsByTag(subtag)">
-                            {{subtag}}
-                        </div>
-                    </ng-container>
-
-
-                </div>
+            <div class="blog-who-card">
+                <!-- <div> -->
+                    <img src="/assets/blogs/images/david-beales.jpg">
+                    <div class="blog-author">{{blog.author}}</div>
+                    <div class="blog-timestamp">{{blog.timestamp}}</div>
+                <!-- </div> -->
             </div>
 
         </div>

@@ -17,7 +17,9 @@ export class BlogRepo {
                 timestamp: '13 Jun 2020',
                 updated: '',
                 id: 'JavaScriptVariablesAndScope',
-                thumbnail: ''
+                summary: 'Choose the wrong type declaration or declare it in the wrong place, prepare for unexpected behaviour!',
+                thumbnail: '/assets/blogs/images/variables-scope-thumbnail.jpg',
+                author: 'David Beales'
             }),
             new BlogModel({
                 displayname: 'Azure 204 Notes',
@@ -26,7 +28,9 @@ export class BlogRepo {
                 timestamp: '22 Jul 2020',
                 updated: '',
                 id: 'AzureDeveloper204ExamNotes',
-                thumbnail: ''
+                summary: 'My 204 Exam notes, a scrambled mess!',
+                thumbnail: '/assets/blogs/images/azure-logo-thumbnail.jpg',
+                author: 'David Beales'
             }),
             new BlogModel({
                 displayname: 'Events CRUD',
@@ -35,7 +39,9 @@ export class BlogRepo {
                 timestamp: '21 Jul 2020',
                 updated: '22 Jul 2020',
                 id: 'EventCRUD',
-                thumbnail: ''
+                summary: 'Manage DOM events listeners safely, with events CRUD.',
+                thumbnail: '/assets/blogs/images/crud_blue_thumbnail.jpg',
+                author: 'David Beales'
             }),
             new BlogModel({
                 displayname: 'Async Constructors',
@@ -44,7 +50,9 @@ export class BlogRepo {
                 timestamp: '27 Jul 2020',
                 updated: '',
                 id: 'AsyncConstructors',
-                thumbnail: ''
+                summary: 'JavaScript can support async constructors, with closures.',
+                thumbnail: '/assets/blogs/images/async-constructors-new-thumbnail.jpg',
+                author: 'David Beales'
             }),
             new BlogModel({
                 displayname: 'Markdown Rendering',
@@ -53,16 +61,20 @@ export class BlogRepo {
                 timestamp: '01 Aug 2020',
                 updated: '',
                 id: 'MarkdownRendering',
-                thumbnail: ''
+                summary: 'Render Markdown in the browser, with added PrismJs styling.',
+                thumbnail: '/assets/blogs/images/prism-thumbnail.jpg',
+                author: 'David Beales'
             }),
             new BlogModel({
                 displayname: 'Angular GitHub Pages',
-                tag: 'Angular',
-                subtags: ['GitHub'],
+                tag: 'TypeScript',
+                subtags: ['Angular', 'GitHub'],
                 timestamp: '26 Dec 2020',
                 updated: '',
                 id: 'AngularAndGitHubPages',
-                thumbnail: '/assets/blogs/images/angularAndGitHubPages/github-pages-settings.jpg'
+                summary: 'Host your Angular website for free with GitHub Pages.',
+                thumbnail: '/assets/blogs/images/github-pages-blue-thumbnail.jpg',
+                author: 'David Beales'
             })
         ];
 
@@ -135,7 +147,9 @@ class BlogModel {
     timestamp: string
     updated: string
     id: string
+    summary: string
     thumbnail: string
+    author: string
 
     constructor(args) {
         this.displayname = args.displayname || '';
@@ -144,7 +158,9 @@ class BlogModel {
         this.timestamp = args.timestamp || '';
         this.updated = args.updated || '';
         this.id = args.id || '';
+        this.summary = args.summary || '';
         this.thumbnail = args.thumbnail || '';
+        this.author = args.author || ''
     }
 
     get allTags() {
