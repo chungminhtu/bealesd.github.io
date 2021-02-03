@@ -78,12 +78,12 @@
 .sort-timestamp>div:hover,
 .menu-link>span:hover {
     cursor: pointer;
-    color: lime;
+    color: var(--active-link-green);
 }
 
 [class*='sort-'].active,
 .menu-link>span.active-link  {
-    color: lime;
+    color: var(--active-link-green);
 }
 
 .menu-link {
@@ -171,7 +171,7 @@
 }
 
 [class*="sidebar-"]:hover {
-    color:lime;
+    color:var(--active-link-green);
     cursor: pointer;
 }
 
@@ -190,10 +190,10 @@
 }
 
 .sidebar .icon-plus {
-    color: lime;
+    color: var(--active-link-green);
 }
 
 .sidebar-sub-header.active-link,
 .sidebar-header.active-link  {
-    color:lime;
+    color:var(--active-link-green);
 }
