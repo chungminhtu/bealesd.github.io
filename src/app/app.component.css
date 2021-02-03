@@ -1,10 +1,11 @@
 :host{
     --router-outlet-vertical-padding: 20px;
-    --router-outlet-padding-top: calc(var(--menu-bar-total-height) + var(--router-outlet-vertical-padding))
+    --router-outlet-padding-top: calc(var(--menu-bar-total-height) + var(--router-outlet-vertical-padding));
+    --main-bg-color: rgb(248,248,248);
 }
 
 .main-container {
-    background-color: rgb(248,248,248);
+    background-color: var(--main-bg-color);
     min-height: calc(100vh - (var(--router-outlet-padding-top) + var(--router-outlet-vertical-padding)));
     padding-top: var(--router-outlet-padding-top);
     padding-bottom: var(--router-outlet-vertical-padding);
@@ -15,4 +16,10 @@ app-menu-bar {
     top: 0;
     width: 100%;
     z-index: 2;
+}
+
+footer{
+    background-color: var(--main-bg-color);
+    font-size: 10px;
+    text-align: center;
 }

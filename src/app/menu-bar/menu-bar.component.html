@@ -14,8 +14,11 @@
 
     <div class="menu-link right">
         <span class="icon-github" (click)="goToLink('https://github.com/bealesd')"></span>
-        <span class="icon-envelop" (click)="goToLink('https://github.com/bealesd')"></span>
-        <span class="menu-author">David Beales</span>
+        <span class="icon-linkedin" (click)="goToLink('https://www.linkedin.com/in/david-beales-16087989')"></span>
+        <span class="icon-envelop" (click)="openModal('Contact me', 'david_beales@ymail.com')"></span>
+        <div class="menu-author">
+            <div>David Beales</div>
+        </div>
     </div>
 
 </div>
@@ -97,3 +100,9 @@
         </ng-container>
     </div>
 </div>
+
+<div *ngIf="isModalOpen === true" class="modal">
+    <div id="modal-message"><div>{{modalMessage}}</div></div>
+    <div id="modal-value" [innerHTML]='modalValue'></div>
+    <button class="btn-normal" (click)="closeModal()">Ok</button>
+  </div>

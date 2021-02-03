@@ -1,25 +1,17 @@
 :host {
     --blog-container-width: 300px;
     --blog-main-content-margin-left: 40px;
-
-    --javascript-bg-color: rgb(205,91,159);
-    --typescript-bg-color: rgb(94,118,191);
-    --azure-bg-color: rgb(71,188,212);
-
-    --sub-tag-bg-color: rgb(199, 136, 85);
 }
 
 @media screen and (max-width: 800px) and (min-width: 600px) {
      :host {
         --blog-main-content-margin-left: 20px;
-
     }
 }
 
 @media screen and (max-width: 600px) {
      :host {
         --blog-main-content-margin-left: 10px;
-
     }
 }
 
