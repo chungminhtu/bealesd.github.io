@@ -55,6 +55,10 @@ export class MenuBarComponent implements OnInit {
     });
   }
 
+  goToLink(url: string){
+    window.open(url, "_blank");
+}
+
   getBlogsByTags() {
     this.tags = this.blogService.blogRepo.getAllUniqueTags();
 

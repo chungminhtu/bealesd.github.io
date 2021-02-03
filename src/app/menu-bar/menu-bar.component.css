@@ -1,36 +1,23 @@
 :host {
     --menu-bar-item-margin: 20px;
+    --menu-bar-search-item-margin: 20px;
     --search-width: 200px;
     --home-icon-font-size: 30px;
 }
 
 @media screen and (max-width: 800px) and (min-width: 600px) {
      :host {
-        --menu-bar-item-margin: 10px;
+        --menu-bar-search-item-margin: 10px;
         --search-width: 150px;
     }
 }
 
 @media screen and (max-width: 600px) {
      :host {
-        --menu-bar-item-margin: 5px;
+        --menu-bar-search-item-margin: 5px;
         --search-width: 100px;
-        --home-icon-font-size: 20px;
+        --home-icon-font-size: 30px;
     }
-}
-
-.menu-bar-container2 {
-    position: relative;
-    align-items: center;
-    height: 35px;
-    width: 100%;
-    background-color: rgba(238,238,238,1);
-    color: black;
-    border-bottom: 1px solid lightgray;
-    display: grid;
-    grid-template-columns: repeat(1, min-content) auto auto auto;
-    column-gap: var(--menu-bar-item-margin);
-    justify-content: center;
 }
 
 .menu-bar-container {
@@ -42,13 +29,23 @@
     color: black;
     border-bottom: 1px solid lightgray;
     display: grid;
-    grid-template-columns: repeat(3, min-content);
+    grid-template-columns: repeat(3, 40px) 1fr;
     column-gap: var(--menu-bar-item-margin);
     justify-content: left;
 }
 
-.menu-bar-container>div:first-of-type {
-    margin-left: var(--menu-bar-item-margin);
+.menu-bar-search-container {
+    position: relative;
+    align-items: center;
+    height: 35px;
+    width: 100%;
+    background-color: rgba(238,238,238,1);
+    color: black;
+    border-bottom: 1px solid lightgray;
+    display: grid;
+    grid-template-columns: repeat(1, min-content) auto auto auto;
+    column-gap: var(--menu-bar-search-item-margin);
+    justify-content: center;
 }
 
 #searchInput {
@@ -97,6 +94,21 @@
     border: none;
 }
 
+.menu-link.right{
+    text-align: right;
+    margin-right: var(--menu-bar-search-item-margin);
+}
+
+.menu-link.right span{
+    font-size: 18px;
+    margin-left: 10px;
+}
+
+.menu-author{
+    font-family: 'ps-regular';
+    text-align: right;
+    text-transform: uppercase;
+}
 
 .hamburger {
     display: inline-block;

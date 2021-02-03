@@ -17,7 +17,7 @@ export class BlogRepo {
                 timestamp: '13 Jun 2020',
                 updated: '',
                 id: 'JavaScriptVariablesAndScope',
-                summary: 'Choose the wrong type declaration or declare it in the wrong place, prepare for unexpected behaviour!',
+                summary: 'Don\'t want unexpected behaviour, learn about variables and scope!',
                 thumbnail: '/assets/blogs/images/variables-scope-thumbnail.jpg',
                 author: 'David Beales'
             }),
