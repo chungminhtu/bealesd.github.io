@@ -1,0 +1,8 @@
+https://bealesd.github.io/about/index.html
+https://bealesd.github.io/home/index.html
+https://bealesd.github.io/blog/AngularAndGitHubPages/index.html
+https://bealesd.github.io/blog/MarkdownRendering/index.html
+https://bealesd.github.io/blog/AsyncConstructors/index.html
+https://bealesd.github.io/blog/AzureDeveloper204ExamNotes/index.html
+https://bealesd.github.io/blog/EventCRUD/index.html
+https://bealesd.github.io/blog/JavaScriptVariablesAndScope/index.html
