@@ -42,17 +42,13 @@ export class MenuBarComponent implements OnInit {
         document.documentElement.style.setProperty('--search-bar-menu-bar-height', '0px');
 
         const rootPath = window.location.pathname.split('/')[1];
-        if (rootPath === 'blog') {
-          this.isHomePage = false;
-        }
-        else if (rootPath === 'home') {
+        if (rootPath === 'home') {
           document.documentElement.style.setProperty('--search-bar-menu-bar-height', this.searchBarHeight);
           this.isHomePage = true;
         }
         else {
           this.isHomePage = false;
         }
-
       }
     });
   }
