@@ -150,6 +150,10 @@
     cursor: pointer;
 }
 
+.blog-container img:hover {
+    cursor: pointer;
+}
+
 .blog-tag>div {
     margin-top: 10px;
     height: 100%;
@@ -179,20 +183,6 @@
     margin-left: 5px;
     transition: 0.2s ease-in-out;
 }
-
-/* .blog-container:nth-of-type(odd) .blog-tag .tag:hover,
-.blog-container:nth-of-type(odd) .blog-tag .sub-tag:hover {
-    background-color: rgb(var(--alert-danger-background-color));
-    color: rgb(var(--alert-danger-color));
-    cursor: pointer;
-}
-
-.blog-container:nth-of-type(even) .blog-tag .tag:hover,
-.blog-container:nth-of-type(even) .blog-tag .sub-tag:hover {
-    background-color: rgb(var(--alert-success-background-color));
-    color: rgb(var(--alert-success-color));
-    cursor: pointer;
-} */
 
 .blog-container .blog-tag .tag:hover,
 .blog-container .blog-tag .sub-tag:hover {

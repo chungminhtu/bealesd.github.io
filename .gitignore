@@ -3,3 +3,4 @@
 .vs/VSWorkspaceState.json
 .vs/bealesd.github.io/v16/.suo
 node_modules
+/dist

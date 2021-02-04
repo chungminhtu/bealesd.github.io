@@ -1,10 +1,16 @@
 <app-menu-bar></app-menu-bar>
 
 <div class="main-container">
-    <router-outlet></router-outlet>
+    <div class="{{isBlogRoute ? 'blog': ''}}" (click)="expandImage($event)">
+        <router-outlet></router-outlet>
+    </div>
 </div>
-
 
 <app-message-box></app-message-box>
 
 <footer>Copyright &copy; 2020 - {{date | date : 'yyyy'}}, David Beales. All Rights Reserved.  </footer>
+
+
+<div *ngIf="isModalOpen === true" class="modal" (click)="closeModal()">
+    <img src="{{imgSrc}}" id="modal-image">
+</div>
