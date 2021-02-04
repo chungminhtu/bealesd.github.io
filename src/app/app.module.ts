@@ -14,6 +14,7 @@ import { JavascriptVariablesAndScopeComponent } from './blogs/javascript-variabl
 import { AzureDeveloperExamNotesComponent } from './blogs/azure-developer-exam-notes/azure-developer-exam-notes.component';
 import { AsyncConstructorsComponent } from './blogs/async-constructors/async-constructors.component';
 import { AboutComponent } from './about/about.component';
+import { ModalComponent } from './modal/modal.component';
 
 @NgModule({
   declarations: [
@@ -28,7 +29,8 @@ import { AboutComponent } from './about/about.component';
     JavascriptVariablesAndScopeComponent,
     AzureDeveloperExamNotesComponent,
     AsyncConstructorsComponent,
-    AboutComponent
+    AboutComponent,
+    ModalComponent
   ],
   imports: [
     BrowserModule,

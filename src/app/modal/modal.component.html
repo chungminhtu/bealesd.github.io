@@ -1,0 +1,7 @@
+<div class="modal">
+    <div id="modal-message">
+        <div>{{title}}</div>
+    </div>
+    <div id="modal-value" [innerHTML]='parsedMessage()'></div>
+    <button class="btn-normal" (click)="closeModal()">Ok</button>
+</div>

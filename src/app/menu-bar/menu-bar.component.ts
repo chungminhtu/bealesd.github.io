@@ -26,17 +26,13 @@ export class MenuBarComponent implements OnInit {
 
   searchBarHeight = '36px';
 
-  isModalOpen: boolean;
-  modalMessage: string;
-  modalValue: string;
+  isModalOpen = false;
 
   constructor(
     public blogService: BlogService,
     private router: Router,
     public toastEvents: ToastEvents,
-  ) {
-    this.isModalOpen = false; 
-  }
+  ) { }
 
   ngOnInit(): void {
     this.getBlogsByTags();
@@ -61,22 +57,17 @@ export class MenuBarComponent implements OnInit {
     });
   }
 
-  openModal(message, value) {
-    value = value.replace("@", '<span class="at-symbol">@</span>');
+  openModal() {
     this.isModalOpen = true;
-    this.modalMessage = message;
-    this.modalValue = value;
   }
 
-  closeModal() {
+  closeModal(evt: MouseEvent) {
     this.isModalOpen = false;
-    this.modalMessage = '';
-    this.modalValue = '';
   }
 
-  goToLink(url: string){
+  goToLink(url: string) {
     window.open(url, "_blank");
-}
+  }
 
   getBlogsByTags() {
     this.tags = this.blogService.blogRepo.getAllUniqueTags();

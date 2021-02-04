@@ -819,14 +819,6 @@
 }
 
 @font-face {
-    font-family: 'Roboto';
-    src: url('assets/fonts/roboto-v20-latin-regular.woff') format('woff');
-    font-weight: 400;
-    font-style: normal;
-    font-display: swap;
-}
-
-@font-face {
     font-family: 'Space Mono';
     src: url('assets/fonts/space-mono-v6-latin-regular.woff') format('woff');
     font-weight: normal;
