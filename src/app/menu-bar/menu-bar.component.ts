@@ -26,7 +26,7 @@ export class MenuBarComponent implements OnInit {
 
   searchBarHeight = '36px';
 
-  isModalOpen = false;
+  isEmailModalOpen = false;
 
   constructor(
     public blogService: BlogService,
@@ -55,14 +55,6 @@ export class MenuBarComponent implements OnInit {
 
       }
     });
-  }
-
-  openModal() {
-    this.isModalOpen = true;
-  }
-
-  closeModal(evt: MouseEvent) {
-    this.isModalOpen = false;
   }
 
   goToLink(url: string) {

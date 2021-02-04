@@ -16,8 +16,8 @@
         <span class="icon-github" (click)="goToLink('https://github.com/bealesd')"></span>
         <span class="icon-linkedin" (click)="goToLink('https://www.linkedin.com/in/david-beales-16087989')"></span>
 
-        <span class="icon-envelop" (click)="openModal()"></span>
-        <app-modal *ngIf="isModalOpen" [title]="'Contact me'" [message]="'david_beales@ymail.com'" (close)="closeModal($event)"></app-modal>
+        <span class="icon-envelop" (click)="isEmailModalOpen = true"></span>
+        <app-modal *ngIf="isEmailModalOpen" [title]="'Contact me'" [message]="'david_beales@ymail.com'" (close)="isEmailModalOpen = false"></app-modal>
 
         <div class="menu-author">
             <div>David Beales</div>
