@@ -10,4 +10,4 @@ ng build --prod --output-path docs --base-href "/"
  2. npm run scully
  3. or npm run scully --scanRoutes
 
- N.B copy index.html as 404.html, keeprobots and sitemap.txt
+ N.B copy index.html as 404.html, keep robots.txt and sitemap.txt

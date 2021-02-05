@@ -19,7 +19,6 @@ const routes: Routes = [
   { path: 'blog/AsyncConstructors', component: AsyncConstructorsComponent },
   { path: 'blog/MarkdownRendering', component: MarkdownRenderingComponent },
   { path: 'blog/AngularAndGitHubPages', component: AngularAndGithubPagesComponent },
-  // { path: 'blog/:blogName', component: BlogComponent },
   { path: '**', redirectTo: '/home', pathMatch: 'full' }
 ];
 
