@@ -28,7 +28,7 @@
 
 .blog-container {
     display: grid;
-    grid-template-rows: 150px 40px 50px 50px 50px;
+    grid-template-rows: 150px 40px 50px 60px 50px;
     grid-template-columns: var(--blog-container-width);
     width: var(--blog-container-width);
     padding-bottom: 20px;

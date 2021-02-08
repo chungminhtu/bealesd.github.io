@@ -17,9 +17,10 @@ export class BlogRepo {
                 timestamp: '13 Jun 2020',
                 updated: '',
                 id: 'JavaScriptVariablesAndScope',
-                summary: 'Don\'t want unexpected behaviour, learn about variables and scope!',
+                summary: 'JavaScript variables, const vs let vs var, and their effect on scope!',
                 thumbnail: '/assets/blogs/images/variables-scope-thumbnail.jpg',
-                author: 'David Beales'
+                author: 'David Beales',
+                description: ''
             }),
             new BlogModel({
                 displayname: 'Azure 204 Notes',
@@ -28,7 +29,7 @@ export class BlogRepo {
                 timestamp: '22 Jul 2020',
                 updated: '',
                 id: 'AzureDeveloper204ExamNotes',
-                summary: 'My 204 Exam notes, a scrambled mess!',
+                summary: 'My Azure 204 exam notes, a scrambled mess!',
                 thumbnail: '/assets/blogs/images/azure-logo-thumbnail.jpg',
                 author: 'David Beales'
             }),
@@ -39,7 +40,7 @@ export class BlogRepo {
                 timestamp: '21 Jul 2020',
                 updated: '22 Jul 2020',
                 id: 'EventCRUD',
-                summary: 'Manage DOM events listeners safely, with events CRUD.',
+                summary: 'Manage DOM events listeners safely, with JavaScript events CRUD.',
                 thumbnail: '/assets/blogs/images/crud_blue_thumbnail.jpg',
                 author: 'David Beales'
             }),
@@ -50,7 +51,7 @@ export class BlogRepo {
                 timestamp: '27 Jul 2020',
                 updated: '',
                 id: 'AsyncConstructors',
-                summary: 'JavaScript can support async constructors, with closures.',
+                summary: ' Use async constructors in JavaScript, with closures.',
                 thumbnail: '/assets/blogs/images/async-constructors-new-thumbnail.jpg',
                 author: 'David Beales'
             }),
@@ -61,7 +62,7 @@ export class BlogRepo {
                 timestamp: '01 Aug 2020',
                 updated: '',
                 id: 'MarkdownRendering',
-                summary: 'Render Markdown in the browser, with added PrismJs styling.',
+                summary: 'Render Markdown in the web with JavaScript, Marked, & PrismJs for code block styling.',
                 thumbnail: '/assets/blogs/images/prism-thumbnail.jpg',
                 author: 'David Beales'
             }),
@@ -87,6 +88,10 @@ export class BlogRepo {
             if (!blogInFuture) return blog;
         })
         return blogs;
+    }
+
+    getBlogById(id: string){
+        return this.blogs.find(blog => blog.id.toLocaleLowerCase() === id.toLocaleLowerCase());
     }
 
     getBlogsByTags(tags: string[]): BlogModel[] {
