@@ -76,7 +76,19 @@ export class BlogRepo {
                 summary: 'Host your Angular website for free with GitHub Pages.',
                 thumbnail: '/assets/blogs/images/github-pages-blue-thumbnail.jpg',
                 author: 'David Beales'
-            })
+            }),
+            new BlogModel({
+                displayname: 'Angular Static Pages',
+                tag: 'TypeScript',
+                subtags: ['Angular', 'Scully'],
+                timestamp: '19 Feb 2020',
+                updated: '',
+                id: 'AngularAndStaticPages',
+                summary: 'Create static pages in Angular with Scully.',
+                thumbnail: '/assets/blogs/images/github-pages-blue-thumbnail.jpg',
+                author: 'David Beales'
+            }),
+            
         ];
 
         this.utilities = new Utilities();

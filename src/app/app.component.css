@@ -34,8 +34,6 @@ footer{
     max-height: var(--footer-height);
 }
 
-
-
 .modal {
     position: fixed;
     z-index: 3;

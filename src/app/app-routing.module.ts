@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { AboutComponent } from './about/about.component';
 import { AngularAndGithubPagesComponent } from './blogs/angular-and-github-pages/angular-and-github-pages.component';
+import { AngularAndStaticPagesComponent } from './blogs/angular-and-static-pages/angular-and-static-pages.component';
 import { AsyncConstructorsComponent } from './blogs/async-constructors/async-constructors.component';
 import { AzureDeveloperExamNotesComponent } from './blogs/azure-developer-exam-notes/azure-developer-exam-notes.component';
 import { EventCrudComponent } from './blogs/event-crud/event-crud.component';
@@ -19,6 +20,7 @@ const routes: Routes = [
   { path: 'blog/AsyncConstructors', component: AsyncConstructorsComponent },
   { path: 'blog/MarkdownRendering', component: MarkdownRenderingComponent },
   { path: 'blog/AngularAndGitHubPages', component: AngularAndGithubPagesComponent },
+  { path: 'blog/AngularAndStaticPages', component: AngularAndStaticPagesComponent },
   { path: '**', redirectTo: '/home', pathMatch: 'full' }
 ];
 

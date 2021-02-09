@@ -3,22 +3,61 @@
 <h2>Overview</h2>
 <p>
     Static websites are great, here are some of the reason why:
+</p>
     <ul>
         <li>simple to setup</li>
         <li>easy to host</li>
         <li>fast load times</li>
         <li>more secure</li>
     </ul>
-
-    For a simple site, like my blog, static sites are ideal. However, I've written my blog in Angular, which is dynamic. Welcome <b>scullyio</b>. Scully will take yor Angular website, find all your routes, and generates a static website.
+<p>
+    For a simple site, like my blog, static sites are ideal. However, I've written my blog in Angular, which is dynamic. Welcome Scully. Scully will take yor Angular website, find all your routes, and generates a static website.
 </p>
 
-<h4>Sections</h4>
+<h3>Sections</h3>
 <ol>
     <li>Pre requisites</li>
     <li>Installing Scully</li>
     <li>Updating Scully Routes</li>
     <li>Conclusion</li>
 </ol>
+
+<hr>
+
+<h2> Pre requisites</h2>
+<ul>
+    <li>An Angular project with some URL routes.</li>
+    <li>A local webserver - i.e. Web server for Chrome, Python 3 http server, etc.</li>
+</ul>
+
+<h2> Installing Scully</h2>
+
+<p>To install Scully run this command in the root of your Angular project.</p>
+
+<pre ngNonBindable class="example-neutral">
+    <code class="language-powershell">
+        ng add @scullyio/init
+    </code>
+</pre>
+    
+<p>
+    A Scully config file will be created in the src root <span class="inline-highlight">scully.&lt;projectName&gt;.config.ts</span>.
+</p>
+
+<pre ngNonBindable class="example-neutral">
+    <code class="language-powershell">
+        import { ScullyConfig } from '@scullyio/scully';
+        export const config: ScullyConfig = {
+          projectRoot: "./src",
+          projectName: "blog",
+          outDir: './docs',
+          routes: {
+          }
+        };
+    </code>
+</pre>
+
+
+<!-- <img class="blog-image" src="/assets/blogs/images/angularAndGitHubPages/github-repo.jpg" title="A GitHub Repo"> -->
 
 <hr>
