@@ -15,6 +15,7 @@ import { AsyncConstructorsComponent } from './blogs/async-constructors/async-con
 import { AboutComponent } from './about/about.component';
 import { ModalComponent } from './modal/modal.component';
 import { ScullyLibModule } from '@scullyio/ng-lib';
+import { AngularAndStaticPagesComponent } from './blogs/angular-and-static-pages/angular-and-static-pages.component';
 
 @NgModule({
   declarations: [
@@ -29,7 +30,8 @@ import { ScullyLibModule } from '@scullyio/ng-lib';
     AzureDeveloperExamNotesComponent,
     AsyncConstructorsComponent,
     AboutComponent,
-    ModalComponent
+    ModalComponent,
+    AngularAndStaticPagesComponent
   ],
   imports: [
     BrowserModule,
