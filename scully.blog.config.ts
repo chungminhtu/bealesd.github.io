@@ -3,6 +3,5 @@ export const config: ScullyConfig = {
   projectRoot: "./src",
   projectName: "blog",
   outDir: './docs',
-  routes: {
-  }
+  routes: {  }
 };

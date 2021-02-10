@@ -41,19 +41,18 @@
 </pre>
     
 <p>
-    A Scully config file will be created in the src root <span class="inline-highlight">scully.&lt;projectName&gt;.config.ts</span>.
+    A Scully config file will be created in the project root <span class="inline-highlight">scully.&lt;projectName&gt;.config.ts</span>.
 </p>
 
 <pre ngNonBindable class="example-neutral">
     <code class="language-powershell">
-        import { ScullyConfig } from '@scullyio/scully';
-        export const config: ScullyConfig = {
-          projectRoot: "./src",
-          projectName: "blog",
+        import &#123; ScullyConfig &#125; from '@scullyio/scully';
+        export const config: ScullyConfig = &#123;
+          projectRoot: &quot;./src&quot;,
+          projectName: &quot;blog&quot;,
           outDir: './docs',
-          routes: {
-          }
-        };
+          routes: &#123; &#125;
+        &#125;;
     </code>
 </pre>
 
