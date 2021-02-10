@@ -20,7 +20,6 @@ export class BlogRepo {
                 summary: 'JavaScript variables, const vs let vs var, and their effect on scope!',
                 thumbnail: '/assets/blogs/images/variables-scope-thumbnail.jpg',
                 author: 'David Beales',
-                description: ''
             }),
             new BlogModel({
                 displayname: 'Azure 204 Notes',
