@@ -36,28 +36,21 @@
 
 <p>To install Scully run this command in the root of your Angular project.</p>
 
-<pre ngNonBindable class="example-neutral">
-    <code class="language-powershell">
-        ng add @scullyio/init
-    </code>
-</pre>
+<pre ngNonBindable class="example-neutral"><code class="language-powershell">ng add @scullyio/init
+</code></pre>
 
 <p>
     A Scully config file will be created in the project root <span
         class="inline-highlight">scully.&lt;projectName&gt;.config.ts</span>.
 </p>
 
-<pre ngNonBindable class="example-neutral">
-    <code class="language-powershell">
-        import &#123; ScullyConfig &#125; from '@scullyio/scully';
-        export const config: ScullyConfig = &#123;
-          projectRoot: './src',
-          projectName: '&lt;projectName&gt;',
-          outDir: './docs',
-          routes: &#123; &#125;
-        &#125;;
-    </code>
-</pre>
+<pre ngNonBindable class="example-neutral"><code class="language-typescript">import &#123; ScullyConfig &#125; from '@scullyio/scully';
+    export const config: ScullyConfig = &#123;
+        projectRoot: './src',
+        projectName: '&lt;projectName&gt;',
+        outDir: './docs',
+        routes: &#123; &#125;
+    &#125;;</code></pre>
 
 <p>
     The <i>outDir</i> is where the static files are placed. I normally change mine to <i>docs</i>,
@@ -108,25 +101,17 @@ title="Non parameterized routes">
 <h2>Building Scully</h2>
 
 <p>
-    Run this command, in your project root, to build Scully. This will create a <i>dist</i> folder in your project root. Scully will use this generate the static files.
+    Run this command, in your project root, to build Scully. This will create a <i>dist</i> folder in your project root. Scully will use this to generate the static files.
 </p>
 
 
-<pre ngNonBindable class="example-neutral">
-    <code class="language-powershell">
-        npm run build:scully
-    </code>
-</pre>
+<pre ngNonBindable class="example-neutral"><code class="language-powershell">npm run build:scully</code></pre>
 
 <p>
     Now we are ready to create the static files, with the Scully command:
 </p>
 
-<pre ngNonBindable class="example-neutral">
-    <code class="language-powershell">
-        npm run scully
-    </code>
-</pre>
+<pre ngNonBindable class="example-neutral"><code class="language-powershell">npm run scully</code></pre>
 
 <p>
     Depending on where you set your <i>outDir</i> in <span
@@ -145,11 +130,7 @@ title="output static pages">
     class="inline-highlight">src/app-routing.module.ts</span> you can run the Scully command with a flag to discover them:
 </p>
 
-<pre ngNonBindable class="example-neutral">
-    <code class="language-powershell">
-        npm run scully --scanRoutes
-    </code>
-</pre>
+<pre ngNonBindable class="example-neutral"><code class="language-powershell">npm run scully --scanRoutes</code></pre>
 
 <hr>
 

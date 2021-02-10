@@ -10,6 +10,7 @@ export class AngularAndStaticPagesComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
+    window['Prism'].highlightAll();
   }
 
 }

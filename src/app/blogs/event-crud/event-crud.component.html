@@ -38,7 +38,7 @@ function myFunction()&#123;
 <h2> Why</h2>
 
 <p>
-    A challenging part of any single page web application (SPA) can be managing events. As you navigate through a SPA, it is common for elements to be removed or hidden and new elements to be added or shown. If an elemnt is removed you will lose all of its
+    A challenging part of any single page web application (SPA) can be managing events. As you navigate through a SPA, it is common for elements to be removed or hidden and new elements to be added or shown. If an element is removed you will lose all of its
     event listeners, and need to re-add them. Alternatively if an element is hidden, you might accidentally add new event listeners to them.
     <br>
     <br> As you can see in figure 3, there is no protection from adding the same event<sup>1</sup> to an element, which wil cause the event to fire multiple times. This can be very bad, i.e. logic to add or remove a class on an element depending on if
@@ -87,13 +87,13 @@ function myFunction()&#123;
 </ul>
 
 <p>
-    It uses the global variable <i>window</i> as a store for adding a JSON object. This <i>id</i> is then added to the JSON object, if the id has not been taken. The value associated to the <i>id</i> is then an univoked anoymous function containing the
+    It uses the global variable <i>window</i> as a store for adding a JSON object. This <i>id</i> is then added to the JSON object, if the id has not been taken. The value associated to the <i>id</i> is then an uninvoked anonymous function containing the
     callback and its' args. Only then is the <i>addEventListener</i> function invoked with the args.
 </p>
 
 <p>
     N.B. This is a quick approach, which works, although if you are implementing this in live code, the <i>addEvent</i> function should be in a class. Also there is no need to use the global variable <i>window</i> as an events store. Instead use a class
-    variable. In fact, if you used window.event, you would be overriding an in-built variable. So you can see the risk. Also <i>window</i> is often used by developers who may not understand scope and therfore always want access to their vairables.
+    variable. In fact, if you used window.event, you would be overriding an in-built variable. So you can see the risk. Also <i>window</i> is often used by developers who may not understand scope and therefore always want access to their variables.
 </p>
 
 <hr>
@@ -101,7 +101,7 @@ function myFunction()&#123;
 <h2> Delete</h2>
 
 <p>
-    Removing an event is now very easy. Just enter the event ID and the element and poof, the event is gone! Figure 4 shows an implementation of this. If the event is found in the global JSON dicitonary, remove it from the both the dictionary and the event
+    Removing an event is now very easy. Just enter the event ID and the element and poof, the event is gone! Figure 4 shows an implementation of this. If the event is found in the global JSON dictionary, remove it from the both the dictionary and the event
     from the element.
 </p>
 
@@ -120,7 +120,7 @@ function myFunction()&#123;
 <h2> Conclusion</h2>
 
 <p>
-    Tracking events is very easy in JavaScript, with just a little work. I will provide one caveat, if your callback functions don't work properly, you most likely are encountering a scope issue. I tend to avoid this issue by passing in anoymous functions
+    Tracking events is very easy in JavaScript, with just a little work. I will provide one caveat, if your callback functions don't work properly, you most likely are encountering a scope issue. I tend to avoid this issue by passing in anonymous functions
     or using the <i>bind</i> keyword to bind the current scope to the function.
 </p>
 

@@ -6,4 +6,3 @@ https://bealesd.github.io/blog/AsyncConstructors/index.html
 https://bealesd.github.io/blog/AzureDeveloper204ExamNotes/index.html
 https://bealesd.github.io/blog/EventCRUD/index.html
 https://bealesd.github.io/blog/JavaScriptVariablesAndScope/index.html
-https://bealesd.github.io/blog/AngularAndStaticPages/index.html
