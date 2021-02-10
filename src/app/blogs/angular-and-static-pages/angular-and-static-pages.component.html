@@ -1,17 +1,18 @@
-<h1>Generating Static Pages in Angular with Scully</h1>
+<h1>Static Pages in Angular with Scully</h1>
 
 <h2>Overview</h2>
 <p>
     Static websites are great, here are some of the reason why:
 </p>
-    <ul>
-        <li>simple to setup</li>
-        <li>easy to host</li>
-        <li>fast load times</li>
-        <li>more secure</li>
-    </ul>
+<ul>
+    <li>simple to setup</li>
+    <li>easy to host</li>
+    <li>fast load times</li>
+    <li>more secure</li>
+</ul>
 <p>
-    For a simple site, like my blog, static sites are ideal. However, I've written my blog in Angular, which is dynamic. Welcome Scully. Scully will take yor Angular website, find all your routes, and generates a static website.
+    For a simple site, like my blog, static sites are ideal. However, I've written my blog in Angular, which is dynamic.
+    Welcome Scully. Scully will take yor Angular website, find all your routes, and generate a static website.
 </p>
 
 <h3>Sections</h3>
@@ -19,6 +20,7 @@
     <li>Pre requisites</li>
     <li>Installing Scully</li>
     <li>Updating Scully Routes</li>
+    <li>Building Scully</li>
     <li>Conclusion</li>
 </ol>
 
@@ -39,24 +41,136 @@
         ng add @scullyio/init
     </code>
 </pre>
-    
+
 <p>
-    A Scully config file will be created in the project root <span class="inline-highlight">scully.&lt;projectName&gt;.config.ts</span>.
+    A Scully config file will be created in the project root <span
+        class="inline-highlight">scully.&lt;projectName&gt;.config.ts</span>.
 </p>
 
 <pre ngNonBindable class="example-neutral">
     <code class="language-powershell">
         import &#123; ScullyConfig &#125; from '@scullyio/scully';
         export const config: ScullyConfig = &#123;
-          projectRoot: &quot;./src&quot;,
-          projectName: &quot;blog&quot;,
+          projectRoot: './src',
+          projectName: '&lt;projectName&gt;',
           outDir: './docs',
           routes: &#123; &#125;
         &#125;;
     </code>
 </pre>
 
+<p>
+    The <i>outDir</i> is where the static files are placed. I normally change mine to <i>docs</i>,
+    as opposed to using the default <i>dist/static</i> folder.
+</p>
 
-<!-- <img class="blog-image" src="/assets/blogs/images/angularAndGitHubPages/github-repo.jpg" title="A GitHub Repo"> -->
+<!-- <img class="blog-image" src="/assets/blogs/images/angular-and-static-pages/scully-config-file.JPG" title="Scully Config File"> -->
 
 <hr>
+
+<h2>Updating Scully Routes</h2>
+
+<p>
+    Scully needs to be able to discover routes in order to render them as static pages. There are two ways it does this:
+</p>
+<ul>
+    <li>Non Parameterized Routes</li>
+    <li>Parameterized Routes</li>
+</ul>
+
+<h3>Non Parameterized Routes</h3>
+<p>
+    If you are using routes in your Angular project, they should be declared in <span
+        class="inline-highlight">src/app-routing.module.ts</span>. Scully will read this file to discover your routes,
+    and will render them if they are not parameterized. This is the default way Scully discovers routes.
+</p>
+
+<img class="blog-image" src="/assets/blogs/images/angular-and-static-pages/non-parameterized-routes.JPG"
+title="Non parameterized routes">
+
+<p>
+    All of these routes will create static pages, except for the wildcard route, '**'. The wildcard route will continue to work, there just won't be any static pages created for it as that would be impossible!
+</p>
+
+<h3>Parameterized Routes</h3>
+<p>
+    Here is a parameterized route <span class="inline-highlight">/blog/:blogName</span>, i.e. a path followed by a
+    variable, <i>blogName</i>. Scully will ignore these by default.
+    <br>
+    You have to declare the routes in the <span class="inline-highlight">scully.&lt;projectName&gt;.config.ts</span>
+    file using the routes property. This is known as the <a
+        href='https://scully.io/docs/Reference/plugins/built-in-plugins/json/'>JSON Plugin</a>. I have yet to use
+    this, so to find out more click the JSON Plugin link.
+</p>
+
+<hr>
+
+<h2>Building Scully</h2>
+
+<p>
+    Run this command, in your project root, to build Scully. This will create a <i>dist</i> folder in your project root. Scully will use this generate the static files.
+</p>
+
+
+<pre ngNonBindable class="example-neutral">
+    <code class="language-powershell">
+        npm run build:scully
+    </code>
+</pre>
+
+<p>
+    Now we are ready to create the static files, with the Scully command:
+</p>
+
+<pre ngNonBindable class="example-neutral">
+    <code class="language-powershell">
+        npm run scully
+    </code>
+</pre>
+
+<p>
+    Depending on where you set your <i>outDir</i> in <span
+    class="inline-highlight">scully.&lt;projectName&gt;.config.ts</span>, you will now be able to serve your static files locally!
+</p>
+
+<img class="blog-image" src="/assets/blogs/images/angular-and-static-pages/static-files.JPG"
+title="output static pages">
+
+<p>
+    Mine are in the <i>docs</i> folder. All those index.html files are for each route!
+</p>
+
+<p>
+    If you add any new routes to your <span
+    class="inline-highlight">src/app-routing.module.ts</span> you can run the Scully command with a flag to discover them:
+</p>
+
+<pre ngNonBindable class="example-neutral">
+    <code class="language-powershell">
+        npm run scully --scanRoutes
+    </code>
+</pre>
+
+<hr>
+
+<h2>Conclusion</h2>
+
+<p>
+    Creating static files with Scully is easy!
+</p>
+
+<p>
+    To review:
+</p>
+
+<ol>
+    <li>Install Scully: <span class="inline-highlight">ng add @scullyio/init</span></li>
+    <li>Update scully config, if required.</li>
+    <li>Build Scully: <span class="inline-highlight">npm run build:scully</span></li>
+    <li>Run Scully:  <span class="inline-highlight">npm run scully</span></li>
+    <li>Serve outputted static files locally.</li>
+</ol>
+
+<p>
+    You can find the official documentation at <a href="https://scully.io/">Scully.io</a>.
+</p>

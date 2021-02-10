@@ -81,11 +81,11 @@ export class BlogRepo {
                 displayname: 'Angular Static Pages',
                 tag: 'TypeScript',
                 subtags: ['Angular', 'Scully'],
-                timestamp: '19 Feb 2020',
+                timestamp: '10 Feb 2021',
                 updated: '',
                 id: 'AngularAndStaticPages',
                 summary: 'Create static pages in Angular with Scully.',
-                thumbnail: '/assets/blogs/images/github-pages-blue-thumbnail.jpg',
+                thumbnail: '/assets/blogs/images/angular-and-static-pages-thumbnail.jpg',
                 author: 'David Beales'
             }),
             
