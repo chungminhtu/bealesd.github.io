@@ -63,7 +63,7 @@ export class AppComponent {
   expandImage(evt: Event) {
     let elem = (evt.target as HTMLElement);
 
-    if (elem.nodeName === 'IMG') {
+    if (elem.nodeName === 'IMG' && elem.classList.contains('blog-image')) {
       const img = elem as HTMLImageElement;
       this.imgSrc = img.src;
       this.isModalOpen = true;

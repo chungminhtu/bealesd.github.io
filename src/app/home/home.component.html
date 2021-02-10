@@ -5,7 +5,7 @@
         <div class="blog-container">
 
             <div class="blog-thumbnail">
-                <img src="{{blog.thumbnail}}">
+                <img src="{{blog.thumbnail}}" routerLink="/blog/{{blog.id}}">
             </div>
 
             <div class="blog-tag">
@@ -23,7 +23,7 @@
       
             <div class="blog-link">
                 <div>
-                    <div class="item" routerLink="/blog/{{blog.id}}" routerLinkActive="active-link">
+                    <div class="item" routerLink="/blog/{{blog.id}}" >
                         {{blog.displayname}}
                     </div>
                 </div>
@@ -35,8 +35,8 @@
             </div>
 
             <div class="blog-who-card">
-                    <img src="/assets/blogs/images/david-beales.jpg">
-                    <div class="blog-author">{{blog.author}}</div>
+                    <img src="/assets/blogs/images/david-beales.jpg" routerLink="/about">
+                    <div class="blog-author" routerLink="/about">{{blog.author}}</div>
                     <div class="blog-timestamp">{{blog.timestamp}}</div>
             </div>
 

@@ -141,7 +141,7 @@
     font-size: 20px;
     border-radius: 5px;
     padding: 0px 5px;
-    transition: 0.2s ease-in-out;
+    transition: 0.1s ease-in-out;
 }
 
 .blog-container .blog-link .item:hover {
@@ -150,8 +150,24 @@
     cursor: pointer;
 }
 
-.blog-container img:hover {
+.blog-thumbnail> img,
+.blog-who-card > .blog-author,
+.blog-who-card > img
+{
     cursor: pointer;
+}
+
+.blog-thumbnail > img:active,
+.blog-thumbnail > img:focus,
+.blog-container .blog-link :active,
+.blog-container .blog-link :focus,
+.blog-who-card > .blog-author:active,
+.blog-who-card > .blog-author:focus,
+.blog-who-card > img:active,
+.blog-who-card > img:focus
+{
+    outline: 0;
+    border: none;
 }
 
 .blog-tag>div {
@@ -173,7 +189,7 @@
     font-size: 12px;
     padding: 2px 4px;
     border-radius: 10px;
-    transition: 0.2s ease-in-out;
+    transition: 0.1s ease-in-out;
 }
 
 .blog-tag .sub-tag {
@@ -181,7 +197,7 @@
     padding: 2px 4px;
     border-radius: 10px;
     margin-left: 5px;
-    transition: 0.2s ease-in-out;
+    transition: 0.1s ease-in-out;
 }
 
 .blog-container .blog-tag .tag:hover,
