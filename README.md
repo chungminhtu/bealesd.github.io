@@ -1,9 +1,8 @@
 ## Build
 
 ### SPA
-
-ng build --prod --output-path docs --base-href "/"
- N.B copy index.html as 404.html, keep robots.txt and sitemap.txt
+- ng build --prod --output-path docs --base-href "/"
+- N.B copy index.html as 404.html, keep robots.txt and sitemap.txt
 
 ### Static
  0. ng add @scullyio/init
@@ -17,4 +16,5 @@ ng build --prod --output-path docs --base-href "/"
  2. Add new BlogModel to blogIndexes in BlogRepo. Fill in metadata, id must be {{blogName}}
  3. Add route to app-routing.module.ts
  4. Update sitemap.txt and sitemap.xml to include new route /blog/{{blogName}}/index.html
- 4. When building, do step 4 in Build>Static
+ 5. When building, do step 4 in Build>Static
+

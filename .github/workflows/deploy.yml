@@ -1,0 +1,54 @@
+name: Build and Deploy Github Pages Files
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+steps:
+- uses: actions/checkout@v2
+- uses: actions/setup-node@v2
+  with:
+    node-version: '14'
+- run: npm install
+- run: npm test
+
+    steps:
+    - uses: actions/checkout@v2
+      
+    - name: Set up Node 14
+      uses: actions/setup-node@v2
+      with:
+        node-version: '14'
+
+    - name: Install angular
+      run: npm install -g @angular/cli    
+
+    - name: Install yarn
+      run: yarn install
+
+    - name: Install packages
+      run: yarn;
+   
+    - name: Deploy and Build
+      run: node build.js
+         
+    - name: Update deployment for GitHub Pages
+      env:
+        ACTOR: ${{ github.actor }}
+        AUTHOR_EMAIL: ${{ github.actor }}@users.noreply.github.com
+      run: |
+        git status; \
+        git config --global user.email $AUTHOR_EMAIL; \
+        git config --global user.name $ACTOR; \
+        if [[ `git status --porcelain` ]]; \
+        then git add . && git commit -m"Auto update deployment folder" && echo "changes committed" && git push; \
+        else echo "no changes to commit"; \
+        fi
+
