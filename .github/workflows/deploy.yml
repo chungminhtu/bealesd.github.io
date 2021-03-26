@@ -28,20 +28,20 @@ jobs:
     - name: Install packages
       run: yarn;
 
-    - name: Clean Docs
-      run: rm -r docs; 
+    # - name: Clean Docs
+    #   run: rm -r docs; 
 
-    - name: Build
-      run: ng build --prod --base-href "/";   
+    # - name: Build
+    #   run: ng build --prod --base-href "/";   
 
-    - name: Deploy
-      run: yarn run scully -- --scanRoutes;
+    # - name: Deploy
+    #   run: yarn run scully -- --scanRoutes;
 
-    - name: Clean Dist
-      run: rm -r dist; 
+    # - name: Clean Dist
+    #   run: rm -r dist; 
 
-    # - name: Deploy and Build
-    #   run: node build.js
+    - name: Deploy and Build
+      run: node build.js
           
     - name: Update deployment for GitHub Pages
       env:

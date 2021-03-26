@@ -8,7 +8,8 @@
         "test": "ng test",
         "lint": "ng lint",
         "e2e": "ng e2e",
-        "scully": "node build.js"
+        "scully": "scully",
+        "scully:local": "node build.js"
     },
     "private": true,
     "dependencies": {
