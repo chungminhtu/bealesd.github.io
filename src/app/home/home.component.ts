@@ -25,12 +25,12 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.blogService.resetFilters();
-    this.toastEvents.clear();
+    this.toastEvents.deleteAllToasts();
   }
 
   ngOnInit(): void {
     this.blogService.resetFilters();
-    this.toastEvents.clear();
+    this.toastEvents.deleteAllToasts();
 
     this.getBlogs();
   }
@@ -41,20 +41,17 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   filterBlogsByTag(tag) {
-    const toast = this.toastEvents.toasts.find((toast) => toast.message === `Tag: ${tag}`);
-    if (toast !== undefined) {
-      this.toastEvents.addToastMessage(`Tag: ${tag}. Already on.`)
+    const toast = this.toastEvents.getToast(`Tag: ${tag}`);
+    if (toast) {
+      this.toastEvents.addToastTemporary(`Tag: ${tag}. Already on.`)
       return;
     }
 
-    const innerCallback = (tag: string) => {
+    this.toastEvents.addToast(`Tag: ${tag}`, ()=>{
       this.blogService.filters.tags = this.blogService.filters.tags.filter(t => t !== tag);
       const blogs = this.blogService.getCurrentBlogs();
       this.blogService.blogs = blogs;
-    }
-    const outerCallback = () => innerCallback(tag);
-
-    this.toastEvents.addToastMessageInteractive(`Tag: ${tag}`, outerCallback);
+    });
 
     this.blogService.filters.tags.push(tag);
     this.blogService.blogs = this.blogService.getCurrentBlogs();

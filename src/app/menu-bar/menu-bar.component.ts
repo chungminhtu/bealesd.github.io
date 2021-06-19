@@ -93,14 +93,14 @@ export class MenuBarComponent implements OnInit {
           this.searchId = null;
           (document.querySelector('#searchInput') as HTMLInputElement).value = '';
         }
-        this.searchId = this.toastEvents.addToastMessageInteractive(`Search: ${word}`, cb);
+        this.searchId = this.toastEvents.addToast(`Search: ${word}`, cb);
       }
       else {
-        this.toastEvents.updateToastMessage(this.searchId, `Search: ${word}`);
+        this.toastEvents.updateToast(this.searchId, `Search: ${word}`);
       }
     }
     else {
-      this.toastEvents.remove(this.searchId);
+      this.toastEvents.deleteToast(this.searchId);
       this.searchId = null;
     }
 
