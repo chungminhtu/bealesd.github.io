@@ -2,14 +2,14 @@
     "name": "blog",
     "version": "0.0.0",
     "scripts": {
-        "ng": "ng",
-        "start": "ng serve",
-        "build": "ng build",
-        "test": "ng test",
-        "lint": "ng lint",
-        "e2e": "ng e2e",
-        "scully": "scully",
-        "scully:local": "node build.js"
+      "ng": "ng",
+      "start": "ng serve",
+      "build": "ng build",
+      "test": "ng test",
+      "lint": "ng lint",
+      "e2e": "ng e2e",
+      "scully": "scully",
+      "scully:local": "node build.js"
     },
     "private": true,
     "dependencies": {
@@ -27,7 +27,7 @@
         "@scullyio/scully": "^1.0.0",
         "rxjs": "~6.6.0",
         "tslib": "^2.0.0",
-        "zone.js": "~0.10.2"
+        "zone.js": "~0.11.4"
     },
     "devDependencies": {
         "@angular-devkit/build-angular": "^0.1101.2",
