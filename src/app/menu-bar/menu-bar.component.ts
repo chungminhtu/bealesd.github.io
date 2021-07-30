@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { BlogService } from '../services/blogs-service';
-import { ToastEvents } from '../services/toast-events-service';
+import { ToastEvents } from 'projects/dave/src/public-api';
 
 @Component({
   selector: 'app-menu-bar',
