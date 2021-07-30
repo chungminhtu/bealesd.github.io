@@ -17,6 +17,8 @@ import { ModalComponent } from './modal/modal.component';
 import { ScullyLibModule } from '@scullyio/ng-lib';
 import { AngularAndStaticPagesComponent } from './blogs/angular-and-static-pages/angular-and-static-pages.component';
 
+import { DaveModule } from 'projects/dave/src/public-api';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -36,9 +38,9 @@ import { AngularAndStaticPagesComponent } from './blogs/angular-and-static-pages
   imports: [
     BrowserModule,
     AppRoutingModule,
-    ScullyLibModule
+    ScullyLibModule,
+    DaveModule
   ],
-  providers: [],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

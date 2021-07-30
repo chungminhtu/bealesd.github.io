@@ -3,6 +3,12 @@
   "compileOnSave": false,
   "compilerOptions": {
     "baseUrl": "./",
+    "paths": {
+      "dave": [
+        "dist/dave/dave",
+        "dist/dave"
+      ]
+    },
     "outDir": "./dist/out-tsc",
     "sourceMap": true,
     "declaration": false,
@@ -16,5 +22,8 @@
       "es2019",
       "dom"
     ]
-  }
+  },
+  // "angularCompilerOptions": {
+  //   "preserveSymlinks": true
+  // }
 }

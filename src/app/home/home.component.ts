@@ -1,8 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 
 import { BlogService } from '../services/blogs-service';
-import { ToastEvents } from '../services/toast-events-service';
-import { Utilities } from '../helpers/utilites'
+import { Utilities } from '../helpers/utilites';
+import { ToastEvents } from 'projects/dave/src/public-api';
 
 @Component({
   selector: 'app-home',
@@ -18,7 +18,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   constructor(
     private blogService: BlogService,
-    public toastEvents: ToastEvents
+    public toastEvents: ToastEvents,
   ) {
     this.utilities = new Utilities;
   }
