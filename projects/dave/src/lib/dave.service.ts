@@ -12,7 +12,7 @@ export class DaveService {
 @Injectable({
   providedIn: 'root',
 })
- export class ToastEvents {
+export class ToastEvents {
   toasts = new BehaviorSubject([]);
   toastsStore = [];
 
@@ -56,16 +56,16 @@ export class DaveService {
     this.deleteToast(toast.id);
   }
 
-  getToast(message: string): Toast{
+  getToast(message: string): Toast {
     return this.toastsStore.find((toast) => toast.message === message);
   }
 
   private add(toast: Toast): void {
     const isNewToast = !this.toastsStore.some(m => m.id === toast.id);
-    if (isNewToast){
-        this.toastsStore.push(toast);       
-        this.toasts.next(this.toastsStore);
-    } 
+    if (isNewToast) {
+      this.toastsStore.push(toast);
+      this.toasts.next(this.toastsStore);
+    }
   }
 
   private get(id: string): Toast {
@@ -74,8 +74,8 @@ export class DaveService {
 
   private generateUuid(): string {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-      const r = Math.random() * 16 | 0,
-        v = c == 'x' ? r : (r & 0x3 | 0x8);
+      const r = Math.random() * 16 | 0;
+      const v = c == 'x' ? r : (r & 0x3 | 0x8);
       return v.toString(16);
     });
   }
