@@ -1,18 +1,18 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { DaveComponent } from './dave.component';
+import { DbToastsComponent } from './db-toasts.component';
 
 @NgModule({
   declarations: [
-    DaveComponent
+    DbToastsComponent
   ],
   imports: [
     CommonModule
   ],
   exports: [
-    DaveComponent,
+    DbToastsComponent,
   ],
 
 })
-export class DaveModule { }
+export class DbToastsModule { }

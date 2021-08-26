@@ -132,23 +132,23 @@
         }
       }
     },
-    "Dave": {
+    "Db-toasts": {
       "projectType": "library",
-      "root": "projects/dave",
-      "sourceRoot": "projects/dave/src",
+      "root": "projects/db-toasts",
+      "sourceRoot": "projects/db-toasts/src",
       "prefix": "lib",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
-            "project": "projects/dave/ng-package.json"
+            "project": "projects/db-toasts/ng-package.json"
           },
           "configurations": {
             "production": {
-              "tsConfig": "projects/dave/tsconfig.lib.prod.json"
+              "tsConfig": "projects/db-toasts/tsconfig.lib.prod.json"
             },
             "development": {
-              "tsConfig": "projects/dave/tsconfig.lib.json"
+              "tsConfig": "projects/db-toasts/tsconfig.lib.json"
             }
           },
           "defaultConfiguration": "production"
@@ -156,9 +156,9 @@
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "main": "projects/dave/src/test.ts",
-            "tsConfig": "projects/dave/tsconfig.spec.json",
-            "karmaConfig": "projects/dave/karma.conf.js"
+            "main": "projects/db-toasts/src/test.ts",
+            "tsConfig": "projects/db-toasts/tsconfig.spec.json",
+            "karmaConfig": "projects/db-toasts/karma.conf.js"
           }
         }
       }

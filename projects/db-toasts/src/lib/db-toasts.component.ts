@@ -1,13 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { ToastEvents, ToastType } from './dave.service';
+import { ToastEvents, ToastType } from './db-toasts.service';
 
 @Component({
-  selector: 'lib-Dave',
-  templateUrl: './dave.component.html',
-  styleUrls: ['./dave.component.css']
+  selector: 'db-toasts',
+  templateUrl: './db-toasts.component.html',
+  styleUrls: ['./db-toasts.component.css']
 
 })
-export class DaveComponent implements OnInit {
+export class DbToastsComponent implements OnInit {
 
   constructor(public toastEvents: ToastEvents,
     ) {

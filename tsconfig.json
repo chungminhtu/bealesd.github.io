@@ -4,9 +4,9 @@
   "compilerOptions": {
     "baseUrl": "./",
     "paths": {
-      "dave": [
-        "dist/dave/dave",
-        "dist/dave"
+      "db-toasts": [
+        "dist/db-toasts/db-toasts",
+        "dist/db-toasts"
       ]
     },
     "outDir": "./dist/out-tsc",

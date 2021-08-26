@@ -17,7 +17,7 @@ import { ModalComponent } from './modal/modal.component';
 import { ScullyLibModule } from '@scullyio/ng-lib';
 import { AngularAndStaticPagesComponent } from './blogs/angular-and-static-pages/angular-and-static-pages.component';
 
-import { DaveModule } from 'projects/dave/src/public-api';
+import { DbToastsModule } from 'projects/db-toasts/src/public-api';
 
 @NgModule({
   declarations: [
@@ -39,7 +39,7 @@ import { DaveModule } from 'projects/dave/src/public-api';
     BrowserModule,
     AppRoutingModule,
     ScullyLibModule,
-    DaveModule
+    DbToastsModule
   ],
   bootstrap: [AppComponent]
 })

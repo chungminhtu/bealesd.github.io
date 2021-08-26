@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 
 import { BlogService } from '../services/blogs-service';
 import { Utilities } from '../helpers/utilites';
-import { ToastEvents } from 'projects/dave/src/public-api';
+import { ToastEvents } from 'projects/db-toasts/src/public-api';
 
 @Component({
   selector: 'app-home',
