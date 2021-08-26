@@ -1,5 +1,5 @@
 /*
- * Public API Surface of dave
+ * Public API Surface of db-toasts
  */
 
 export {DbToastsService, Toast, ToastType, ToastEvents} from './lib/db-toasts.service';

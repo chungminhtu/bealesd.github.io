@@ -132,7 +132,7 @@
         }
       }
     },
-    "Db-toasts": {
+    "db-toasts": {
       "projectType": "library",
       "root": "projects/db-toasts",
       "sourceRoot": "projects/db-toasts/src",
@@ -152,14 +152,6 @@
             }
           },
           "defaultConfiguration": "production"
-        },
-        "test": {
-          "builder": "@angular-devkit/build-angular:karma",
-          "options": {
-            "main": "projects/db-toasts/src/test.ts",
-            "tsConfig": "projects/db-toasts/tsconfig.spec.json",
-            "karmaConfig": "projects/db-toasts/karma.conf.js"
-          }
         }
       }
     }
